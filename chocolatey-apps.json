@@ -1,0 +1,31 @@
+{
+    "Tools": [
+        "nuget.commandline",
+        "powershell",
+        "putty",
+        "webpi",
+        "webpicmd"
+    ],
+    "Languages": [
+        "javaruntime",
+        "npm",
+        "python",
+        "ruby"
+    ],
+    "Applications": [
+        "7zip",
+        "ccleaner",
+        "devbox-rapidee",
+        "Firefox",
+        "flashplayerplugin",
+        "f.lux",
+        "gitkraken",
+        "GoogleChrome",
+        "libreoffice",
+        "poshgit",
+        "slack",
+        "spacesniffer",
+        "visualstudiocode",
+        "winscp"
+    ]
+}
