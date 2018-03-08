@@ -18,6 +18,7 @@ dnf install \
     git \
     nodejs \
     openssl-devel \
+    openvpn \
     ruby \
     yum-utils
 
@@ -28,7 +29,8 @@ dnf update
 echo -e "${YELLOW}Installing runtime packages...${NC}"
 gem install jekyll bundler --no-document
 npm install gulp -g
-pip install flask pygments --user
+pip3 install --upgrade pip
+pip3 install flask pygments --user
 
 echo -e "${YELLOW}Updating runtime packages...${NC}"
 gem update --no-document
