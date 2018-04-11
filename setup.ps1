@@ -17,6 +17,8 @@ Write-Heading "Configuring Chocolatey"
     | ForEach-Object { choco feature enable --name $_ }
 
 Install-Module PSReadline -Confirm
+Install-Module z -Confirm
+
 $chocoConfig = Get-Content -Raw -Path .\chocolatey-apps.json | ConvertFrom-Json
 
 function Install-FromChocolatey ($key)
