@@ -28,7 +28,7 @@ dnf update
 
 echo -e "${YELLOW}Installing runtime packages...${NC}"
 gem install jekyll bundler --no-document
-npm install gulp -g
+npm install gulp npm-check -g
 pip3 install --upgrade pip
 pip3 install flask pygments --user
 
