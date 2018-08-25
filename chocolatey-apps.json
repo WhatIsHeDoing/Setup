@@ -8,7 +8,7 @@
     ],
     "Languages": [
         "javaruntime",
-        "npm",
+        "nodejs-lts",
         "python",
         "ruby"
     ],
