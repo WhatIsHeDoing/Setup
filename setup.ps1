@@ -37,9 +37,8 @@ git config --global credential.helper wincred
 Write-Heading "Language extensions"
 refreshenv
 gem install jekyll bundler --no-document
-npm install gulp -g
-pip install flask
-pip install pygments
+python -m pip install --upgrade pip
+pip install flask pygments
 
 Write-Heading "Configuring Windows"
 Install-WindowsFeature -Name Web-Asp-Net

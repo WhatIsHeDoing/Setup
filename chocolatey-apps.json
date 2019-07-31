@@ -1,10 +1,13 @@
 {
     "Tools": [
+        "docker-cli",
+        "docker-desktop",
         "nuget.commandline",
-        "powershell",
+        "powershell-core",
         "putty",
         "webpi",
-        "webpicmd"
+        "webpicmd",
+        "yarn"
     ],
     "Languages": [
         "javaruntime",
@@ -14,19 +17,16 @@
     ],
     "Applications": [
         "7zip",
-        "ccleaner",
-        "devbox-rapidee",
         "FiraCode",
         "Firefox",
         "flashplayerplugin",
-        "f.lux",
-        "gitkraken",
         "GoogleChrome",
         "libreoffice",
         "poshgit",
+        "rapidee",
         "slack",
         "spacesniffer",
-        "visualstudiocode",
-        "winscp"
+        "spotify",
+        "visualstudiocode"
     ]
 }
