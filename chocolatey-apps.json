@@ -1,28 +1,27 @@
 {
     "Tools": [
+        "7zip",
         "docker-cli",
         "docker-desktop",
         "nuget.commandline",
+        "poshgit",
         "powershell-core",
         "putty",
-        "webpi",
-        "webpicmd",
         "yarn"
     ],
     "Languages": [
+        "dotnetcore-sdk",
         "javaruntime",
         "nodejs-lts",
         "python",
         "ruby"
     ],
     "Applications": [
-        "7zip",
         "FiraCode",
         "Firefox",
-        "flashplayerplugin",
+        "git-fork",
         "GoogleChrome",
         "libreoffice",
-        "poshgit",
         "rapidee",
         "slack",
         "spacesniffer",
