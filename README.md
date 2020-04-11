@@ -8,9 +8,13 @@ These can be re-run at any time, and will update pre-installed packages, runtime
 
 ## 🏃‍ Running
 
+### Debian
+
+Run `sudo sh debian_setup.sh` from a terminal.
+
 ### Fedora
 
-Run `sudo sh setup.sh` from a terminal. This should be simple enough to adapt for another distro, e.g. Ubuntu.
+Run `sudo sh fedora_setup.sh` from a terminal.
 
 ### Windows
 
