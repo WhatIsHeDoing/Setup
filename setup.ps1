@@ -27,6 +27,7 @@ Install-FromChocolatey "Languages"
 Write-Heading "Configuring Git"
 git config --global core.autocrlf true
 git config --global credential.helper wincred
+git config --global init.defaultBranch mai
 
 Write-Heading "Installing Modules"
 Install-Module oh-my-posh -Confirm
