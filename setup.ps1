@@ -8,6 +8,11 @@ function Write-Title ($text) {
     Write-Host -BackgroundColor yellow -ForegroundColor blue $text
 }
 
+Write-Title "Updating Windows"
+UsoClient /StartScan
+UsoClient /StartDownload
+UsoClient /StartInstall
+
 Write-Title "Setting Up Scoop"
 $chocoConfig = Get-Content -Raw -Path .\scoop-apps.json | ConvertFrom-Json
 
@@ -51,10 +56,9 @@ Install-FromScoop "Tools"
 Install-FromScoop "Languages"
 
 Write-Heading "Installing modules for languages"
-$Env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine")
 python -m pip install --upgrade pip
 
-Install-FromScoop "Applications"
+Install-FromScoop "Apps"
 
 Write-Title "Setting Up"
 
@@ -70,6 +74,9 @@ Copy-Item powershell-profile.ps1 $PROFILE
 
 Write-Heading "Setting Up VS Code"
 code --install-extension sdras.night-owl
+
+Write-Heading "Enabling Windows Subsystem for Linux"
+wsl --install
 
 Write-Title "Done!"
 Write-Output ""

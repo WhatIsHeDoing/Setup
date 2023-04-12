@@ -1,5 +1,6 @@
 {
     "recommendations": [
+        "DavidAnson.vscode-markdownlint",
         "editorconfig.editorconfig",
         "ms-vscode.powershell"
     ],
