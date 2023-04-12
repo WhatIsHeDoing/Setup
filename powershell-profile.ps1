@@ -1,3 +1,1 @@
-Import-Module posh-git
-Import-Module oh-my-posh
-Set-Theme Agnoster
+Invoke-Expression (&starship init powershell)

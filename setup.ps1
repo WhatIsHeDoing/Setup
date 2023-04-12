@@ -8,52 +8,68 @@ function Write-Title ($text) {
     Write-Host -BackgroundColor yellow -ForegroundColor blue $text
 }
 
-Write-Title "Setup"
-Write-Heading "Configuring Chocolatey"
+Write-Title "Setting Up Scoop"
+$chocoConfig = Get-Content -Raw -Path .\scoop-apps.json | ConvertFrom-Json
 
-@("allowEmptyChecksumsSecure", "allowGlobalConfirmation") `
-| ForEach-Object { choco feature enable --name $_ }
-
-$chocoConfig = Get-Content -Raw -Path .\chocolatey-apps.json | ConvertFrom-Json
-
-function Install-FromChocolatey ($key) {
-    Write-Heading "Installing $key from Chocolatey"
-    $chocoConfig.$key | ForEach-Object { cinst $_ }
+function Install-FromScoop ($key) {
+    Write-Heading "Installing $key from Scoop"
+    $chocoConfig.$key | ForEach-Object { scoop install $_ }
 }
 
-Install-FromChocolatey "Tools"
-Install-FromChocolatey "Languages"
+# https://devblogs.microsoft.com/scripting/use-a-powershell-function-to-see-if-a-command-exists/
+Try {
+    If (Get-Command scoop) {
+        Write-Heading "Updating Scoop"
+        scoop update
+    }
+    Else {
+        Write-Heading "Installing Scoop"
+        Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+        Invoke-WebRequest -useb get.scoop.sh | Invoke-Expression
+    }
+}
+Catch {
+    Write-Heading "Installing Scoop"
+    Invoke-WebRequest -useb get.scoop.sh | Invoke-Expression
+}
+
+# Speeds up downloads.
+scoop install aria2
+
+# Needed when adding buckets.
+scoop install git
+
+# Often needed by apps.
+scoop install vcredist2022
 
 Write-Heading "Configuring Git"
 git config --global core.autocrlf true
 git config --global credential.helper wincred
-git config --global init.defaultBranch mai
+git config --global init.defaultBranch main
 
-Write-Heading "Installing Modules"
-Install-Module oh-my-posh -Confirm
-Install-Module posh-git -Confirm
-Install-Module PSReadline -Confirm
-Install-Module z -Confirm
+Install-FromScoop "Tools"
+Install-FromScoop "Languages"
 
 Write-Heading "Installing modules for languages"
-refreshenv
-gem install bundler wdm --no-document
+$Env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine")
 python -m pip install --upgrade pip
 
-Install-FromChocolatey "Applications"
+Install-FromScoop "Applications"
 
-Write-Heading "Updating existing Chocolatey apps"
-choco upgrade all
+Write-Title "Setting Up"
+
+Write-Heading "Updating apps"
+scoop update *
+rustup update
+
+Write-Heading "Cleaning up Scoop"
+scoop cleanup *
 
 Write-Heading "Copying PowerShell Profile"
 Copy-Item powershell-profile.ps1 $PROFILE
 
-Write-Heading "Installing Fonts"
-iwr -useb get.scoop.sh | iex
-scoop install aria2
-scoop bucket add nerd-fonts
-scoop install sudo
-sudo scoop install Delugia-Code
+Write-Heading "Setting Up VS Code"
+code --install-extension sdras.night-owl
 
 Write-Title "Done!"
 Write-Output ""

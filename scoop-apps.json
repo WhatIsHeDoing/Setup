@@ -1,0 +1,35 @@
+{
+    "Applications": [
+        "brave",
+        "FiraCode",
+        "fork",
+        "rapidee",
+        "spacesniffer",
+        "spotify",
+        "telegram",
+        "vscode"
+    ],
+    "Buckets": [
+        "extras",
+        "main",
+        "nerd-fonts"
+    ],
+    "Languages": [
+        "nodejs-lts",
+        "python",
+        "rust"
+    ],
+    "Tools": [
+        "7zip",
+        "docker",
+        "gcc",
+        "innounp",
+        "nuget",
+        "pnpm",
+        "putty",
+        "pwsh",
+        "rustup",
+        "starship",
+        "sudo"
+    ]
+}
