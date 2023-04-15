@@ -40,6 +40,7 @@ Catch {
 
 # Speeds up downloads.
 scoop install aria2
+scoop config aria2-warning-enabled false
 
 # Needed when adding buckets.
 scoop install git
