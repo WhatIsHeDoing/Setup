@@ -17,10 +17,12 @@
     "Languages": [
         "nodejs-lts",
         "python",
-        "rust"
+        "rust",
+        "rust-msvc"
     ],
     "Tools": [
         "7zip",
+        "cmake",
         "docker",
         "gcc",
         "innounp",

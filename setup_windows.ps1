@@ -55,6 +55,10 @@ git config --global init.defaultBranch main
 Install-FromScoop "Tools"
 Install-FromScoop "Languages"
 
+Write-Heading "Installing Visual Studio Build Tools"
+Invoke-WebRequest -Uri 'https://aka.ms/vs/17/release/vs_BuildTools.exe' -OutFile "$env:TEMP\vs_BuildTools.exe"
+& "$env:TEMP\vs_BuildTools.exe" --passive --wait --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended --remove Microsoft.VisualStudio.Component.VC.CMake.Project
+
 Write-Heading "Installing modules for languages"
 python -m pip install --upgrade pip
 
