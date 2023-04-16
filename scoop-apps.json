@@ -32,6 +32,7 @@
         "pwsh",
         "rustup",
         "starship",
-        "sudo"
+        "sudo",
+        "upx"
     ]
 }
