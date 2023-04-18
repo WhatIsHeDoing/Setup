@@ -23,6 +23,7 @@
     "Tools": [
         "7zip",
         "cmake",
+        "dbeaver",
         "docker",
         "gcc",
         "innounp",

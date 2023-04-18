@@ -61,6 +61,7 @@ Invoke-WebRequest -Uri 'https://aka.ms/vs/17/release/vs_BuildTools.exe' -OutFile
 & "$env:TEMP\vs_BuildTools.exe" --passive --wait --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended --remove Microsoft.VisualStudio.Component.VC.CMake.Project
 
 Write-Heading "Installing modules for languages"
+cargo install cargo-outdated
 python -m pip install --upgrade pip
 
 Install-FromScoop "Apps"
