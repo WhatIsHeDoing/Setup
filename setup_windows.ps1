@@ -16,9 +16,13 @@ UsoClient /StartInstall
 Write-Title "Setting Up Scoop"
 $chocoConfig = Get-Content -Raw -Path .\scoop-apps.json | ConvertFrom-Json
 
-function Install-FromScoop ($key) {
+function Install-FromScoop ($key, $pin) {
     Write-Heading "Installing $key from Scoop"
     $chocoConfig.$key | ForEach-Object { scoop install $_ }
+
+    if ($pin) {
+        $chocoConfig.$key | ForEach-Object { scoop hold $_ }
+    }
 }
 
 # https://devblogs.microsoft.com/scripting/use-a-powershell-function-to-see-if-a-command-exists/
@@ -55,6 +59,7 @@ git config --global init.defaultBranch main
 
 Install-FromScoop "Tools"
 Install-FromScoop "Languages"
+Install-FromScoop "Pinned" $true
 
 Write-Heading "Installing Visual Studio Build Tools"
 Invoke-WebRequest -Uri 'https://aka.ms/vs/17/release/vs_BuildTools.exe' -OutFile "$env:TEMP\vs_BuildTools.exe"

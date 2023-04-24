@@ -1,0 +1,144 @@
+{
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "default": {},
+    "title": "Setup JSON Schema",
+    "required": [
+        "Apps",
+        "Buckets",
+        "Languages",
+        "Pinned",
+        "Tools"
+    ],
+    "properties": {
+        "Apps": {
+            "type": "array",
+            "default": [],
+            "title": "A list of applications you would like to install and maintain.",
+            "items": {
+                "type": "string",
+                "title": "e.g. Fork https://git-fork.com/",
+                "examples": [
+                    "fork",
+                    "spotify"
+                ]
+            },
+            "examples": [
+                [
+                    "fork",
+                    "spotify"
+                ]
+            ]
+        },
+        "Buckets": {
+            "type": "array",
+            "default": [],
+            "title": "A list of buckets from which https://scoop.sh/ will install apps not listed in the `main` bucket.",
+            "items": {
+                "type": "string",
+                "title": "e.g. Nerd Fonts https://www.nerdfonts.com/",
+                "examples": [
+                    "extras",
+                    "nerd-fonts"
+                ]
+            },
+            "examples": [
+                [
+                    "extras",
+                    "nerd-fonts"
+                ]
+            ]
+        },
+        "Languages": {
+            "type": "array",
+            "default": [],
+            "title": "A list of programming languages you would like to install and maintain.",
+            "items": {
+                "type": "string",
+                "title": "e.g. Rust https://www.rust-lang.org/",
+                "examples": [
+                    "nodejs-lts",
+                    "rust",
+                    "rust-msvc"
+                ]
+            },
+            "examples": [
+                [
+                    "nodejs-lts",
+                    "rust",
+                    "rust-msvc"
+                ]
+            ]
+        },
+        "Pinned": {
+            "type": "array",
+            "default": [],
+            "title": "A list of applications you would like installing only once, as they maintain themselves via e.g. auto-update.",
+            "items": {
+                "type": "string",
+                "title": "e.g. Brave https://brave.com/",
+                "examples": [
+                    "brave",
+                    "vscode"
+                ]
+            },
+            "examples": [
+                [
+                    "brave",
+                    "vscode"
+                ]
+            ]
+        },
+        "Tools": {
+            "type": "array",
+            "default": [],
+            "title": "A list of tools or command-line apps you would like to install and maintain.",
+            "items": {
+                "type": "string",
+                "title": "e.g. Starship https://starship.rs/",
+                "examples": [
+                    "7zip",
+                    "docker",
+                    "rustup",
+                    "starship"
+                ]
+            },
+            "examples": [
+                [
+                    "7zip",
+                    "docker",
+                    "rustup",
+                    "starship"
+                ]
+            ]
+        }
+    },
+    "examples": [
+        {
+            "Apps": [
+                "fork",
+                "spotify"
+            ],
+            "Buckets": [
+                "extras",
+                "nerd-fonts"
+            ],
+            "Languages": [
+                "nodejs-lts",
+                "rust",
+                "rust-msvc"
+            ],
+            "Pinned": [
+                "brave",
+                "vscode"
+            ],
+            "Tools": [
+                "7zip",
+                "docker",
+                "rustup",
+                "starship"
+            ]
+        }
+    ]
+}

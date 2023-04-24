@@ -1,13 +1,12 @@
 {
+    "$schema": "./setup.schema.json",
     "Apps": [
-        "brave",
         "fork",
         "raindrop.io",
         "rapidee",
         "spacesniffer",
         "spotify",
-        "telegram",
-        "vscode"
+        "telegram"
     ],
     "Buckets": [
         "extras",
@@ -19,6 +18,10 @@
         "python",
         "rust",
         "rust-msvc"
+    ],
+    "Pinned": [
+        "brave",
+        "vscode"
     ],
     "Tools": [
         "7zip",
