@@ -46,6 +46,9 @@ Catch {
 scoop install aria2
 scoop config aria2-warning-enabled false
 
+# Frustrating but fixes most broken update download...
+scoop config aria2-options "--check-certificate false"
+
 # Needed when adding buckets.
 scoop install git
 
