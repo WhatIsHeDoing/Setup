@@ -28,6 +28,7 @@
         "cmake",
         "dbeaver",
         "docker",
+        "fzf",
         "gcc",
         "innounp",
         "nuget",

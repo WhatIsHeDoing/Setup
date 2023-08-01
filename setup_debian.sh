@@ -19,7 +19,19 @@ echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.lis
 
 # Update package feeds, install apps, and remove unnecesary ones.
 apt-get update
-apt-get install code fonts-firacode fonts-powerline git jq nodejs python-pip yarn -y
+
+apt-get install \
+    code \
+    fonts-firacode \
+    fonts-powerline \
+    fzf \
+    git \
+    jq \
+    nodejs \
+    python-pip \
+    yarn \
+    -y
+
 apt autoremove -y
 
 # Update VS Code settings.

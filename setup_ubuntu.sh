@@ -16,6 +16,7 @@ apt-get install \
     apt-transport-https \
     apt-utils \
     asciinema \
+    fzf \
     git \
     jq \
     nodejs \
