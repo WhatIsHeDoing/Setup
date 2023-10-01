@@ -91,12 +91,14 @@ if ! shopt -oq posix; then
   fi
 fi
 
-export PATH=$PATH/bin$HOME/.local/bin
+# pnpm
+export PNPM_HOME="/home/darren/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
 
-function _update_ps1() {
-    PS1=$(powerline-shell $?)
-}
+. "$HOME/.cargo/env"
 
-if [[ $TERM != linux && ! $PROMPT_COMMAND =~ _update_ps1 ]]; then
-    PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
-fi
+eval "$(starship init bash)"
