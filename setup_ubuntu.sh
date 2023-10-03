@@ -17,10 +17,10 @@ printf "${BLUE}Running Setup...${NC}\n"
 
 echo ""
 printf "${YELLOW}Updating and installing initial packages...${NC}\n"
-apt-get upgrade -y
-apt-get update
+sudo apt-get upgrade -y
+sudo apt-get update
 
-apt install -y \
+sudo apt install -y \
     apt-transport-https \
     ca-certificates \
     curl
@@ -29,36 +29,36 @@ echo ""
 printf "${YELLOW}Registering new package repositories...${NC}\n"
 
 printf "${GREEN}asciinema...${NC}\n"
-apt-add-repository ppa:zanchey/asciinema -y
+sudo apt-add-repository ppa:zanchey/asciinema -y
 
 # https://github.com/nodesource/distributions#ubuntu-versions
 printf "${GREEN}Node.js...${NC}\n"
 mkdir -p /etc/apt/keyrings
-curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg --yes
+curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg --yes
 NODE_MAJOR=20
-echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
+echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
 
 # https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository
 printf "${GREEN}Docker...${NC}\n"
-install -m 0755 -d /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg --yes
-chmod a+r /etc/apt/keyrings/docker.gpg
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg --yes
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
 
 echo \
     "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | tee /etc/apt/sources.list.d/docker.list
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list
 
 # https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#install-using-native-package-management
 printf "${GREEN}kubetcl...${NC}\n"
-curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg --yes
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg --yes
 # This overwrites any existing configuration in /etc/apt/sources.list.d/kubernetes.list
-echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /' | tee /etc/apt/sources.list.d/kubernetes.list
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
 
 echo ""
 printf "${YELLOW}Updating and installing extra packages...${NC}\n"
-apt update
+sudo apt update
 
-apt install -y \
+sudo apt install -y \
     apt-utils \
     asciinema \
     containerd.io \
@@ -77,10 +77,20 @@ apt install -y \
     shellcheck \
     upx-ucl
 
+printf "${YELLOW}Running Docker post-configuration...${NC}\n"
+usermod -aG docker "$USER" && newgrp docker
+
+printf "${YELLOW}Installing and testing minikube...${NC}\n"
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+minikube start
+minikube addons enable metrics-server
+minikube stop
+
 echo ""
 printf "${YELLOW}Installing Snap packages...${NC}\n"
-snap install brave
-snap install code
+sudo snap install brave
+sudo snap install code
 
 echo ""
 printf "${YELLOW}Installing Starship...${NC}\n"
@@ -123,7 +133,7 @@ code --install-extension sdras.night-owl
 code --install-extension vscode-icons-team.vscode-icons
 
 printf "${YELLOW}Cleaning up...${NC}\n"
-apt autoremove -y
+sudo apt autoremove -y
 
 # printf "${YELLOW}Updating bash...${NC}\n"
 # cp .bashrc ~/.bashrc

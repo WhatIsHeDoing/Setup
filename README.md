@@ -18,9 +18,9 @@ Click on the Ubuntu version below to see it in action:
 Run one of the following for your OS in your terminal of choice:
 
 ```sh
-sudo sh setup_debian.sh
-sudo sh setup_fedora.sh
-sudo sh setup_ubuntu.sh
+sh setup_debian.sh
+sh setup_fedora.sh
+sh setup_ubuntu.sh
 .\setup_windows.ps1
 ```
 
