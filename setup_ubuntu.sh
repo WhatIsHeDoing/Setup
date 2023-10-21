@@ -110,9 +110,13 @@ else
     printf "${GREEN}Already installed${NC}\n"
 fi
 
+printf "${YELLOW}Installing global npm packages...${NC}\n"
+sudo npm update -g
+sudo npm install -g npm-check-updates
+
 echo ""
 printf "${YELLOW}Updating Python pip...${NC}\n"
-pip install --user --upgrade pip
+pip install --user --upgrade pip setuptools
 
 echo ""
 printf "${YELLOW}Installing Rust...${NC}\n"

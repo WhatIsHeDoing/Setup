@@ -70,7 +70,7 @@ Invoke-WebRequest -Uri 'https://aka.ms/vs/17/release/vs_BuildTools.exe' -OutFile
 
 Write-Heading "Installing modules for languages"
 cargo install cargo-outdated
-python -m pip install --upgrade pip
+python -m pip install --upgrade pip setuptools
 
 Install-FromScoop "Apps"
 
