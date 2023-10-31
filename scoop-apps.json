@@ -25,9 +25,12 @@
     ],
     "Tools": [
         "7zip",
+        "bat",
+        "caesium-image-compressor",
         "cmake",
         "dbeaver",
         "docker",
+        "eza",
         "fzf",
         "gcc",
         "innounp",
