@@ -43,6 +43,8 @@ printf "${GREEN}Docker...${NC}\n"
 sudo install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg --yes
 sudo chmod a+r /etc/apt/keyrings/docker.gpg
+# https://docs.docker.com/desktop/install/ubuntu/#install-docker-desktop
+wget -nv -P /tmp/ https://desktop.docker.com/linux/main/amd64/docker-desktop-4.25.0-amd64.deb
 
 echo \
     "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
@@ -75,10 +77,12 @@ sudo apt install -y \
     python3 \
     python3-pip \
     shellcheck \
-    upx-ucl
+    upx-ucl \
+    /tmp/docker-desktop-4.25.0-amd64.deb
 
 printf "${YELLOW}Running Docker post-configuration...${NC}\n"
 usermod -aG docker "$USER" && newgrp docker
+rm /tmp/docker-desktop-4.25.0-amd64.deb
 
 printf "${YELLOW}Installing and testing minikube...${NC}\n"
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
@@ -86,6 +90,9 @@ sudo install minikube-linux-amd64 /usr/local/bin/minikube
 minikube start
 minikube addons enable metrics-server
 minikube stop
+
+printf "${YELLOW}Installing Helm...${NC}\n"
+sudo snap install helm --classic
 
 echo ""
 printf "${YELLOW}Installing Snap packages...${NC}\n"
@@ -111,12 +118,12 @@ else
 fi
 
 printf "${YELLOW}Installing global npm packages...${NC}\n"
-sudo npm update -g
-sudo npm install -g npm-check-updates
+sudo npm update --global --no-progress
+sudo npm install --global npm-check-updates --no-progress
 
 echo ""
 printf "${YELLOW}Updating Python pip...${NC}\n"
-pip install --user --upgrade pip setuptools
+pip install --user --upgrade ipykernel pip setuptools
 
 echo ""
 printf "${YELLOW}Installing Rust...${NC}\n"
@@ -133,8 +140,12 @@ printf "${GREEN}Updating Rust...${NC}\n"
 rustup update
 
 printf "${YELLOW}Installing global VS Code extensions...${NC}\n"
+code --install-extension eamodio.gitlens
 code --install-extension sdras.night-owl
 code --install-extension vscode-icons-team.vscode-icons
+
+printf "${YELLOW}Configuring Git...${NC}\n"
+git config --global init.defaultBranch main
 
 printf "${YELLOW}Cleaning up...${NC}\n"
 sudo apt autoremove -y
