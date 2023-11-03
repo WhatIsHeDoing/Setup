@@ -1,5 +1,9 @@
 #!/bin/bash
 # shellcheck disable=SC2059
+set -e
+
+IS_CONTAINER=$1
+
 BLUE="\033[0;34m"
 GREEN="\033[0;32m"
 NC="\033[0m" # No Colour
@@ -13,17 +17,29 @@ echo "/____/\___/\__/\__,_/ .___/ "
 echo "                   /_/      "
 
 echo ""
+
+if [ -z "$IS_CONTAINER" ]; then
+    printf "🐧 ${YELLOW}Not running within a container.${NC}\n"
+
+else
+    printf "🐋 ${YELLOW}Running within a container .${NC}\n"
+fi
+
 printf "${BLUE}Running Setup...${NC}\n"
 
 echo ""
 printf "${YELLOW}Updating and installing initial packages...${NC}\n"
-sudo apt-get upgrade -y
-sudo apt-get update
+sudo apt-get update -y
+sudo apt-get autoremove -y
+sudo apt-get full-upgrade -y
 
-sudo apt install -y \
+sudo apt-get install -y \
     apt-transport-https \
     ca-certificates \
-    curl
+    curl \
+    software-properties-common \
+    snapd \
+    wget
 
 echo ""
 printf "${YELLOW}Registering new package repositories...${NC}\n"
@@ -58,9 +74,9 @@ echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.
 
 echo ""
 printf "${YELLOW}Updating and installing extra packages...${NC}\n"
-sudo apt update
+sudo apt-get update -y
 
-sudo apt install -y \
+sudo apt-get install -y \
     apt-utils \
     asciinema \
     containerd.io \
@@ -77,33 +93,52 @@ sudo apt install -y \
     python3 \
     python3-pip \
     shellcheck \
-    upx-ucl \
-    /tmp/docker-desktop-4.25.0-amd64.deb
+    upx-ucl
 
-printf "${YELLOW}Running Docker post-configuration...${NC}\n"
-usermod -aG docker "$USER" && newgrp docker
+if [ -z "$IS_CONTAINER" ]; then
+    sudo apt-get install -y /tmp/docker-desktop-4.25.0-amd64.deb
+else
+    printf "${YELLOW}Skipping Docker Desktop...${NC}\n"
+fi
+
 rm /tmp/docker-desktop-4.25.0-amd64.deb
 
-printf "${YELLOW}Installing and testing minikube...${NC}\n"
-curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-sudo install minikube-linux-amd64 /usr/local/bin/minikube
-minikube start
-minikube addons enable metrics-server
-minikube stop
+printf "${YELLOW}Running Docker post-configuration...${NC}\n"
+sudo usermod -aG docker "$USER" && newgrp docker
 
-printf "${YELLOW}Installing Helm...${NC}\n"
-sudo snap install helm --classic
+if [ -z "$IS_CONTAINER" ]; then
+    printf "${YELLOW}Installing and testing minikube...${NC}\n"
+    curl -sLO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+    sudo install minikube-linux-amd64 /usr/local/bin/minikube
+    # minikube start
+    # minikube addons enable metrics-server
+    # minikube stop
+else
+    printf "${YELLOW}Skipping minikube...${NC}\n"
+fi
+
+if [ -z "$IS_CONTAINER" ]; then
+    printf "${YELLOW}Installing Helm...${NC}\n"
+    sudo snap install helm --classic
+else
+    printf "${YELLOW}Skipping Helm...${NC}\n"
+fi
 
 echo ""
-printf "${YELLOW}Installing Snap packages...${NC}\n"
-sudo snap install brave
-sudo snap install code
+
+if [ -z "$IS_CONTAINER" ]; then
+    printf "${YELLOW}Installing Snap packages...${NC}\n"
+    sudo snap install brave
+    sudo snap install code
+else
+    printf "${YELLOW}Skipping Snap packages...${NC}\n"
+fi
 
 echo ""
 printf "${YELLOW}Installing Starship...${NC}\n"
 
 if ! [ -x "$(command -v starship)" ]; then
-    curl -sS https://starship.rs/install.sh | sh
+    curl -sS https://starship.rs/install.sh | sh -s -- --yes
 else
     printf "${GREEN}Already installed${NC}\n"
 fi
@@ -112,7 +147,8 @@ echo ""
 printf "${YELLOW}Installing pnpm...${NC}\n"
 
 if ! [ -x "$(command -v pnpm)" ]; then
-    curl -fsSL https://get.pnpm.io/install.sh | sh -
+    # https://github.com/pnpm/pnpm/issues/6217#issuecomment-1723206626
+    wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
 else
     printf "${GREEN}Already installed${NC}\n"
 fi
@@ -122,16 +158,21 @@ sudo npm update --global --no-progress
 sudo npm install --global npm-check-updates --no-progress
 
 echo ""
-printf "${YELLOW}Updating Python pip...${NC}\n"
-pip install --user --upgrade ipykernel pip setuptools
+printf "${YELLOW}Updating Python packages...${NC}\n"
+pip install --no-cache-dir --no-color --progress-bar off --user --upgrade ipykernel pip setuptools
 
 echo ""
 printf "${YELLOW}Installing Rust...${NC}\n"
 
 if ! [ -x "$(command -v rustup)" ]; then
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-    # shellcheck source=/dev/null
-    source "$HOME/.cargo/env"
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+    if [ -z "$IS_CONTAINER" ]; then
+        # shellcheck source=/dev/null
+        source "$HOME/.cargo/env"
+    else
+        export PATH="$HOME/.cargo/bin:$PATH"
+    fi
 else
     printf "${GREEN}Already installed${NC}\n"
 fi
@@ -139,16 +180,18 @@ fi
 printf "${GREEN}Updating Rust...${NC}\n"
 rustup update
 
-printf "${YELLOW}Installing global VS Code extensions...${NC}\n"
-code --install-extension eamodio.gitlens
-code --install-extension sdras.night-owl
-code --install-extension vscode-icons-team.vscode-icons
+if [ -z "$IS_CONTAINER" ]; then
+    printf "${YELLOW}Installing global VS Code extensions...${NC}\n"
+    code --install-extension eamodio.gitlens
+    code --install-extension sdras.night-owl
+    code --install-extension vscode-icons-team.vscode-icons
+fi
 
 printf "${YELLOW}Configuring Git...${NC}\n"
 git config --global init.defaultBranch main
 
 printf "${YELLOW}Cleaning up...${NC}\n"
-sudo apt autoremove -y
+sudo apt-get autoclean -y
 
 # printf "${YELLOW}Updating bash...${NC}\n"
 # cp .bashrc ~/.bashrc

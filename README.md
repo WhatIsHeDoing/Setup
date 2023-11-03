@@ -24,6 +24,14 @@ sh setup_ubuntu.sh
 .\setup_windows.ps1
 ```
 
+## 🧪 Testing
+
+Run the Ubuntu setup script in a container using:
+
+```sh
+docker build --progress=plain -f Dockerfile.ubuntu -t setup_ubuntu .
+```
+
 ## 💡 Inspiration
 
 - [Scott Hanselman]: How to make a pretty prompt in Windows Terminal with Powerline, Nerd Fonts, Cascadia Code, WSL, and oh-my-posh
