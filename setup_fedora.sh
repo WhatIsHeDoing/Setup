@@ -1,3 +1,5 @@
+#!/bin/bash
+
 BLUE="\033[0;34m"
 NC="\033[0m" # No Colour
 YELLOW="\033[1;33m"

@@ -66,6 +66,7 @@ sudo chmod a+r /etc/apt/keyrings/docker.gpg
 # https://docs.docker.com/desktop/install/ubuntu/#install-docker-desktop
 wget -nv -P /tmp/ https://desktop.docker.com/linux/main/amd64/docker-desktop-4.25.0-amd64.deb
 
+# shellcheck source=/dev/null
 echo \
     "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
   $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list
@@ -111,15 +112,19 @@ fi
 rm /tmp/docker-desktop-4.25.0-amd64.deb
 
 printf "${YELLOW}Running Docker post-configuration...${NC}\n"
-sudo usermod -aG docker "$USER" && newgrp docker
+sudo usermod -aG docker "$USER"
 
 if [ -z "$IS_CONTAINER" ]; then
-    printf "${YELLOW}Installing and testing minikube...${NC}\n"
-    curl -sLO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-    sudo install minikube-linux-amd64 /usr/local/bin/minikube
-    # minikube start
-    # minikube addons enable metrics-server
-    # minikube stop
+    if ! [ -x "$(command -v minikube)" ]; then
+        printf "${YELLOW}Installing and testing minikube...${NC}\n"
+        curl -sLO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+        sudo install minikube-linux-amd64 /usr/local/bin/minikube
+        minikube start
+        minikube addons enable metrics-server
+        minikube stop
+    else
+        printf "${YELLOW}minikube already installed.${NC}\n"
+    fi
 else
     printf "${YELLOW}Skipping minikube...${NC}\n"
 fi

@@ -11,7 +11,7 @@ to simplify moving between them.
 
 Click on the [Ubuntu] version below to see it in action:
 
-[![asciicast](https://asciinema.org/a/611447.svg)](https://asciinema.org/a/611447?autoplay=1)
+[![asciicast](https://asciinema.org/a/kblRtgZYt1p78qMtcgQ8UNAMi.svg)](https://asciinema.org/a/kblRtgZYt1p78qMtcgQ8UNAMi)
 
 ## 🏃‍ Running
 
@@ -25,6 +25,12 @@ sh setup_ubuntu.sh
 ```
 
 ## 🧪 Testing
+
+First, check the shell for problems using [ShellCheck]:
+
+```sh
+shellcheck *.sh
+```
 
 The majority of the Ubuntu setup script can be tested on any platform using a [Docker] container. Build and run it with:
 
@@ -50,6 +56,7 @@ container-structure-test test --image setup_ubuntu --config container-structure-
 [Grype]: https://github.com/anchore/grype
 [Kics]: https://kics.io/
 [Scott Hanselman]: https://www.hanselman.com/blog/HowToMakeAPrettyPromptInWindowsTerminalWithPowerlineNerdFontsCascadiaCodeWSLAndOhmyposh.aspx
+[ShellCheck]: https://www.shellcheck.net/
 [Starship]: https://starship.rs/
 [Ubuntu]: https://ubuntu.com/
 [VS Code]: https://code.visualstudio.com/
