@@ -3,14 +3,18 @@ USER root
 
 # https://stackoverflow.com/a/35976127
 ARG DEBIAN_FRONTEND noninteractive
+ARG USER 1000
 
 WORKDIR /build
 COPY setup_ubuntu.sh .
 
 # Although there is no need to run sudo in the Ubuntu container,
 # it may be necessary for a user running this script.
+# Other libraries here reduce warnings when run in the container.
 RUN apt-get update && \
-    apt-get -y install sudo && \
+    apt-get -y install apt-utils dialog sudo && \
+    echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections && \
     sh setup_ubuntu.sh in_container
 
-USER 1000
+USER $USER
+ENTRYPOINT ["/bin/bash"]

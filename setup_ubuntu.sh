@@ -19,30 +19,34 @@ echo "                   /_/      "
 echo ""
 
 if [ -z "$IS_CONTAINER" ]; then
-    printf "🐧 ${YELLOW}Not running within a container.${NC}\n"
+    printf "🐧 ${BLUE}Not running in a container.${NC}\n"
 
 else
-    printf "🐋 ${YELLOW}Running within a container .${NC}\n"
+    printf "🐋 ${BLUE}Running in a container.${NC}\n"
 fi
 
-printf "${BLUE}Running Setup...${NC}\n"
-
 echo ""
-printf "${YELLOW}Updating and installing initial packages...${NC}\n"
+printf "📦 ${YELLOW}Updating and installing initial packages...${NC}\n"
 sudo apt-get update -y
 sudo apt-get autoremove -y
 sudo apt-get full-upgrade -y
 
+# https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+TZ="Europe/London"
+
 sudo apt-get install -y \
+    apt-utils \
     apt-transport-https \
+    build-essential \
     ca-certificates \
     curl \
     software-properties-common \
     snapd \
+    tzdata \
     wget
 
 echo ""
-printf "${YELLOW}Registering new package repositories...${NC}\n"
+printf "🗒 ${YELLOW}Registering new package repositories...${NC}\n"
 
 printf "${GREEN}asciinema...${NC}\n"
 sudo apt-add-repository ppa:zanchey/asciinema -y
@@ -73,17 +77,20 @@ curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --
 echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
 
 echo ""
-printf "${YELLOW}Updating and installing extra packages...${NC}\n"
+printf "📦 ${YELLOW}Updating and installing extra packages...${NC}\n"
 sudo apt-get update -y
 
 sudo apt-get install -y \
     apt-utils \
+    aptitude \
     asciinema \
     containerd.io \
     docker-buildx-plugin \
     docker-ce \
     docker-ce-cli \
+    docker-ce-rootless-extras \
     docker-compose-plugin \
+    emacs \
     fzf \
     git \
     gnupg \
@@ -124,7 +131,14 @@ else
     printf "${YELLOW}Skipping Helm...${NC}\n"
 fi
 
-echo ""
+printf "${YELLOW}Installing Grype...${NC}\n"
+curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sudo sh -s -- -b /usr/local/bin
+
+printf "${YELLOW}Installing Container Structure Tests...${NC}\n"
+
+curl -sLO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64 &&
+    chmod +x container-structure-test-linux-amd64 &&
+    sudo mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
 
 if [ -z "$IS_CONTAINER" ]; then
     printf "${YELLOW}Installing Snap packages...${NC}\n"
