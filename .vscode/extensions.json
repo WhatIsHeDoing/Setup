@@ -1,6 +1,6 @@
 {
     "recommendations": [
-        "DavidAnson.vscode-markdownlint",
+        "davidanson.vscode-markdownlint",
         "editorconfig.editorconfig",
         "foxundermoon.shell-format",
         "ms-vscode.powershell",

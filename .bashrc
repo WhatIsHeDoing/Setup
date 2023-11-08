@@ -1,3 +1,4 @@
+#!/bin/bash
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
@@ -101,6 +102,7 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
 
 if [ -f ~/.bash_aliases ]; then
+    # shellcheck source=/dev/null
     . ~/.bash_aliases
 fi
 
@@ -109,8 +111,10 @@ fi
 # sources /etc/bash.bashrc).
 if ! shopt -oq posix; then
     if [ -f /usr/share/bash-completion/bash_completion ]; then
+        # shellcheck source=/dev/null
         . /usr/share/bash-completion/bash_completion
     elif [ -f /etc/bash_completion ]; then
+        # shellcheck source=/dev/null
         . /etc/bash_completion
     fi
 fi
@@ -121,8 +125,9 @@ case ":$PATH:" in
 *":$PNPM_HOME:"*) ;;
 *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
-
 # pnpm end
+
+# shellcheck source=/dev/null
 . "$HOME/.cargo/env"
 
 eval "$(starship init bash)"

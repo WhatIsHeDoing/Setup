@@ -6,7 +6,9 @@ ARG DEBIAN_FRONTEND noninteractive
 ARG USER 1000
 
 WORKDIR /build
+COPY .bashrc .
 COPY setup_ubuntu.sh .
+COPY scripts/ scripts/
 
 # Although there is no need to run sudo in the Ubuntu container,
 # it may be necessary for a user running this script.
@@ -16,5 +18,4 @@ RUN apt-get update && \
     echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections && \
     sh setup_ubuntu.sh in_container
 
-USER $USER
 ENTRYPOINT ["/bin/bash"]

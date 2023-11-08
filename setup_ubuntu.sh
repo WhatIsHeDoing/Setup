@@ -46,12 +46,14 @@ sudo apt-get install -y \
     wget
 
 echo ""
-printf "🗒 ${YELLOW}Registering new package repositories...${NC}\n"
+printf "🗒  ${YELLOW}Registering new package repositories...${NC}\n"
 
+echo ""
 printf "${GREEN}asciinema...${NC}\n"
 sudo apt-add-repository ppa:zanchey/asciinema -y
 
 # https://github.com/nodesource/distributions#ubuntu-versions
+echo ""
 printf "${GREEN}Node.js...${NC}\n"
 mkdir -p /etc/apt/keyrings
 curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg --yes
@@ -59,11 +61,12 @@ NODE_MAJOR=20
 echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
 
 # https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository
+echo ""
 printf "${GREEN}Docker...${NC}\n"
 sudo install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg --yes
 sudo chmod a+r /etc/apt/keyrings/docker.gpg
-# https://docs.docker.com/desktop/install/ubuntu/#install-docker-desktop
+# https://docs.docker.com/desktop/install/ubuntu/#install-docker-desktopdocker-desktop
 wget -nv -P /tmp/ https://desktop.docker.com/linux/main/amd64/docker-desktop-4.25.0-amd64.deb
 
 # shellcheck source=/dev/null
@@ -72,10 +75,16 @@ echo \
   $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list
 
 # https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#install-using-native-package-management
+echo ""
 printf "${GREEN}kubetcl...${NC}\n"
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg --yes
 # This overwrites any existing configuration in /etc/apt/sources.list.d/kubernetes.list
 echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+# https://github.com/sharkdp/bat
+echo ""
+printf "${GREEN}bat...${NC}\n"
+wget -nv -P /tmp/ https://github.com/sharkdp/bat/releases/download/v0.24.0/bat-musl_0.24.0_amd64.deb
 
 echo ""
 printf "📦 ${YELLOW}Updating and installing extra packages...${NC}\n"
@@ -85,7 +94,6 @@ sudo apt-get install -y \
     apt-utils \
     aptitude \
     asciinema \
-    bat \
     containerd.io \
     docker-buildx-plugin \
     docker-ce \
@@ -97,66 +105,80 @@ sudo apt-get install -y \
     git \
     gnupg \
     jq \
+    lld \
     kubectl \
+    libpq-dev \
     nodejs \
+    pkg-config \
     python3 \
     python3-pip \
     ripgrep \
     shellcheck \
-    upx-ucl
+    upx-ucl \
+    /tmp/bat-musl_0.24.0_amd64.deb
 
 if [ -z "$IS_CONTAINER" ]; then
     sudo apt-get install -y /tmp/docker-desktop-4.25.0-amd64.deb
 else
-    printf "${YELLOW}Skipping Docker Desktop...${NC}\n"
+    printf "${GREEN}Skipping Docker Desktop for containers.${NC}\n"
 fi
 
-rm /tmp/docker-desktop-4.25.0-amd64.deb
+echo ""
+printf "${GREEN}Running Docker post-configuration...${NC}\n"
 
-printf "${YELLOW}Running Docker post-configuration...${NC}\n"
-sudo usermod -aG docker "$USER"
+if [ -z "$IS_CONTAINER" ]; then
+    sudo usermod -aG docker "$USER"
+else
+    printf "${GREEN}Skipping for containers.NC}\n"
+fi
+
+echo ""
+printf "${GREEN}Installing and testing minikube...${NC}\n"
 
 if [ -z "$IS_CONTAINER" ]; then
     if ! [ -x "$(command -v minikube)" ]; then
-        printf "${YELLOW}Installing and testing minikube...${NC}\n"
         curl -sLO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
         sudo install minikube-linux-amd64 /usr/local/bin/minikube
         minikube start
         minikube addons enable metrics-server
         minikube stop
     else
-        printf "${YELLOW}minikube already installed.${NC}\n"
+        printf "${GREEN}Already installed.${NC}\n"
     fi
 else
-    printf "${YELLOW}Skipping minikube...${NC}\n"
+    printf "${GREEN}Skipping for containers.NC}\n"
 fi
+
+echo ""
+printf "${GREEN}Installing Helm...${NC}\n"
 
 if [ -z "$IS_CONTAINER" ]; then
-    printf "${YELLOW}Installing Helm...${NC}\n"
     sudo snap install helm --classic
 else
-    printf "${YELLOW}Skipping Helm...${NC}\n"
+    printf "${GREEN}Already installed.${NC}\n"
 fi
 
-printf "${YELLOW}Installing Grype...${NC}\n"
+echo ""
+printf "${GREEN}Installing Grype...${NC}\n"
 curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sudo sh -s -- -b /usr/local/bin
 
-printf "${YELLOW}Installing Container Structure Tests...${NC}\n"
+echo ""
+printf "${GREEN}Installing Container Structure Tests...${NC}\n"
 
 curl -sLO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64 &&
     chmod +x container-structure-test-linux-amd64 &&
     sudo mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
 
 if [ -z "$IS_CONTAINER" ]; then
-    printf "${YELLOW}Installing Snap packages...${NC}\n"
+    printf "${GREEN}Installing Snap packages...${NC}\n"
     sudo snap install brave
     sudo snap install code
 else
-    printf "${YELLOW}Skipping Snap packages...${NC}\n"
+    printf "${GREEN}Skipping for containers.${NC}\n"
 fi
 
 echo ""
-printf "${YELLOW}Installing Starship...${NC}\n"
+printf "${GREEN}Installing Starship...${NC}\n"
 
 if ! [ -x "$(command -v starship)" ]; then
     curl -sS https://starship.rs/install.sh | sh -s -- --yes
@@ -165,7 +187,7 @@ else
 fi
 
 echo ""
-printf "${YELLOW}Installing pnpm...${NC}\n"
+printf "${GREEN}Installing pnpm...${NC}\n"
 
 if ! [ -x "$(command -v pnpm)" ]; then
     # https://github.com/pnpm/pnpm/issues/6217#issuecomment-1723206626
@@ -174,16 +196,8 @@ else
     printf "${GREEN}Already installed${NC}\n"
 fi
 
-printf "${YELLOW}Installing global npm packages...${NC}\n"
-sudo npm update --global --no-progress
-sudo npm install --global npm-check-updates --no-progress
-
 echo ""
-printf "${YELLOW}Updating Python packages...${NC}\n"
-pip install --no-cache-dir --no-color --progress-bar off --user --upgrade ipykernel pip setuptools
-
-echo ""
-printf "${YELLOW}Installing Rust...${NC}\n"
+printf "${GREEN}Installing Rust...${NC}\n"
 
 if ! [ -x "$(command -v rustup)" ]; then
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
@@ -198,23 +212,55 @@ else
     printf "${GREEN}Already installed${NC}\n"
 fi
 
-printf "${GREEN}Updating Rust...${NC}\n"
+echo ""
+printf "${YELLOW}Updating Rust...${NC}\n"
 rustup update
 
+echo ""
+printf "${YELLOW}Installing language packages...${NC}\n"
+
+echo ""
+printf "${GREEN}Installing global npm packages...${NC}\n"
+sudo npm update --global --no-progress
+sudo npm install --global npm-check-updates --no-progress
+
+echo ""
+printf "${GREEN}Updating Python packages...${NC}\n"
+pip install --no-cache-dir --no-color --progress-bar off --user --upgrade ipykernel pip setuptools
+
+echo ""
+printf "${GREEN}Installing VS Code extensions...${NC}\n"
+
 if [ -z "$IS_CONTAINER" ]; then
-    printf "${YELLOW}Installing global VS Code extensions...${NC}\n"
+    code --install-extension davidanson.vscode-markdownlint
     code --install-extension eamodio.gitlens
+    code --install-extension editorconfig.editorconfig
     code --install-extension sdras.night-owl
     code --install-extension vscode-icons-team.vscode-icons
+else
+    printf "${GREEN}Skipping for containers.${NC}\n"
 fi
 
-printf "${YELLOW}Configuring Git...${NC}\n"
+echo ""
+printf "${YELLOW}Configuring...${NC}\n"
+
+echo ""
+printf "${GREEN}Configuring Git...${NC}\n"
 git config --global init.defaultBranch main
 
-printf "${YELLOW}Cleaning up...${NC}\n"
+echo ""
+printf "${GREEN}Copying scripts...${NC}\n"
+sudo cp --verbose scripts/* /usr/bin/
+
+echo ""
+printf "${GREEN}Updating bash...${NC}\n"
+cp --verbose .bashrc ~/.bashrc
+
+echo ""
+printf "${GREEN}Cleaning up...${NC}\n"
 sudo apt-get autoclean -y
+rm --verbose /tmp/bat-musl_0.24.0_amd64.deb
+rm --verbose /tmp/docker-desktop-4.25.0-amd64.deb
 
-# printf "${YELLOW}Updating bash...${NC}\n"
-# cp .bashrc ~/.bashrc
-
+echo ""
 printf "${BLUE}Done!${NC}\n"

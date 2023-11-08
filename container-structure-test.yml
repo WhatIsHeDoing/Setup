@@ -1,15 +1,21 @@
 schemaVersion: 2.0.0
 
-containerRunOptions:
-    user: root
-
 commandTests:
     - name: grype
       command: type
       args: ["grype"]
       expectedOutput:
           - grype
+
     - name: ls
       command: ls
       expectedOutput:
           - setup_ubuntu.sh
+
+    - name: installed
+      command: aptitude
+      args:
+          - search
+          - "~i!~M"
+      expectedOutput:
+          - lld
