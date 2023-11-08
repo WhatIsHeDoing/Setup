@@ -85,6 +85,7 @@ sudo apt-get install -y \
     apt-utils \
     aptitude \
     asciinema \
+    bat \
     containerd.io \
     docker-buildx-plugin \
     docker-ce \
@@ -100,6 +101,7 @@ sudo apt-get install -y \
     nodejs \
     python3 \
     python3-pip \
+    ripgrep \
     shellcheck \
     upx-ucl
 
