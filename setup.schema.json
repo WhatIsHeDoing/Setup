@@ -7,7 +7,7 @@
     "required": [
         "Apps",
         "Buckets",
-        "Languages",
+        "Runtimes",
         "Pinned",
         "Tools"
     ],
@@ -53,7 +53,7 @@
         "Languages": {
             "type": "array",
             "default": [],
-            "title": "A list of programming languages you would like to install and maintain.",
+            "title": "A list of programming runtimes you would like to install and maintain.",
             "items": {
                 "type": "string",
                 "title": "e.g. Rust https://www.rust-lang.org/",
@@ -124,7 +124,7 @@
                 "extras",
                 "nerd-fonts"
             ],
-            "Languages": [
+            "Runtimes": [
                 "nodejs-lts",
                 "rust",
                 "rust-msvc"
