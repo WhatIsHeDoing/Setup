@@ -250,7 +250,7 @@ git config --global init.defaultBranch main
 
 echo ""
 printf "${GREEN}Copying scripts...${NC}\n"
-sudo cp --verbose scripts/* /usr/bin/
+sudo cp --verbose scripts/rfv /usr/bin/
 
 echo ""
 printf "${GREEN}Updating bash...${NC}\n"
