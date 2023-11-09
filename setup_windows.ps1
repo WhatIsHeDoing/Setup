@@ -85,6 +85,7 @@ Write-Heading "Cleaning up Scoop"
 scoop cleanup *
 
 Write-Heading "Copying PowerShell Profile"
+Copy-Item .\scripts\rfv.ps1 (Join-Path $HOME \rfv.ps1)
 Copy-Item powershell-profile.ps1 $PROFILE
 
 Write-Heading "Setting Up VS Code"
