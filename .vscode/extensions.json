@@ -4,6 +4,7 @@
         "editorconfig.editorconfig",
         "foxundermoon.shell-format",
         "ms-vscode.powershell",
+        "tamasfe.even-better-toml",
         "timonwong.shellcheck"
     ],
     "unwantedRecommendations": []

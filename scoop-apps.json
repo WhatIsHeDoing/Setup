@@ -1,7 +1,11 @@
 {
     "$schema": "./setup.schema.json",
     "Apps": [
+        "7zip",
+        "caesium-image-compressor",
+        "dbeaver",
         "fork",
+        "portmaster-np",
         "raindrop.io",
         "rapidee",
         "spacesniffer",
@@ -11,33 +15,33 @@
     "Buckets": [
         "extras",
         "main",
+        "nonportable",
         "nerd-fonts"
     ],
-    "Languages": [
+    "Pinned": [],
+    "Runtimes": [
+        "docker",
+        "gcc",
+        "kubectl",
+        "minikube",
         "nodejs-lts",
+        "pwsh",
         "python",
         "rust",
         "rust-msvc"
     ],
-    "Pinned": [
-        "brave",
-        "vscode"
-    ],
     "Tools": [
-        "7zip",
         "bat",
-        "caesium-image-compressor",
+        "bottom",
         "cmake",
-        "dbeaver",
-        "docker",
         "eza",
         "fzf",
-        "gcc",
         "innounp",
+        "k9s",
         "nuget",
         "pnpm",
         "putty",
-        "pwsh",
+        "ripgrep",
         "rustup",
         "starship",
         "sudo",

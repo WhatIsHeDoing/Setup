@@ -61,16 +61,17 @@ git config --global credential.helper wincred
 git config --global init.defaultBranch main
 
 Install-FromScoop "Tools"
-Install-FromScoop "Languages"
+Install-FromScoop "Runtimes"
 Install-FromScoop "Pinned" $true
 
-Write-Heading "Installing Visual Studio Build Tools"
-Invoke-WebRequest -Uri 'https://aka.ms/vs/17/release/vs_BuildTools.exe' -OutFile "$env:TEMP\vs_BuildTools.exe"
-& "$env:TEMP\vs_BuildTools.exe" --passive --wait --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended --remove Microsoft.VisualStudio.Component.VC.CMake.Project
+Write-Heading "Installing Windows 11 Visual Studio Build Tools"
+winget install Microsoft.VisualStudio.2022.BuildTools --force --override "--wait --passive --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.Windows11SDK.22000"
 
-Write-Heading "Installing modules for languages"
+Write-Heading "Installing modules for runtimes"
 cargo install cargo-outdated
+npm install -g npm@latest
 python -m pip install --upgrade pip setuptools
+minikube addons enable metrics-server
 
 Install-FromScoop "Apps"
 
@@ -91,6 +92,9 @@ code --install-extension sdras.night-owl
 
 Write-Heading "Enabling Windows Subsystem for Linux"
 wsl --install
+
+Write-Heading "Configuring bottom (btm)"
+Copy-Item .\scripts\bottom.toml (Join-Path $Env:AppData bottom\bottom.toml)
 
 Write-Title "Done!"
 Write-Output ""
