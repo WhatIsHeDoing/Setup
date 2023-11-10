@@ -95,7 +95,7 @@ Write-Heading "Enabling Windows Subsystem for Linux"
 wsl --install
 
 Write-Heading "Configuring bottom (btm)"
-Copy-Item .\scripts\bottom.toml (Join-Path $Env:AppData bottom\bottom.toml)
+Copy-Item .\config\bottom.toml (Join-Path $Env:AppData bottom\bottom.toml)
 
 Write-Title "Done!"
 Write-Output ""

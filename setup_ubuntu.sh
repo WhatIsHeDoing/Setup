@@ -40,6 +40,7 @@ sudo apt-get install -y \
     build-essential \
     ca-certificates \
     curl \
+    gpg \
     software-properties-common \
     snapd \
     tzdata \
@@ -87,6 +88,12 @@ printf "${GREEN}bat...${NC}\n"
 wget -nv -P /tmp/ https://github.com/sharkdp/bat/releases/download/v0.24.0/bat-musl_0.24.0_amd64.deb
 
 echo ""
+printf "${GREEN}eza...${NC}\n"
+wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | sudo gpg --dearmor -o /etc/apt/keyrings/gierens.gpg --yes
+echo "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" | sudo tee /etc/apt/sources.list.d/gierens.list
+sudo chmod 644 /etc/apt/keyrings/gierens.gpg /etc/apt/sources.list.d/gierens.list
+
+echo ""
 printf "📦 ${YELLOW}Updating and installing extra packages...${NC}\n"
 sudo apt-get update -y
 
@@ -101,6 +108,7 @@ sudo apt-get install -y \
     docker-ce-rootless-extras \
     docker-compose-plugin \
     emacs \
+    eza \
     fzf \
     git \
     gnupg \
@@ -171,8 +179,14 @@ curl -sLO https://storage.googleapis.com/container-structure-test/latest/contain
 
 if [ -z "$IS_CONTAINER" ]; then
     printf "${GREEN}Installing Snap packages...${NC}\n"
+    sudo snap install bottom
     sudo snap install brave
     sudo snap install code
+
+    sudo snap connect bottom:mount-observe
+    sudo snap connect bottom:hardware-observe
+    sudo snap connect bottom:system-observe
+    sudo snap connect bottom:process-control
 else
     printf "${GREEN}Skipping for containers.${NC}\n"
 fi
@@ -247,6 +261,11 @@ printf "${YELLOW}Configuring...${NC}\n"
 echo ""
 printf "${GREEN}Configuring Git...${NC}\n"
 git config --global init.defaultBranch main
+
+echo ""
+printf "${GREEN}Configuring bottom...${NC}\n"
+mkdir -p ~/.config/bottom/
+cp --verbose config/bottom.toml ~/.config/bottom/bottom.toml
 
 echo ""
 printf "${GREEN}Copying scripts...${NC}\n"
