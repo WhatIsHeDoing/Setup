@@ -39,7 +39,14 @@ docker build --progress=plain -f Dockerfile.ubuntu -t setup_ubuntu .
 docker run -it setup_ubuntu
 ```
 
-The container should be verified with [Container Structure Tests], vulnerabilites with [Grype] and best practices with [Kics]:
+Similarly, the _entire_ Fedora script can be tested in Docker with:
+
+```sh
+docker build --progress=plain -f Dockerfile.fedora -t setup_fedora .
+docker run -it setup_fedora
+```
+
+Containers should be verified with [Container Structure Tests], vulnerabilites with [Grype] and best practices with [Kics]:
 
 ```sh
 grype setup_ubuntu

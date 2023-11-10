@@ -1,0 +1,12 @@
+FROM fedora:latest
+USER root
+
+WORKDIR /build
+COPY .bashrc .
+COPY setup_fedora.sh .
+COPY config/ config/
+COPY scripts/ scripts/
+
+RUN sh setup_fedora.sh in_container
+
+ENTRYPOINT ["/bin/bash"]

@@ -8,6 +8,7 @@ ARG USER 1000
 WORKDIR /build
 COPY .bashrc .
 COPY setup_ubuntu.sh .
+COPY config/ config/
 COPY scripts/ scripts/
 
 # Although there is no need to run sudo in the Ubuntu container,
