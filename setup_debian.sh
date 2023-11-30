@@ -1,5 +1,8 @@
 #!/bin/bash
 
+cat banner.txt
+echo
+
 # Upgrade current packages and install common utils for other installs.
 apt-get upgrade -y
 apt-get install apt-transport-https apt-utils -y

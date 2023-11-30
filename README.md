@@ -1,4 +1,4 @@
-# Setup
+# 💻 Prep My OS
 
 ## 👋 Introduction
 

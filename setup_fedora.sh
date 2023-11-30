@@ -4,7 +4,8 @@ BLUE="\033[0;34m"
 NC="\033[0m" # No Colour
 YELLOW="\033[1;33m"
 
-echo -e "${BLUE}Running Setup${NC}"
+cat banner.txt
+echo
 
 echo -e "${YELLOW}Registering new repositories...${NC}"
 rpm --import https://packages.microsoft.com/keys/microsoft.asc

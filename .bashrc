@@ -131,4 +131,4 @@ esac
 . "$HOME/.cargo/env"
 
 eval "$(starship init bash)"
-alias myeza="eza -la --hyperlink --git-ignore --no-user --total-size --time-style=iso"
+alias ll="eza -la --hyperlink --git-ignore --no-user --total-size --time-style=iso"

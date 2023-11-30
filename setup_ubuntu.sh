@@ -9,14 +9,8 @@ GREEN="\033[0;32m"
 NC="\033[0m" # No Colour
 YELLOW="\033[1;33m"
 
-echo "   _____      __            "
-echo "  / ___/___  / /___  ______ "
-echo "  \__ \/ _ \/ __/ / / / __ \\"
-echo " ___/ /  __/ /_/ /_/ / /_/ /"
-echo "/____/\___/\__/\__,_/ .___/ "
-echo "                   /_/      "
-
-echo ""
+cat banner.txt
+echo
 
 if [ -z "$IS_CONTAINER" ]; then
     printf "🐧 ${BLUE}Not running in a container.${NC}\n"
@@ -25,7 +19,7 @@ else
     printf "🐋 ${BLUE}Running in a container.${NC}\n"
 fi
 
-echo ""
+echo
 printf "📦 ${YELLOW}Updating and installing initial packages...${NC}\n"
 sudo apt-get update -y
 sudo apt-get autoremove -y
@@ -46,15 +40,15 @@ sudo apt-get install -y \
     tzdata \
     wget
 
-echo ""
+echo
 printf "🗒  ${YELLOW}Registering new package repositories...${NC}\n"
 
-echo ""
+echo
 printf "${GREEN}asciinema...${NC}\n"
 sudo apt-add-repository ppa:zanchey/asciinema -y
 
 # https://github.com/nodesource/distributions#ubuntu-versions
-echo ""
+echo
 printf "${GREEN}Node.js...${NC}\n"
 mkdir -p /etc/apt/keyrings
 curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg --yes
@@ -62,7 +56,7 @@ NODE_MAJOR=20
 echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
 
 # https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository
-echo ""
+echo
 printf "${GREEN}Docker...${NC}\n"
 sudo install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg --yes
@@ -76,24 +70,31 @@ echo \
   $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list
 
 # https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#install-using-native-package-management
-echo ""
+echo
 printf "${GREEN}kubetcl...${NC}\n"
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg --yes
 # This overwrites any existing configuration in /etc/apt/sources.list.d/kubernetes.list
 echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
 
+# https://learn.microsoft.com/en-gb/powershell/scripting/install/install-ubuntu?view=powershell-7.3
+echo
+printf "${GREEN}PowerShell...${NC}\n"
+wget -nv -P /tmp/ https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb
+sudo dpkg -i /tmp/packages-microsoft-prod.deb
+rm --verbose /tmp/packages-microsoft-prod.deb
+
 # https://github.com/sharkdp/bat
-echo ""
+echo
 printf "${GREEN}bat...${NC}\n"
 wget -nv -P /tmp/ https://github.com/sharkdp/bat/releases/download/v0.24.0/bat-musl_0.24.0_amd64.deb
 
-echo ""
+echo
 printf "${GREEN}eza...${NC}\n"
 wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | sudo gpg --dearmor -o /etc/apt/keyrings/gierens.gpg --yes
 echo "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" | sudo tee /etc/apt/sources.list.d/gierens.list
 sudo chmod 644 /etc/apt/keyrings/gierens.gpg /etc/apt/sources.list.d/gierens.list
 
-echo ""
+echo
 printf "📦 ${YELLOW}Updating and installing extra packages...${NC}\n"
 sudo apt-get update -y
 
@@ -118,6 +119,7 @@ sudo apt-get install -y \
     libpq-dev \
     nodejs \
     pkg-config \
+    powershell \
     python3 \
     python3-pip \
     ripgrep \
@@ -131,7 +133,7 @@ else
     printf "${GREEN}Skipping Docker Desktop for containers.${NC}\n"
 fi
 
-echo ""
+echo
 printf "${GREEN}Running Docker post-configuration...${NC}\n"
 
 if [ -z "$IS_CONTAINER" ]; then
@@ -140,7 +142,7 @@ else
     printf "${GREEN}Skipping for containers.NC}\n"
 fi
 
-echo ""
+echo
 printf "${GREEN}Installing and testing minikube...${NC}\n"
 
 if [ -z "$IS_CONTAINER" ]; then
@@ -157,7 +159,7 @@ else
     printf "${GREEN}Skipping for containers.NC}\n"
 fi
 
-echo ""
+echo
 printf "${GREEN}Installing Helm...${NC}\n"
 
 if [ -z "$IS_CONTAINER" ]; then
@@ -166,11 +168,11 @@ else
     printf "${GREEN}Already installed.${NC}\n"
 fi
 
-echo ""
+echo
 printf "${GREEN}Installing Grype...${NC}\n"
 curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sudo sh -s -- -b /usr/local/bin
 
-echo ""
+echo
 printf "${GREEN}Installing Container Structure Tests...${NC}\n"
 
 curl -sLO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64 &&
@@ -191,7 +193,7 @@ else
     printf "${GREEN}Skipping for containers.${NC}\n"
 fi
 
-echo ""
+echo
 printf "${GREEN}Installing Starship...${NC}\n"
 
 if ! [ -x "$(command -v starship)" ]; then
@@ -200,7 +202,7 @@ else
     printf "${GREEN}Already installed${NC}\n"
 fi
 
-echo ""
+echo
 printf "${GREEN}Installing pnpm...${NC}\n"
 
 if ! [ -x "$(command -v pnpm)" ]; then
@@ -210,7 +212,7 @@ else
     printf "${GREEN}Already installed${NC}\n"
 fi
 
-echo ""
+echo
 printf "${GREEN}Installing Rust...${NC}\n"
 
 if ! [ -x "$(command -v rustup)" ]; then
@@ -226,23 +228,23 @@ else
     printf "${GREEN}Already installed${NC}\n"
 fi
 
-echo ""
+echo
 printf "${YELLOW}Updating Rust...${NC}\n"
 rustup update
 
-echo ""
+echo
 printf "${YELLOW}Installing language packages...${NC}\n"
 
-echo ""
+echo
 printf "${GREEN}Installing global npm packages...${NC}\n"
 sudo npm update --global --no-progress
 sudo npm install --global npm-check-updates --no-progress
 
-echo ""
+echo
 printf "${GREEN}Updating Python packages...${NC}\n"
 pip install --no-cache-dir --no-color --progress-bar off --user --upgrade ipykernel pip setuptools
 
-echo ""
+echo
 printf "${GREEN}Installing VS Code extensions...${NC}\n"
 
 if [ -z "$IS_CONTAINER" ]; then
@@ -255,31 +257,31 @@ else
     printf "${GREEN}Skipping for containers.${NC}\n"
 fi
 
-echo ""
+echo
 printf "${YELLOW}Configuring...${NC}\n"
 
-echo ""
+echo
 printf "${GREEN}Configuring Git...${NC}\n"
 git config --global init.defaultBranch main
 
-echo ""
+echo
 printf "${GREEN}Configuring bottom...${NC}\n"
 mkdir -p ~/.config/bottom/
 cp --verbose config/bottom.toml ~/.config/bottom/bottom.toml
 
-echo ""
+echo
 printf "${GREEN}Copying scripts...${NC}\n"
 sudo cp --verbose scripts/rfv /usr/bin/
 
-echo ""
+echo
 printf "${GREEN}Updating bash...${NC}\n"
 cp --verbose .bashrc ~/.bashrc
 
-echo ""
+echo
 printf "${GREEN}Cleaning up...${NC}\n"
 sudo apt-get autoclean -y
 rm --verbose /tmp/bat-musl_0.24.0_amd64.deb
 rm --verbose /tmp/docker-desktop-4.25.0-amd64.deb
 
-echo ""
+echo
 printf "${BLUE}Done!${NC}\n"

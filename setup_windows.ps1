@@ -8,6 +8,9 @@ function Write-Title ($text) {
     Write-Host -BackgroundColor yellow -ForegroundColor blue $text
 }
 
+Get-Content banner.txt
+Write-Output
+
 Write-Title "Updating Windows"
 UsoClient /StartScan
 UsoClient /StartDownload
