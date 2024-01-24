@@ -56,13 +56,15 @@ NODE_MAJOR=20
 echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
 
 # https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository
+# https://docs.docker.com/desktop/release-notes/
 echo
 printf "${GREEN}Docker...${NC}\n"
 sudo install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg --yes
 sudo chmod a+r /etc/apt/keyrings/docker.gpg
 # https://docs.docker.com/desktop/install/ubuntu/#install-docker-desktopdocker-desktop
-wget -nv -P /tmp/ https://desktop.docker.com/linux/main/amd64/docker-desktop-4.25.0-amd64.deb
+DOCKER_DESKTOP_VERSION=4.26.1
+wget -nv -P /tmp/ https://desktop.docker.com/linux/main/amd64/docker-desktop-$DOCKER_DESKTOP_VERSION-amd64.deb
 
 # shellcheck source=/dev/null
 echo \
@@ -72,9 +74,10 @@ echo \
 # https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#install-using-native-package-management
 echo
 printf "${GREEN}kubetcl...${NC}\n"
-curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg --yes
+K8S_VERSION=1.29
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v$K8S_VERSION/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg --yes
 # This overwrites any existing configuration in /etc/apt/sources.list.d/kubernetes.list
-echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v'$K8S_VERSION'/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
 
 # https://learn.microsoft.com/en-gb/powershell/scripting/install/install-ubuntu?view=powershell-7.3
 echo
@@ -84,9 +87,11 @@ sudo dpkg -i /tmp/packages-microsoft-prod.deb
 rm --verbose /tmp/packages-microsoft-prod.deb
 
 # https://github.com/sharkdp/bat
+# https://github.com/sharkdp/bat/releases
 echo
 printf "${GREEN}bat...${NC}\n"
-wget -nv -P /tmp/ https://github.com/sharkdp/bat/releases/download/v0.24.0/bat-musl_0.24.0_amd64.deb
+BAT_VERSION=0.24.0
+wget -nv -P /tmp/ https://github.com/sharkdp/bat/releases/download/v$BAT_VERSION/bat-musl_"$BAT_VERSION"_amd64.deb
 
 echo
 printf "${GREEN}eza...${NC}\n"
@@ -125,10 +130,10 @@ sudo apt-get install -y \
     ripgrep \
     shellcheck \
     upx-ucl \
-    /tmp/bat-musl_0.24.0_amd64.deb
+    /tmp/bat-musl_"$BAT_VERSION"_amd64.deb
 
 if [ -z "$IS_CONTAINER" ]; then
-    sudo apt-get install -y /tmp/docker-desktop-4.25.0-amd64.deb
+    sudo apt-get install -y /tmp/docker-desktop-$DOCKER_DESKTOP_VERSION-amd64.deb
 else
     printf "${GREEN}Skipping Docker Desktop for containers.${NC}\n"
 fi
@@ -140,6 +145,18 @@ if [ -z "$IS_CONTAINER" ]; then
     sudo usermod -aG docker "$USER"
 else
     printf "${GREEN}Skipping for containers.NC}\n"
+fi
+
+echo
+printf "${GREEN}Installing Earthly...${NC}\n"
+
+if ! [ -x "$(command -v earthly)" ]; then
+    # https://earthly.dev/get-earthly
+    sudo wget -nv https://github.com/earthly/earthly/releases/latest/download/earthly-linux-amd64 -O /usr/local/bin/earthly
+    sudo chmod +x /usr/local/bin/earthly
+    sudo /usr/local/bin/earthly bootstrap --with-autocomplete
+else
+    printf "${GREEN}Already installed${NC}\n"
 fi
 
 echo
@@ -238,7 +255,7 @@ printf "${YELLOW}Installing language packages...${NC}\n"
 echo
 printf "${GREEN}Installing global npm packages...${NC}\n"
 sudo npm update --global --no-progress
-sudo npm install --global npm-check-updates --no-progress
+sudo npm install --global --no-progress npm npm-check-updates
 
 echo
 printf "${GREEN}Updating Python packages...${NC}\n"
@@ -280,8 +297,8 @@ cp --verbose .bashrc ~/.bashrc
 echo
 printf "${GREEN}Cleaning up...${NC}\n"
 sudo apt-get autoclean -y
-rm --verbose /tmp/bat-musl_0.24.0_amd64.deb
-rm --verbose /tmp/docker-desktop-4.25.0-amd64.deb
+rm --verbose /tmp/bat-musl_"$BAT_VERSION"_amd64.deb
+rm --verbose /tmp/docker-desktop-$DOCKER_DESKTOP_VERSION-amd64.deb
 
 echo
 printf "${BLUE}Done!${NC}\n"
