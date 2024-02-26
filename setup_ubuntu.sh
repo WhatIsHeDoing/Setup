@@ -117,6 +117,7 @@ sudo apt-get install -y \
     eza \
     fzf \
     git \
+    git-lfs \
     gnupg \
     jq \
     lld \
@@ -132,10 +133,17 @@ sudo apt-get install -y \
     upx-ucl \
     /tmp/bat-musl_"$BAT_VERSION"_amd64.deb
 
+echo
+printf "${GREEN}Enabling Git Large File Storage...${NC}\n"
+git lfs install
+
+echo
+printf "${GREEN}Installing Docker Desktop...${NC}\n"
+
 if [ -z "$IS_CONTAINER" ]; then
     sudo apt-get install -y /tmp/docker-desktop-$DOCKER_DESKTOP_VERSION-amd64.deb
 else
-    printf "${GREEN}Skipping Docker Desktop for containers.${NC}\n"
+    printf "${GREEN}Skipping for containers.NC}\n"
 fi
 
 echo
@@ -201,6 +209,7 @@ if [ -z "$IS_CONTAINER" ]; then
     sudo snap install bottom
     sudo snap install brave
     sudo snap install code
+    sudo snap install spotify
 
     sudo snap connect bottom:mount-observe
     sudo snap connect bottom:hardware-observe
