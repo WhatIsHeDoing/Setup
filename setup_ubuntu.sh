@@ -86,6 +86,15 @@ wget -nv -P /tmp/ https://packages.microsoft.com/config/ubuntu/22.04/packages-mi
 sudo dpkg -i /tmp/packages-microsoft-prod.deb
 rm --verbose /tmp/packages-microsoft-prod.deb
 
+echo
+printf "${GREEN}eza...${NC}\n"
+wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | sudo gpg --dearmor -o /etc/apt/keyrings/gierens.gpg --yes
+echo "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" | sudo tee /etc/apt/sources.list.d/gierens.list
+sudo chmod 644 /etc/apt/keyrings/gierens.gpg /etc/apt/sources.list.d/gierens.list
+
+echo
+printf "🗒  ${YELLOW}Downloading packages without repositories...${NC}\n"
+
 # https://github.com/sharkdp/bat
 # https://github.com/sharkdp/bat/releases
 echo
@@ -93,11 +102,10 @@ printf "${GREEN}bat...${NC}\n"
 BAT_VERSION=0.24.0
 wget -nv -P /tmp/ https://github.com/sharkdp/bat/releases/download/v$BAT_VERSION/bat-musl_"$BAT_VERSION"_amd64.deb
 
+# https://docs.warp.dev/getting-started/getting-started-with-warp#installing-warp
 echo
-printf "${GREEN}eza...${NC}\n"
-wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | sudo gpg --dearmor -o /etc/apt/keyrings/gierens.gpg --yes
-echo "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" | sudo tee /etc/apt/sources.list.d/gierens.list
-sudo chmod 644 /etc/apt/keyrings/gierens.gpg /etc/apt/sources.list.d/gierens.list
+printf "${GREEN}Warp...${NC}\n"
+wget -nv -O /tmp/warp.deb https://app.warp.dev/download?package=deb
 
 echo
 printf "📦 ${YELLOW}Updating and installing extra packages...${NC}\n"
@@ -131,7 +139,8 @@ sudo apt-get install -y \
     ripgrep \
     shellcheck \
     upx-ucl \
-    /tmp/bat-musl_"$BAT_VERSION"_amd64.deb
+    /tmp/bat-musl_"$BAT_VERSION"_amd64.deb \
+    /tmp/warp.deb
 
 echo
 printf "${GREEN}Enabling Git Large File Storage...${NC}\n"
