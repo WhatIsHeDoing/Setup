@@ -9,7 +9,7 @@ function Write-Title ($text) {
 }
 
 Get-Content banner.txt
-Write-Output
+Write-Output ""
 
 Write-Title "Updating Windows"
 UsoClient /StartScan
@@ -89,7 +89,6 @@ Write-Heading "Cleaning up Scoop"
 scoop cleanup *
 
 Write-Heading "Copying PowerShell Profile"
-Copy-Item .\scripts\rfv.ps1 (Join-Path $HOME \rfv.ps1)
 Copy-Item powershell-profile.ps1 $PROFILE
 
 Write-Heading "Setting Up VS Code"
@@ -100,6 +99,9 @@ wsl --install
 
 Write-Heading "Configuring bottom (btm)"
 Copy-Item .\config\bottom.toml (Join-Path $Env:AppData bottom\bottom.toml)
+
+Write-Heading "Configuring Starship"
+Copy-Item .\config\starship.toml (Join-Path $USERPROFILE starship.toml)
 
 Write-Title "Done!"
 Write-Output ""
