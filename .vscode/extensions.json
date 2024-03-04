@@ -4,6 +4,7 @@
         "editorconfig.editorconfig",
         "foxundermoon.shell-format",
         "ms-vscode.powershell",
+        "streetsidesoftware.code-spell-checker",
         "tamasfe.even-better-toml",
         "timonwong.shellcheck"
     ],

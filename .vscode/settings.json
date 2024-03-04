@@ -1,4 +1,11 @@
 {
+    "cSpell.diagnosticLevel": "Information",
+    "cSpell.words": [
+        "Cascadia",
+        "Grype",
+        "Powerline",
+        "runtimes"
+    ],
     "editor.codeActionsOnSave": {
         "source.fixAll": "always"
     },

@@ -46,7 +46,7 @@ docker build --progress=plain -f Dockerfile.fedora -t setup_fedora .
 docker run -it setup_fedora
 ```
 
-Containers should be verified with [Container Structure Tests], vulnerabilites with [Grype] and best practices with [Kics]:
+Containers should be verified with [Container Structure Tests], vulnerabilities with [Grype] and best practices with [Kics]:
 
 ```sh
 grype setup_ubuntu
