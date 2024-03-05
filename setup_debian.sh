@@ -18,10 +18,6 @@ curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor >packages
 install -o root -g root -m 644 packages.microsoft.gpg /usr/share/keyrings/
 sh -c 'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
 
-# Yarn package feed.
-curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-
 # Update package feeds, install apps, and remove unnecesary ones.
 apt-get update
 
@@ -34,7 +30,6 @@ apt-get install \
     jq \
     nodejs \
     python-pip \
-    yarn \
     -y
 
 apt autoremove -y

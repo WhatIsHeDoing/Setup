@@ -3,7 +3,7 @@
 # 1. Search for text in files using Ripgrep
 # 2. Interactively narrow down the list using fzf
 # 3. Preview the file contents in bat.
-rg --color=always --line-number --no-heading --smart-case "${*:-}" |
+rga --color=always --line-number --no-heading --smart-case "${*:-}" |
     fzf --ansi \
         --color "hl:-1:underline,hl+:-1:underline:reverse" \
         --delimiter : \

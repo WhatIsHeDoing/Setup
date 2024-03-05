@@ -123,16 +123,20 @@ sudo apt-get install -y \
     docker-compose-plugin \
     emacs \
     eza \
+    ffmpeg \
     fzf \
     git \
     git-lfs \
     gnupg \
+    jid \
     jq \
     lld \
     kubectl \
     libpq-dev \
     nodejs \
+    pandoc \
     pkg-config \
+    poppler-utils \
     powershell \
     python3 \
     python3-pip \
@@ -218,6 +222,7 @@ if [ -z "$IS_CONTAINER" ]; then
     sudo snap install bottom
     sudo snap install brave
     sudo snap install code
+    sudo snap install k9s
     sudo snap install spotify
 
     sudo snap connect bottom:mount-observe
@@ -306,7 +311,7 @@ cp --verbose config/bottom.toml ~/.config/bottom/bottom.toml
 
 echo
 printf "${GREEN}Copying scripts...${NC}\n"
-sudo cp --verbose scripts/rfv /usr/bin/
+sudo cp --verbose scripts/ff /usr/bin/
 
 echo
 printf "${GREEN}Updating bash...${NC}\n"

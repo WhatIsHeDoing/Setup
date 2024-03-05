@@ -1,8 +1,10 @@
 {
     "cSpell.diagnosticLevel": "Information",
+    "cSpell.language": "en-GB",
     "cSpell.words": [
         "Cascadia",
         "Grype",
+        "Portmaster",
         "Powerline",
         "runtimes"
     ],

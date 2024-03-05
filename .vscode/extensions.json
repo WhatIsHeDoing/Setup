@@ -6,7 +6,8 @@
         "ms-vscode.powershell",
         "streetsidesoftware.code-spell-checker",
         "tamasfe.even-better-toml",
-        "timonwong.shellcheck"
+        "timonwong.shellcheck",
+        "yzhang.markdown-all-in-one"
     ],
     "unwantedRecommendations": []
 }
