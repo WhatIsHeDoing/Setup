@@ -134,6 +134,8 @@ sudo apt-get install -y \
     kubectl \
     libpq-dev \
     nodejs \
+    p7zip-full \
+    p7zip-rar \
     pandoc \
     pkg-config \
     poppler-utils \

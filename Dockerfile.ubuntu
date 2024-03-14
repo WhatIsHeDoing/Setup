@@ -7,6 +7,7 @@ ARG USER 1000
 
 WORKDIR /build
 COPY .bashrc .
+COPY banner.txt .
 COPY setup_ubuntu.sh .
 COPY config/ config/
 COPY scripts/ scripts/

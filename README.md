@@ -32,7 +32,7 @@ As current support for Debian and Fedora is currently limited, `all` platforms m
 
 | Tool              | Platforms | Description                                            |
 | ----------------- | --------- | ------------------------------------------------------ |
-| [7zip]            | Windows   | File archiver with a high compression ratio            |
+| [7zip]            | all       | File archiver with a high compression ratio            |
 | [asciinema]       | Ubuntu    | Record and share terminal sessions                     |
 | [bat]             | all       | A `cat(1)` clone with wings.                           |
 | [bottom]          | all       | Terminal graphical process/system monitor              |
