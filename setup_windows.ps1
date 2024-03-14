@@ -45,13 +45,6 @@ Catch {
     Invoke-WebRequest -useb get.scoop.sh | Invoke-Expression
 }
 
-# Speeds up downloads.
-scoop install aria2
-scoop config aria2-warning-enabled false
-
-# Frustrating but fixes most broken update download...
-scoop config aria2-options "--check-certificate false"
-
 # Needed when adding buckets.
 scoop install git
 
@@ -71,10 +64,10 @@ Install-FromScoop "Pinned" $true
 Write-Heading "Installing Windows 11 Visual Studio Build Tools"
 winget install Microsoft.VisualStudio.2022.BuildTools --force --override "--wait --passive --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.Windows11SDK.22000"
 
-Write-Heading "Installing modules for runtimes"
-cargo install cargo-outdated
+Write-Heading "Installing and updating global language packages"
+cargo install cargo-outdated diskonaut
 npm install -g npm@latest
-python -m pip install --upgrade pip setuptools
+python -m pip install --upgrade ipykernel pip setuptools
 minikube addons enable metrics-server
 
 Install-FromScoop "Apps"
@@ -94,14 +87,26 @@ Copy-Item powershell-profile.ps1 $PROFILE
 Write-Heading "Setting Up VS Code"
 code --install-extension sdras.night-owl
 
-Write-Heading "Enabling Windows Subsystem for Linux"
-wsl --install
+Try {
+    If (Get-Command wsl) {
+        Write-Heading "Updating Windows Subsystem for Linux"
+        wsl --update
+    }
+    Else {
+        Write-Heading "Installing Windows Subsystem for Linux"
+        wsl --install
+    }
+}
+Catch {
+    Write-Heading "Installing Windows Subsystem for Linux"
+    wsl --install
+}
 
 Write-Heading "Configuring bottom (btm)"
 Copy-Item .\config\bottom.toml (Join-Path $Env:AppData bottom\bottom.toml)
 
 Write-Heading "Configuring Starship"
-Copy-Item .\config\starship.toml (Join-Path $USERPROFILE starship.toml)
+Copy-Item .\config\starship.toml (Join-Path $Env:UserProfile .config starship.toml)
 
 Write-Title "Done!"
 Write-Output ""

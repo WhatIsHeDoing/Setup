@@ -30,48 +30,52 @@ sh setup_ubuntu.sh
 
 As current support for Debian and Fedora is currently limited, `all` platforms means Ubuntu and Windows.
 
-| Tool           | Platforms | Description                                           |
-| -------------- | --------- | ----------------------------------------------------- |
-| [7zip]         | Windows   | File archiver with a high compression ratio           |
-| [asciinema]    | Ubuntu    | Record and share terminal sessions                    |
-| [bat]          | all       | A `cat(1)` clone with wings.                          |
-| [bottom]       | all       | Terminal graphical process/system monitor             |
-| [Caesium]      | Windows   | Image compressor                                      |
-| [cmake]        | all       | Powerful software Build system                        |
-| [DBeaver]      | all       | Universal database tool                               |
-| [Docker]       | all       | Containerize applications                             |
-| [eza]          | all       | Modern, maintained replacement for `ls`               |
-| [fzf]          | all       | Command-line fuzzy finder                             |
-| [gcc]          | all       | GNU Compiler Collection                               |
-| [Git]          | all       | Distributed version control system                    |
-| [Helm]         | all       | Package manager for Kubernetes                        |
-| [innounp]      | Windows   | Inno Setup unpacker                                   |
-| [jid]          | all       | JSON incremental digger                               |
-| [jq]           | all       | `sed` for JSON data                                   |
-| [k9s]          | Windows   | Kubernetes CLI to manage your clusters in style!      |
-| [kubectl]      | all       | kubectl controls the Kubernetes cluster manager.      |
-| [less]         | all       | Terminal pager                                        |
-| [minikube]     | all       | Fast Kubernetes  cluster set up                       |
-| [Node.js]      | all       | JavaScript runtime environment                        |
-| [nuget]        | Windows   | Package manager for .NET                              |
-| [pandoc]       | all       | Universal markup converter                            |
-| [pnpm]         | all       | Fast, disk space efficient JavaScript package manager |
-| [Portmaster]   | Windows   | App firewall and monitor                              |
-| [Powershell]   | all       | Automation and configuration tool/framework           |
-| [PuTTY]        | Windows   | SSH and telnet client                                 |
-| [Python]       | all       | Programming language                                  |
-| [RapidEE]      | Windows   | Rapid Environment Editor                              |
-| [rga]          | all       | Regex-based search tool for a multitude of file types |
-| [Rust]         | all       | Programming language                                  |
-| [Scoop]        | Windows   | Command-line installer for Windows                    |
-| [SpaceSniffer] | Windows   | Visualise folder and file structures on disk          |
-| [Spotify]      | all       | Digital music service                                 |
-| [Starship]     | all       | Cross-shell prompt                                    |
-| [Telegram]     | all       | Messaging                                             |
-| [UPX]          | all       | Executable packer                                     |
-| [VS Code]      | all       | Code editor                                           |
-| [Warp]         | Ubuntu    | The terminal reimagined                               |
-| [WSL]          | Windows   | Run a GNU/Linux environment directly on Windows       |
+| Tool              | Platforms | Description                                            |
+| ----------------- | --------- | ------------------------------------------------------ |
+| [7zip]            | Windows   | File archiver with a high compression ratio            |
+| [asciinema]       | Ubuntu    | Record and share terminal sessions                     |
+| [bat]             | all       | A `cat(1)` clone with wings.                           |
+| [bottom]          | all       | Terminal graphical process/system monitor              |
+| [Caesium]         | Windows   | Image compressor                                       |
+| [cargo-outdated]  | all       | cargo subcommand to show outdated Rust dependencies    |
+| [cmake]           | all       | Powerful software Build system                         |
+| [DBeaver]         | all       | Universal database tool                                |
+| [diskonaut]       | all       | Terminal disk space navigator                          |
+| [Docker]          | all       | Containerize applications                              |
+| [eza]             | all       | Modern, maintained replacement for `ls`                |
+| [fzf]             | all       | Command-line fuzzy finder                              |
+| [gcc]             | all       | GNU Compiler Collection                                |
+| [Git]             | all       | Distributed version control system                     |
+| [Helm]            | all       | Package manager for Kubernetes                         |
+| [innounp]         | Windows   | Inno Setup unpacker                                    |
+| [IPython]         | all       | Toolkit to run Python interactively, including Jupyter |
+| [jid]             | all       | JSON incremental digger                                |
+| [jq]              | all       | `sed` for JSON data                                    |
+| [k9s]             | Windows   | Kubernetes CLI to manage your clusters in style!       |
+| [kubectl]         | all       | kubectl controls the Kubernetes cluster manager.       |
+| [less]            | all       | Terminal pager                                         |
+| [minikube]        | all       | Fast Kubernetes  cluster set up                        |
+| [Node.js]         | all       | JavaScript runtime environment                         |
+| [nuget]           | Windows   | Package manager for .NET                               |
+| [pandoc]          | all       | Universal markup converter                             |
+| [pnpm]            | all       | Fast, disk space efficient JavaScript package manager  |
+| [Portmaster]      | Windows   | App firewall and monitor                               |
+| [powersession-rs] | Windows   | A Rust port of `asciinema` for Windows                 |
+| [Powershell]      | all       | Automation and configuration tool/framework            |
+| [PuTTY]           | Windows   | SSH and telnet client                                  |
+| [Python]          | all       | Programming language                                   |
+| [RapidEE]         | Windows   | Rapid Environment Editor                               |
+| [rga]             | all       | Regex-based search tool for a multitude of file types  |
+| [Rust]            | all       | Programming language                                   |
+| [Scoop]           | Windows   | Command-line installer for Windows                     |
+| [SpaceSniffer]    | Windows   | Visualise folder and file structures on disk           |
+| [Spotify]         | all       | Digital music service                                  |
+| [Starship]        | all       | Cross-shell prompt                                     |
+| [Telegram]        | all       | Messaging                                              |
+| [UPX]             | all       | Executable packer                                      |
+| [VS Code]         | all       | Code editor                                            |
+| [Warp]            | Ubuntu    | The terminal reimagined                                |
+| [WSL]             | Windows   | Run a GNU/Linux environment directly on Windows        |
 
 ### ⚙️ Scripts
 
@@ -122,9 +126,11 @@ The initial inspiration came from a post by [Scott Hanselman] on how to make a p
 [bat]: https://github.com/sharkdp/bat
 [bottom]: https://clementtsang.github.io/bottom/
 [Caesium]: https://saerasoft.com/caesium
+[cargo-outdated]: https://github.com/kbknapp/cargo-outdated
 [cmake]: https://cmake.org/
 [Container Structure Tests]: https://github.com/GoogleContainerTools/container-structure-test
 [DBeaver]: https://dbeaver.io/
+[diskonaut]: https://github.com/imsnif/diskonaut
 [Docker]: https://www.docker.com/
 [eza]: https://github.com/eza-community/eza
 [fzf]: https://github.com/junegunn/fzf
@@ -133,6 +139,7 @@ The initial inspiration came from a post by [Scott Hanselman] on how to make a p
 [Grype]: https://github.com/anchore/grype
 [Helm]: https://helm.sh/
 [innounp]: https://innounp.sourceforge.net/
+[IPython]: https://ipython.readthedocs.io/
 [jid]: https://github.com/simeji/jid
 [jq]: https://jqlang.github.io/jq/
 [k9s]: https://k9scli.io/
@@ -145,6 +152,7 @@ The initial inspiration came from a post by [Scott Hanselman] on how to make a p
 [pandoc]: https://pandoc.org/
 [pnpm]: https://pnpm.io/
 [Portmaster]: https://safing.io/
+[powersession-rs]: https://github.com/Watfaq/PowerSession-rs
 [Powershell]: https://github.com/PowerShell/PowerShell
 [PuTTY]: https://putty.org/
 [Python]: https://www.python.org/

@@ -43,6 +43,7 @@
         "nuget",
         "pandoc",
         "pnpm",
+        "powersession-rs",
         "putty",
         "rga",
         "ripgrep",

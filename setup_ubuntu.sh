@@ -273,16 +273,20 @@ printf "${YELLOW}Updating Rust...${NC}\n"
 rustup update
 
 echo
-printf "${YELLOW}Installing language packages...${NC}\n"
+printf "${YELLOW}Installing and updating global language packages...${NC}\n"
 
 echo
-printf "${GREEN}Installing global npm packages...${NC}\n"
+printf "${GREEN}npm...${NC}\n"
 sudo npm update --global --no-progress
 sudo npm install --global --no-progress npm npm-check-updates
 
 echo
-printf "${GREEN}Updating Python packages...${NC}\n"
+printf "${GREEN}Python...${NC}\n"
 pip install --no-cache-dir --no-color --progress-bar off --user --upgrade ipykernel pip setuptools
+
+echo
+printf "${GREEN}Rust...${NC}\n"
+cargo install cargo-outdated diskonaut
 
 echo
 printf "${GREEN}Installing VS Code extensions...${NC}\n"
