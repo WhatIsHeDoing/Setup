@@ -76,6 +76,7 @@ Write-Title "Setting Up"
 
 Write-Heading "Updating apps"
 scoop update *
+winget upgrade --all
 rustup update
 
 Write-Heading "Cleaning up Scoop"
