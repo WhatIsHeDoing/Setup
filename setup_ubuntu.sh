@@ -43,6 +43,12 @@ sudo apt-get install -y \
 echo
 printf "🗒  ${YELLOW}Registering new package repositories...${NC}\n"
 
+# https://docs.makedeb.org/prebuilt-mpr/getting-started/#setting-up-the-repository
+echo
+printf "${GREEN}makedb...${NC}\n"
+wget -qO - 'https://proget.makedeb.org/debian-feeds/prebuilt-mpr.pub' | gpg --dearmor | sudo tee /usr/share/keyrings/prebuilt-mpr-archive-keyring.gpg 1> /dev/null
+echo "deb [arch=all,$(dpkg --print-architecture) signed-by=/usr/share/keyrings/prebuilt-mpr-archive-keyring.gpg] https://proget.makedeb.org prebuilt-mpr $(lsb_release -cs)" | sudo tee /etc/apt/sources.list.d/prebuilt-mpr.list
+
 echo
 printf "${GREEN}asciinema...${NC}\n"
 sudo apt-add-repository ppa:zanchey/asciinema -y
@@ -130,6 +136,7 @@ sudo apt-get install -y \
     gnupg \
     jid \
     jq \
+    just \
     lld \
     kubectl \
     libpq-dev \

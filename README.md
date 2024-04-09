@@ -38,7 +38,6 @@ As current support for Debian and Fedora is currently limited, `all` platforms m
 | [bottom]          | all       | Terminal graphical process/system monitor              |
 | [Caesium]         | Windows   | Image compressor                                       |
 | [cargo-outdated]  | all       | cargo subcommand to show outdated Rust dependencies    |
-| [cmake]           | all       | Powerful software Build system                         |
 | [DBeaver]         | all       | Universal database tool                                |
 | [diskonaut]       | all       | Terminal disk space navigator                          |
 | [Docker]          | all       | Containerize applications                              |
@@ -51,6 +50,7 @@ As current support for Debian and Fedora is currently limited, `all` platforms m
 | [IPython]         | all       | Toolkit to run Python interactively, including Jupyter |
 | [jid]             | all       | JSON incremental digger                                |
 | [jq]              | all       | `sed` for JSON data                                    |
+| [just]            | all       | Just a command runner                                  |
 | [k9s]             | Windows   | Kubernetes CLI to manage your clusters in style!       |
 | [kubectl]         | all       | kubectl controls the Kubernetes cluster manager.       |
 | [less]            | all       | Terminal pager                                         |
@@ -127,7 +127,6 @@ The initial inspiration came from a post by [Scott Hanselman] on how to make a p
 [bottom]: https://clementtsang.github.io/bottom/
 [Caesium]: https://saerasoft.com/caesium
 [cargo-outdated]: https://github.com/kbknapp/cargo-outdated
-[cmake]: https://cmake.org/
 [Container Structure Tests]: https://github.com/GoogleContainerTools/container-structure-test
 [DBeaver]: https://dbeaver.io/
 [diskonaut]: https://github.com/imsnif/diskonaut
@@ -142,6 +141,7 @@ The initial inspiration came from a post by [Scott Hanselman] on how to make a p
 [IPython]: https://ipython.readthedocs.io/
 [jid]: https://github.com/simeji/jid
 [jq]: https://jqlang.github.io/jq/
+[just]: https://just.systems/
 [k9s]: https://k9scli.io/
 [Kics]: https://kics.io/
 [kubectl]: https://kubernetes.io/docs/reference/kubectl/kubectl/

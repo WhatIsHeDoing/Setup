@@ -32,12 +32,12 @@
     "Tools": [
         "bat",
         "bottom",
-        "cmake",
         "eza",
         "fzf",
         "helm",
         "innounp",
         "jq",
+        "just",
         "k9s",
         "less",
         "nuget",
