@@ -43,15 +43,23 @@ sudo apt-get install -y \
 echo
 printf "🗒  ${YELLOW}Registering new package repositories...${NC}\n"
 
-# https://docs.makedeb.org/prebuilt-mpr/getting-started/#setting-up-the-repository
-echo
-printf "${GREEN}makedb...${NC}\n"
-wget -qO - 'https://proget.makedeb.org/debian-feeds/prebuilt-mpr.pub' | gpg --dearmor | sudo tee /usr/share/keyrings/prebuilt-mpr-archive-keyring.gpg 1> /dev/null
-echo "deb [arch=all,$(dpkg --print-architecture) signed-by=/usr/share/keyrings/prebuilt-mpr-archive-keyring.gpg] https://proget.makedeb.org prebuilt-mpr $(lsb_release -cs)" | sudo tee /etc/apt/sources.list.d/prebuilt-mpr.list
-
 echo
 printf "${GREEN}asciinema...${NC}\n"
 sudo apt-add-repository ppa:zanchey/asciinema -y
+
+# https://www.flatpak.org/setup/Ubuntu
+echo
+printf "${GREEN}Flatpack...${NC}\n"
+sudo apt-add-repository ppa:flatpak/stable -y
+
+echo
+printf "🗒  ${YELLOW}Downloading packages without repositories...${NC}\n"
+
+# https://docs.makedeb.org/prebuilt-mpr/getting-started/#setting-up-the-repository
+echo
+printf "${GREEN}makedb...${NC}\n"
+wget -qO - 'https://proget.makedeb.org/debian-feeds/prebuilt-mpr.pub' | gpg --dearmor | sudo tee /usr/share/keyrings/prebuilt-mpr-archive-keyring.gpg 1>/dev/null
+echo "deb [arch=all,$(dpkg --print-architecture) signed-by=/usr/share/keyrings/prebuilt-mpr-archive-keyring.gpg] https://proget.makedeb.org prebuilt-mpr $(lsb_release -cs)" | sudo tee /etc/apt/sources.list.d/prebuilt-mpr.list
 
 # https://github.com/nodesource/distributions#ubuntu-versions
 echo
@@ -66,16 +74,17 @@ echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.co
 echo
 printf "${GREEN}Docker...${NC}\n"
 sudo install -m 0755 -d /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg --yes
-sudo chmod a+r /etc/apt/keyrings/docker.gpg
-# https://docs.docker.com/desktop/install/ubuntu/#install-docker-desktopdocker-desktop
-DOCKER_DESKTOP_VERSION=4.26.1
-wget -nv -P /tmp/ https://desktop.docker.com/linux/main/amd64/docker-desktop-$DOCKER_DESKTOP_VERSION-amd64.deb
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
 
 # shellcheck source=/dev/null
 echo \
-    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list
+    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
+
+# https://docs.docker.com/desktop/install/ubuntu/#install-docker-desktopdocker-desktop
+DOCKER_DESKTOP_VERSION=4.26.1
+wget -nv -P /tmp/ https://desktop.docker.com/linux/main/amd64/docker-desktop-$DOCKER_DESKTOP_VERSION-amd64.deb
 
 # https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#install-using-native-package-management
 echo
@@ -97,9 +106,6 @@ printf "${GREEN}eza...${NC}\n"
 wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | sudo gpg --dearmor -o /etc/apt/keyrings/gierens.gpg --yes
 echo "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" | sudo tee /etc/apt/sources.list.d/gierens.list
 sudo chmod 644 /etc/apt/keyrings/gierens.gpg /etc/apt/sources.list.d/gierens.list
-
-echo
-printf "🗒  ${YELLOW}Downloading packages without repositories...${NC}\n"
 
 # https://github.com/sharkdp/bat
 # https://github.com/sharkdp/bat/releases
@@ -130,9 +136,11 @@ sudo apt-get install -y \
     emacs \
     eza \
     ffmpeg \
+    flatpak \
     fzf \
     git \
     git-lfs \
+    gnome-software-plugin-flatpak \
     gnupg \
     jid \
     jq \
@@ -158,6 +166,16 @@ sudo apt-get install -y \
 echo
 printf "${GREEN}Enabling Git Large File Storage...${NC}\n"
 git lfs install
+
+# https://www.flatpak.org/setup/Ubuntu
+# https://flathub.org/apps/io.bassi.Amberol
+echo
+printf "${GREEN}Installing Flatpak apps...${NC}\n"
+flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+
+flatpak install -y \
+    flathub \
+    io.bassi.Amberol
 
 echo
 printf "${GREEN}Installing Docker Desktop...${NC}\n"
