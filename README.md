@@ -33,8 +33,9 @@ As current support for Debian and Fedora is currently limited, `all` platforms m
 | Tool              | Platforms | Description                                            |
 | ----------------- | --------- | ------------------------------------------------------ |
 | [7zip]            | all       | File archiver with a high compression ratio            |
+| [Amberol]         | Ubuntu    | A small and simple sound and music player              |
 | [asciinema]       | Ubuntu    | Record and share terminal sessions                     |
-| [bat]             | all       | A `cat(1)` clone with wings.                           |
+| [bat]             | all       | A `cat(1)` clone with wings                            |
 | [bottom]          | all       | Terminal graphical process/system monitor              |
 | [Caesium]         | Windows   | Image compressor                                       |
 | [cargo-outdated]  | all       | cargo subcommand to show outdated Rust dependencies    |
@@ -42,6 +43,7 @@ As current support for Debian and Fedora is currently limited, `all` platforms m
 | [diskonaut]       | all       | Terminal disk space navigator                          |
 | [Docker]          | all       | Containerize applications                              |
 | [eza]             | all       | Modern, maintained replacement for `ls`                |
+| [Flatpak]         | all       | The future of apps on Linux                            |
 | [fzf]             | all       | Command-line fuzzy finder                              |
 | [gcc]             | all       | GNU Compiler Collection                                |
 | [Git]             | all       | Distributed version control system                     |
@@ -52,7 +54,7 @@ As current support for Debian and Fedora is currently limited, `all` platforms m
 | [jq]              | all       | `sed` for JSON data                                    |
 | [just]            | all       | Just a command runner                                  |
 | [k9s]             | Windows   | Kubernetes CLI to manage your clusters in style!       |
-| [kubectl]         | all       | kubectl controls the Kubernetes cluster manager.       |
+| [kubectl]         | all       | kubectl controls the Kubernetes cluster manager        |
 | [less]            | all       | Terminal pager                                         |
 | [minikube]        | all       | Fast Kubernetes  cluster set up                        |
 | [Node.js]         | all       | JavaScript runtime environment                         |
@@ -122,6 +124,7 @@ container-structure-test test --image setup_ubuntu --config container-structure-
 The initial inspiration came from a post by [Scott Hanselman] on how to make a pretty prompt in Windows Terminal.
 
 [7zip]: https://7-zip.org/
+[Amberol]: https://gitlab.gnome.org/World/amberol
 [asciinema]: https://asciinema.org/
 [bat]: https://github.com/sharkdp/bat
 [bottom]: https://clementtsang.github.io/bottom/
@@ -132,6 +135,7 @@ The initial inspiration came from a post by [Scott Hanselman] on how to make a p
 [diskonaut]: https://github.com/imsnif/diskonaut
 [Docker]: https://www.docker.com/
 [eza]: https://github.com/eza-community/eza
+[Flatpak]: https://flatpak.org/
 [fzf]: https://github.com/junegunn/fzf
 [gcc]: https://gcc.gnu.org/
 [Git]: https://git-scm.com/
