@@ -334,6 +334,7 @@ printf "${YELLOW}Configuring...${NC}\n"
 echo
 printf "${GREEN}Configuring Git...${NC}\n"
 git config --global init.defaultBranch main
+git config --global fetch.prune true
 
 echo
 printf "${GREEN}Configuring bottom...${NC}\n"
