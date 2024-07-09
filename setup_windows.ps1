@@ -55,6 +55,7 @@ Write-Heading "Configuring Git"
 git config --global core.autocrlf true
 git config --global credential.helper wincred
 git config --global init.defaultBranch main
+git config --global fetch.prune true
 git lfs install
 
 Install-FromScoop "Tools"
