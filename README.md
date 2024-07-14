@@ -26,9 +26,23 @@ sh setup_ubuntu.sh
 
 ## 🔋 Included
 
-### 🔨 Tools
-
 As current support for Debian and Fedora is currently limited, `all` platforms means Ubuntu and Windows.
+
+### 👟 Runtimes
+
+| Runtime      | Platforms | Description                                                             |
+| ------------ | --------- | ----------------------------------------------------------------------- |
+| [.NET]       | all       | Free, open-source, cross-platform framework                             |
+| [Docker]     | all       | Containerize applications                                               |
+| [gcc]        | all       | GNU Compiler Collection                                                 |
+| [kubectl]    | all       | kubectl controls the Kubernetes cluster manager                         |
+| [minikube]   | all       | Fast Kubernetes  cluster set up                                         |
+| [Node.js]    | all       | Free, open-source, cross-platform JavaScript runtime environment        |
+| [Powershell] | all       | Automation and configuration tool/framework                             |
+| [Python]     | all       | Programming language                                                    |
+| [Rust]       | all       | A language empowering everyone to build reliable and efficient software |
+
+### 🔨 Tools
 
 | Tool              | Platforms | Description                                            |
 | ----------------- | --------- | ------------------------------------------------------ |
@@ -41,11 +55,9 @@ As current support for Debian and Fedora is currently limited, `all` platforms m
 | [cargo-outdated]  | all       | cargo subcommand to show outdated Rust dependencies    |
 | [DBeaver]         | all       | Universal database tool                                |
 | [diskonaut]       | all       | Terminal disk space navigator                          |
-| [Docker]          | all       | Containerize applications                              |
 | [eza]             | all       | Modern, maintained replacement for `ls`                |
 | [Flatpak]         | all       | The future of apps on Linux                            |
 | [fzf]             | all       | Command-line fuzzy finder                              |
-| [gcc]             | all       | GNU Compiler Collection                                |
 | [Git]             | all       | Distributed version control system                     |
 | [Helm]            | all       | Package manager for Kubernetes                         |
 | [innounp]         | Windows   | Inno Setup unpacker                                    |
@@ -54,21 +66,15 @@ As current support for Debian and Fedora is currently limited, `all` platforms m
 | [jq]              | all       | `sed` for JSON data                                    |
 | [just]            | all       | Just a command runner                                  |
 | [k9s]             | Windows   | Kubernetes CLI to manage your clusters in style!       |
-| [kubectl]         | all       | kubectl controls the Kubernetes cluster manager        |
 | [less]            | all       | Terminal pager                                         |
-| [minikube]        | all       | Fast Kubernetes  cluster set up                        |
-| [Node.js]         | all       | JavaScript runtime environment                         |
 | [nuget]           | Windows   | Package manager for .NET                               |
 | [pandoc]          | all       | Universal markup converter                             |
 | [pnpm]            | all       | Fast, disk space efficient JavaScript package manager  |
 | [Portmaster]      | Windows   | App firewall and monitor                               |
 | [powersession-rs] | Windows   | A Rust port of `asciinema` for Windows                 |
-| [Powershell]      | all       | Automation and configuration tool/framework            |
 | [PuTTY]           | Windows   | SSH and telnet client                                  |
-| [Python]          | all       | Programming language                                   |
 | [RapidEE]         | Windows   | Rapid Environment Editor                               |
 | [rga]             | all       | Regex-based search tool for a multitude of file types  |
-| [Rust]            | all       | Programming language                                   |
 | [Scoop]           | Windows   | Command-line installer for Windows                     |
 | [SpaceSniffer]    | Windows   | Visualise folder and file structures on disk           |
 | [Spotify]         | all       | Digital music service                                  |
@@ -123,6 +129,7 @@ container-structure-test test --image setup_ubuntu --config container-structure-
 
 The initial inspiration came from a post by [Scott Hanselman] on how to make a pretty prompt in Windows Terminal.
 
+[.NET]: https://dotnet.microsoft.com/
 [7zip]: https://7-zip.org/
 [Amberol]: https://gitlab.gnome.org/World/amberol
 [asciinema]: https://asciinema.org/

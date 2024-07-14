@@ -60,13 +60,16 @@ git lfs install
 
 Install-FromScoop "Tools"
 Install-FromScoop "Runtimes"
+winget install Microsoft.DotNet.SDK.6 --accept-source-agreements --accept-package-agreements
 Install-FromScoop "Pinned" $true
 
 Write-Heading "Installing Windows 11 Visual Studio Build Tools"
 winget install Microsoft.VisualStudio.2022.BuildTools --force --override "--wait --passive --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.Windows11SDK.22000"
 
 Write-Heading "Installing and updating global language packages"
-cargo install cargo-outdated diskonaut
+rustup update
+cargo install cargo-outdated cargo-update diskonaut wasm-pack
+cargo install-update -a
 npm install -g npm@latest
 python -m pip install --upgrade ipykernel pip setuptools
 minikube addons enable metrics-server
@@ -77,8 +80,7 @@ Write-Title "Setting Up"
 
 Write-Heading "Updating apps"
 scoop update *
-winget upgrade --all
-rustup update
+winget upgrade --all --accept-source-agreements --accept-package-agreements
 
 Write-Heading "Cleaning up Scoop"
 scoop cleanup *

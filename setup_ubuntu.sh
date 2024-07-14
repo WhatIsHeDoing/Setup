@@ -133,6 +133,7 @@ sudo apt-get install -y \
     docker-ce-cli \
     docker-ce-rootless-extras \
     docker-compose-plugin \
+    dotnet-sdk-6.0 \
     emacs \
     eza \
     ffmpeg \
@@ -313,7 +314,8 @@ pip install --no-cache-dir --no-color --progress-bar off --user --upgrade ipyker
 
 echo
 printf "${GREEN}Rust...${NC}\n"
-cargo install cargo-outdated diskonaut
+cargo install cargo-outdated cargo-update diskonaut wasm-pack
+cargo install-update -a
 
 echo
 printf "${GREEN}Installing VS Code extensions...${NC}\n"

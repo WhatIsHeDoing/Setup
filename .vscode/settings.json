@@ -3,12 +3,14 @@
     "cSpell.language": "en-GB",
     "cSpell.words": [
         "Amberol",
+        "asciicast",
         "asciinema",
         "Cascadia",
         "Grype",
         "Portmaster",
         "Powerline",
-        "runtimes"
+        "runtimes",
+        "shellcheck"
     ],
     "editor.codeActionsOnSave": {
         "source.fixAll": "always"
