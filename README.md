@@ -84,6 +84,7 @@ As current support for Debian and Fedora is currently limited, `all` platforms m
 | [VS Code]         | all       | Code editor                                            |
 | [Warp]            | Ubuntu    | The terminal reimagined                                |
 | [WSL]             | Windows   | Run a GNU/Linux environment directly on Windows        |
+| [Zed]             | Ubuntu    | Zed is a high-performance, multiplayer code editor     |
 
 ### ⚙️ Scripts
 
@@ -182,3 +183,4 @@ The initial inspiration came from a post by [Scott Hanselman] on how to make a p
 [VS Code]: https://code.visualstudio.com/
 [Warp]: https://www.warp.dev/
 [WSL]: https://learn.microsoft.com/en-us/windows/wsl/
+[Zed]: https://zed.dev/

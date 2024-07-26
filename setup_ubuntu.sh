@@ -197,6 +197,10 @@ else
 fi
 
 echo
+printf "${GREEN}Installing the Zed editor...${NC}\n"
+curl -sSfL https://zed.dev/install.sh | sh
+
+echo
 printf "${GREEN}Installing Earthly...${NC}\n"
 
 if ! [ -x "$(command -v earthly)" ]; then
