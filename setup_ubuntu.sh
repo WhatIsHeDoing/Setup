@@ -188,6 +188,11 @@ else
 fi
 
 echo
+printf "${GREEN}Installing Pulumi...${NC}\n"
+# https://www.pulumi.com/docs/install/
+curl -fsSL https://get.pulumi.com | sh
+
+echo
 printf "${GREEN}Running Docker post-configuration...${NC}\n"
 
 if [ -z "$IS_CONTAINER" ]; then
@@ -254,6 +259,7 @@ if [ -z "$IS_CONTAINER" ]; then
     sudo snap install bottom
     sudo snap install brave
     sudo snap install code
+    sudo snap install drawio
     sudo snap install k9s
     sudo snap install spotify
 

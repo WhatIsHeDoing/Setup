@@ -30,61 +30,63 @@ As current support for Debian and Fedora is currently limited, `all` platforms m
 
 ### 👟 Runtimes
 
-| Runtime      | Platforms | Description                                                             |
-| ------------ | --------- | ----------------------------------------------------------------------- |
-| [.NET]       | all       | Free, open-source, cross-platform framework                             |
-| [Docker]     | all       | Containerize applications                                               |
-| [gcc]        | all       | GNU Compiler Collection                                                 |
-| [kubectl]    | all       | kubectl controls the Kubernetes cluster manager                         |
-| [minikube]   | all       | Fast Kubernetes  cluster set up                                         |
-| [Node.js]    | all       | Free, open-source, cross-platform JavaScript runtime environment        |
-| [Powershell] | all       | Automation and configuration tool/framework                             |
-| [Python]     | all       | Programming language                                                    |
-| [Rust]       | all       | A language empowering everyone to build reliable and efficient software |
+| Runtime      | Platforms | Description                                                           |
+| ------------ | --------- | --------------------------------------------------------------------- |
+| [.NET]       | all       | Free, open-source, cross-platform framework                           |
+| [Docker]     | all       | Containerize applications                                             |
+| [gcc]        | all       | GNU Compiler Collection                                               |
+| [kubectl]    | all       | kubectl controls the Kubernetes cluster manager                       |
+| [minikube]   | all       | Fast Kubernetes  cluster set up                                       |
+| [Node.js]    | all       | Free, open-source, cross-platform JavaScript runtime environment      |
+| [Powershell] | all       | Automation and configuration tool/framework                           |
+| [Python]     | all       | Programming language                                                  |
+| [Rust]       | all       | Language empowering everyone to build reliable and efficient software |
 
 ### 🔨 Tools
 
-| Tool              | Platforms | Description                                            |
-| ----------------- | --------- | ------------------------------------------------------ |
-| [7zip]            | all       | File archiver with a high compression ratio            |
-| [Amberol]         | Ubuntu    | A small and simple sound and music player              |
-| [asciinema]       | Ubuntu    | Record and share terminal sessions                     |
-| [bat]             | all       | A `cat(1)` clone with wings                            |
-| [bottom]          | all       | Terminal graphical process/system monitor              |
-| [Caesium]         | Windows   | Image compressor                                       |
-| [cargo-outdated]  | all       | cargo subcommand to show outdated Rust dependencies    |
-| [DBeaver]         | all       | Universal database tool                                |
-| [diskonaut]       | all       | Terminal disk space navigator                          |
-| [eza]             | all       | Modern, maintained replacement for `ls`                |
-| [Flatpak]         | all       | The future of apps on Linux                            |
-| [fzf]             | all       | Command-line fuzzy finder                              |
-| [Git]             | all       | Distributed version control system                     |
-| [Helm]            | all       | Package manager for Kubernetes                         |
-| [innounp]         | Windows   | Inno Setup unpacker                                    |
-| [IPython]         | all       | Toolkit to run Python interactively, including Jupyter |
-| [jid]             | all       | JSON incremental digger                                |
-| [jq]              | all       | `sed` for JSON data                                    |
-| [just]            | all       | Just a command runner                                  |
-| [k9s]             | Windows   | Kubernetes CLI to manage your clusters in style!       |
-| [less]            | all       | Terminal pager                                         |
-| [nuget]           | Windows   | Package manager for .NET                               |
-| [pandoc]          | all       | Universal markup converter                             |
-| [pnpm]            | all       | Fast, disk space efficient JavaScript package manager  |
-| [Portmaster]      | Windows   | App firewall and monitor                               |
-| [powersession-rs] | Windows   | A Rust port of `asciinema` for Windows                 |
-| [PuTTY]           | Windows   | SSH and telnet client                                  |
-| [RapidEE]         | Windows   | Rapid Environment Editor                               |
-| [rga]             | all       | Regex-based search tool for a multitude of file types  |
-| [Scoop]           | Windows   | Command-line installer for Windows                     |
-| [SpaceSniffer]    | Windows   | Visualise folder and file structures on disk           |
-| [Spotify]         | all       | Digital music service                                  |
-| [Starship]        | all       | Cross-shell prompt                                     |
-| [Telegram]        | all       | Messaging                                              |
-| [UPX]             | all       | Executable packer                                      |
-| [VS Code]         | all       | Code editor                                            |
-| [Warp]            | Ubuntu    | The terminal reimagined                                |
-| [WSL]             | Windows   | Run a GNU/Linux environment directly on Windows        |
-| [Zed]             | Ubuntu    | Zed is a high-performance, multiplayer code editor     |
+| Tool              | Platforms | Description                                                               |
+| ----------------- | --------- | ------------------------------------------------------------------------- |
+| [7zip]            | all       | File archiver with a high compression ratio                               |
+| [Amberol]         | Ubuntu    | A small and simple sound and music player                                 |
+| [asciinema]       | Ubuntu    | Record and share terminal sessions                                        |
+| [bat]             | all       | A `cat(1)` clone with wings                                               |
+| [bottom]          | all       | Terminal graphical process/system monitor                                 |
+| [Caesium]         | Windows   | Image compressor                                                          |
+| [cargo-outdated]  | all       | cargo subcommand to show outdated Rust dependencies                       |
+| [DBeaver]         | all       | Universal database tool                                                   |
+| [diskonaut]       | all       | Terminal disk space navigator                                             |
+| [draw.io]         | all       | Technology stack for building diagramming applications                    |
+| [eza]             | all       | Modern, maintained replacement for `ls`                                   |
+| [Flatpak]         | all       | The future of apps on Linux                                               |
+| [fzf]             | all       | Command-line fuzzy finder                                                 |
+| [Git]             | all       | Distributed version control system                                        |
+| [Helm]            | all       | Package manager for Kubernetes                                            |
+| [innounp]         | Windows   | Inno Setup unpacker                                                       |
+| [IPython]         | all       | Toolkit to run Python interactively, including Jupyter                    |
+| [jid]             | all       | JSON incremental digger                                                   |
+| [jq]              | all       | `sed` for JSON data                                                       |
+| [just]            | all       | Just a command runner                                                     |
+| [k9s]             | Windows   | Kubernetes CLI to manage your clusters in style!                          |
+| [less]            | all       | Terminal pager                                                            |
+| [nuget]           | Windows   | Package manager for .NET                                                  |
+| [pandoc]          | all       | Universal markup converter                                                |
+| [pnpm]            | all       | Fast, disk space efficient JavaScript package manager                     |
+| [Portmaster]      | Windows   | App firewall and monitor                                                  |
+| [powersession-rs] | Windows   | A Rust port of `asciinema` for Windows                                    |
+| [Pulumi]          | all       | Create, deploy, and manage infrastructure on any cloud using any language |
+| [PuTTY]           | Windows   | SSH and telnet client                                                     |
+| [RapidEE]         | Windows   | Rapid Environment Editor                                                  |
+| [rga]             | all       | Regex-based search tool for a multitude of file types                     |
+| [Scoop]           | Windows   | Command-line installer for Windows                                        |
+| [SpaceSniffer]    | Windows   | Visualise folder and file structures on disk                              |
+| [Spotify]         | all       | Digital music service                                                     |
+| [Starship]        | all       | Cross-shell prompt                                                        |
+| [Telegram]        | all       | Messaging                                                                 |
+| [UPX]             | all       | Executable packer                                                         |
+| [VS Code]         | all       | Code editor                                                               |
+| [Warp]            | Ubuntu    | The terminal reimagined                                                   |
+| [WSL]             | Windows   | Run a GNU/Linux environment directly on Windows                           |
+| [Zed]             | Ubuntu    | Zed is a high-performance, multiplayer code editor                        |
 
 ### ⚙️ Scripts
 
@@ -142,6 +144,7 @@ The initial inspiration came from a post by [Scott Hanselman] on how to make a p
 [DBeaver]: https://dbeaver.io/
 [diskonaut]: https://github.com/imsnif/diskonaut
 [Docker]: https://www.docker.com/
+[draw.io]: https://www.drawio.com/
 [eza]: https://github.com/eza-community/eza
 [Flatpak]: https://flatpak.org/
 [fzf]: https://github.com/junegunn/fzf
@@ -166,6 +169,7 @@ The initial inspiration came from a post by [Scott Hanselman] on how to make a p
 [Portmaster]: https://safing.io/
 [powersession-rs]: https://github.com/Watfaq/PowerSession-rs
 [Powershell]: https://github.com/PowerShell/PowerShell
+[Pulumi]: https://www.pulumi.com/
 [PuTTY]: https://putty.org/
 [Python]: https://www.python.org/
 [RapidEE]: https://www.rapidee.com/

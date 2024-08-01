@@ -4,6 +4,7 @@
         "7zip",
         "caesium-image-compressor",
         "dbeaver",
+        "draw.io",
         "portmaster-np",
         "raindrop.io",
         "rapidee",
@@ -14,8 +15,8 @@
     "Buckets": [
         "extras",
         "main",
-        "nonportable",
-        "nerd-fonts"
+        "nerd-fonts",
+        "nonportable"
     ],
     "Pinned": [],
     "Runtimes": [
@@ -44,6 +45,7 @@
         "pandoc",
         "pnpm",
         "powersession-rs",
+        "pulumi",
         "putty",
         "rga",
         "ripgrep",
