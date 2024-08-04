@@ -320,7 +320,11 @@ sudo npm install --global --no-progress npm npm-check-updates
 
 echo
 printf "${GREEN}Python...${NC}\n"
-pip install --no-cache-dir --no-color --progress-bar off --user --upgrade ipykernel pip setuptools
+pip install --no-cache-dir --no-color --progress-bar off --user --upgrade \
+    ipykernel \
+    pip \
+    pre-commit \
+    setuptools
 
 echo
 printf "${GREEN}Rust...${NC}\n"

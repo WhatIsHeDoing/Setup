@@ -73,6 +73,7 @@ As current support for Debian and Fedora is currently limited, `all` platforms m
 | [pnpm]            | all       | Fast, disk space efficient JavaScript package manager                     |
 | [Portmaster]      | Windows   | App firewall and monitor                                                  |
 | [powersession-rs] | Windows   | A Rust port of `asciinema` for Windows                                    |
+| [pre-commit]      | all       | A framework for managing and maintaining multi-language pre-commit hooks  |
 | [Pulumi]          | all       | Create, deploy, and manage infrastructure on any cloud using any language |
 | [PuTTY]           | Windows   | SSH and telnet client                                                     |
 | [RapidEE]         | Windows   | Rapid Environment Editor                                                  |
@@ -100,10 +101,11 @@ The scripts below are available as aliases on Ubuntu and Windows:
 
 ## 🧪 Testing
 
-First, check the shell for problems using [ShellCheck]:
+First, set up [pre-commit] and run an initial test:
 
 ```sh
-shellcheck *.sh
+pre-commit install
+pre-commit run --all-files
 ```
 
 The majority of the Ubuntu setup script can be tested on any platform using a [Docker] container. Build and run it with:
@@ -169,6 +171,7 @@ The initial inspiration came from a post by [Scott Hanselman] on how to make a p
 [Portmaster]: https://safing.io/
 [powersession-rs]: https://github.com/Watfaq/PowerSession-rs
 [Powershell]: https://github.com/PowerShell/PowerShell
+[pre-commit]: https://pre-commit.com/
 [Pulumi]: https://www.pulumi.com/
 [PuTTY]: https://putty.org/
 [Python]: https://www.python.org/
@@ -177,7 +180,6 @@ The initial inspiration came from a post by [Scott Hanselman] on how to make a p
 [Rust]: https://www.rust-lang.org/
 [Scoop]: https://scoop.sh/
 [Scott Hanselman]: https://www.hanselman.com/blog/HowToMakeAPrettyPromptInWindowsTerminalWithPowerlineNerdFontsCascadiaCodeWSLAndOhmyposh.aspx
-[ShellCheck]: https://www.shellcheck.net/
 [SpaceSniffer]: http://www.uderzo.it/main_products/space_sniffer/
 [Spotify]: https://open.spotify.com/
 [Starship]: https://starship.rs/
