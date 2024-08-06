@@ -70,7 +70,7 @@ Write-Heading "Installing and updating global language packages"
 rustup update
 cargo install cargo-outdated cargo-update diskonaut wasm-pack
 cargo install-update -a
-npm install -g npm@latest
+npm install -g
 python -m pip install --upgrade ipykernel pip pre-commit setuptools
 minikube addons enable metrics-server
 

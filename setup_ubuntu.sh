@@ -281,14 +281,9 @@ else
 fi
 
 echo
-printf "${GREEN}Installing pnpm...${NC}\n"
-
-if ! [ -x "$(command -v pnpm)" ]; then
-    # https://github.com/pnpm/pnpm/issues/6217#issuecomment-1723206626
-    wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
-else
-    printf "${GREEN}Already installed${NC}\n"
-fi
+printf "${GREEN}Installing or updating pnpm...${NC}\n"
+# https://github.com/pnpm/pnpm/issues/6217#issuecomment-1723206626
+wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
 
 echo
 printf "${GREEN}Installing Rust...${NC}\n"
