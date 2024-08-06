@@ -36,7 +36,7 @@ As current support for Debian and Fedora is currently limited, `all` platforms m
 | [Docker]     | all       | Containerize applications                                             |
 | [gcc]        | all       | GNU Compiler Collection                                               |
 | [kubectl]    | all       | kubectl controls the Kubernetes cluster manager                       |
-| [minikube]   | all       | Fast Kubernetes  cluster set up                                       |
+| [minikube]   | all       | Fast Kubernetes cluster set up                                        |
 | [Node.js]    | all       | Free, open-source, cross-platform JavaScript runtime environment      |
 | [Powershell] | all       | Automation and configuration tool/framework                           |
 | [Python]     | all       | Programming language                                                  |
@@ -88,6 +88,15 @@ As current support for Debian and Fedora is currently limited, `all` platforms m
 | [Warp]            | Ubuntu    | The terminal reimagined                                                   |
 | [WSL]             | Windows   | Run a GNU/Linux environment directly on Windows                           |
 | [Zed]             | Ubuntu    | Zed is a high-performance, multiplayer code editor                        |
+
+### 🦀 Rust Modules
+
+| Runtime          | Description                                                                   |
+| ---------------- | ----------------------------------------------------------------------------- |
+| [cargo-outdated] | A cargo subcommand for checking and applying updates to installed executables |
+| [cargo-modules]  | A cargo plugin for showing a tree-like overview of a crate's modules          |
+| [cargo-update]   | A cargo subcommand for checking and applying updates to installed executables |
+| [wasm-pack]      | 📦✨ your favourite rust -> wasm workflow tool!                                 |
 
 ### ⚙️ Scripts
 
@@ -142,6 +151,8 @@ The initial inspiration came from a post by [Scott Hanselman] on how to make a p
 [bottom]: https://clementtsang.github.io/bottom/
 [Caesium]: https://saerasoft.com/caesium
 [cargo-outdated]: https://github.com/kbknapp/cargo-outdated
+[cargo-modules]: https://crates.io/crates/cargo-modules
+[cargo-update]: https://crates.io/crates/cargo-update
 [Container Structure Tests]: https://github.com/GoogleContainerTools/container-structure-test
 [DBeaver]: https://dbeaver.io/
 [diskonaut]: https://github.com/imsnif/diskonaut
@@ -188,5 +199,6 @@ The initial inspiration came from a post by [Scott Hanselman] on how to make a p
 [UPX]: https://upx.github.io/
 [VS Code]: https://code.visualstudio.com/
 [Warp]: https://www.warp.dev/
+[wasm-pack]: https://rustwasm.github.io/wasm-pack/
 [WSL]: https://learn.microsoft.com/en-us/windows/wsl/
 [Zed]: https://zed.dev/

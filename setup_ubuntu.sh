@@ -328,7 +328,13 @@ pip install --no-cache-dir --no-color --progress-bar off --user --upgrade \
 
 echo
 printf "${GREEN}Rust...${NC}\n"
-cargo install cargo-outdated cargo-update diskonaut wasm-pack
+cargo install \
+    cargo-outdated \
+    cargo-modules \
+    cargo-update \
+    diskonaut \
+    wasm-pack
+
 cargo install-update -a
 
 echo
