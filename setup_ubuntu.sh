@@ -352,6 +352,7 @@ echo
 printf "${GREEN}Configuring Git...${NC}\n"
 git config --global init.defaultBranch main
 git config --global fetch.prune true
+git config --global push.autoSetupRemote true
 
 echo
 printf "${GREEN}Configuring bottom...${NC}\n"
