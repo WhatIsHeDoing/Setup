@@ -57,6 +57,8 @@ git config --global credential.helper wincred
 git config --global fetch.prune true
 git config --global init.defaultBranch main
 git config --global push.autoSetupRemote true
+git config --global push.default current
+
 git lfs install
 
 Install-FromScoop "Tools"
