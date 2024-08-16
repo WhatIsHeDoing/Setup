@@ -74,7 +74,7 @@ rustup update
 cargo install cargo-outdated cargo-update diskonaut wasm-pack
 cargo install-update -a
 npm install -g
-python -m pip install --upgrade ipykernel pip pre-commit setuptools
+pip install --no-cache-dir --no-color --progress-bar off --user --upgrade -r requirements.txt
 minikube addons enable metrics-server
 
 Install-FromScoop "Apps"

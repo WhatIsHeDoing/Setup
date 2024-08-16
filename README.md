@@ -53,6 +53,7 @@ As current support for Debian and Fedora is currently limited, `all` platforms m
 | [bottom]          | all       | Terminal graphical process/system monitor                                 |
 | [Caesium]         | Windows   | Image compressor                                                          |
 | [cargo-outdated]  | all       | cargo subcommand to show outdated Rust dependencies                       |
+| [Checkov]         | all       | Policy-as-code for everyone                                               |
 | [DBeaver]         | all       | Universal database tool                                                   |
 | [diskonaut]       | all       | Terminal disk space navigator                                             |
 | [draw.io]         | all       | Technology stack for building diagramming applications                    |
@@ -153,6 +154,7 @@ The initial inspiration came from a post by [Scott Hanselman] on how to make a p
 [cargo-outdated]: https://github.com/kbknapp/cargo-outdated
 [cargo-modules]: https://crates.io/crates/cargo-modules
 [cargo-update]: https://crates.io/crates/cargo-update
+[Checkov]: https://www.checkov.io/
 [Container Structure Tests]: https://github.com/GoogleContainerTools/container-structure-test
 [DBeaver]: https://dbeaver.io/
 [diskonaut]: https://github.com/imsnif/diskonaut
