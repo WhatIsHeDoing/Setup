@@ -43,10 +43,6 @@ sudo apt-get install -y \
 echo
 printf "🗒  ${YELLOW}Registering new package repositories...${NC}\n"
 
-echo
-printf "${GREEN}asciinema...${NC}\n"
-sudo apt-add-repository ppa:zanchey/asciinema -y
-
 # https://www.flatpak.org/setup/Ubuntu
 echo
 printf "${GREEN}Flatpack...${NC}\n"
@@ -315,7 +311,7 @@ sudo npm install --global --no-progress npm npm-check-updates
 
 echo
 printf "${GREEN}Python...${NC}\n"
-pip install --no-cache-dir --no-color --progress-bar off --user --upgrade -r requirements.txt
+pip install --break-system-packages --no-cache-dir --no-color --progress-bar off --user --upgrade -r requirements.txt
 
 echo
 printf "${GREEN}Rust...${NC}\n"
@@ -371,4 +367,7 @@ rm --verbose /tmp/bat-musl_"$BAT_VERSION"_amd64.deb
 rm --verbose /tmp/docker-desktop-$DOCKER_DESKTOP_VERSION-amd64.deb
 
 echo
-printf "${BLUE}Done!${NC}\n"
+printf "${BLUE}Done! You may also need to run the following to set up Git signing:${NC}\n"
+echo "git config --global gpg.format ssh"
+echo "git config --global user.signingkey <dir>/<key>.pub"
+echo "git config --global commit.gpgsign true"
