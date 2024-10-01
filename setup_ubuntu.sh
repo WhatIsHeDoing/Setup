@@ -90,6 +90,12 @@ curl -fsSL https://pkgs.k8s.io/core:/stable:/v$K8S_VERSION/deb/Release.key | sud
 # This overwrites any existing configuration in /etc/apt/sources.list.d/kubernetes.list
 echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v'$K8S_VERSION'/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
 
+# https://docs.k8slens.dev/getting-started/install-lens/#install-lens-desktop-from-the-rpm-repository
+echo
+printf "${GREEN}Lens...${NC}\n"
+curl -fsSL https://downloads.k8slens.dev/keys/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/lens-archive-keyring.gpg >/dev/null
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/lens-archive-keyring.gpg] https://downloads.k8slens.dev/apt/debian stable main" | sudo tee /etc/apt/sources.list.d/lens.list >/dev/null
+
 # https://learn.microsoft.com/en-gb/powershell/scripting/install/install-ubuntu?view=powershell-7.3
 echo
 printf "${GREEN}PowerShell...${NC}\n"
@@ -142,6 +148,7 @@ sudo apt-get install -y \
     jid \
     jq \
     just \
+    lens \
     lld \
     kubectl \
     libpq-dev \

@@ -68,6 +68,7 @@ As current support for Debian and Fedora is currently limited, `all` platforms m
 | [jq]              | all       | `sed` for JSON data                                                       |
 | [just]            | all       | Just a command runner                                                     |
 | [k9s]             | Windows   | Kubernetes CLI to manage your clusters in style!                          |
+| [lens]            | all       | The Way The World Runs Kubernetes                                         |
 | [less]            | all       | Terminal pager                                                            |
 | [nuget]           | Windows   | Package manager for .NET                                                  |
 | [pandoc]          | all       | Universal markup converter                                                |
@@ -175,6 +176,7 @@ The initial inspiration came from a post by [Scott Hanselman] on how to make a p
 [k9s]: https://k9scli.io/
 [Kics]: https://kics.io/
 [kubectl]: https://kubernetes.io/docs/reference/kubectl/kubectl/
+[lens]: https://k8slens.dev/
 [less]: https://www.greenwoodsoftware.com/less/
 [minikube]: https://minikube.sigs.k8s.io/
 [Node.js]: https://nodejs.org/
