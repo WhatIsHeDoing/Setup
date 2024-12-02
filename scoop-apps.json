@@ -11,7 +11,8 @@
         "rapidee",
         "spacesniffer",
         "spotify",
-        "telegram"
+        "telegram",
+        "vscode"
     ],
     "Buckets": [
         "extras",
