@@ -264,6 +264,7 @@ if [ -z "$IS_CONTAINER" ]; then
     sudo snap install code
     sudo snap install drawio
     sudo snap install k9s
+    sudo snap install obsidian --classic
     sudo snap install spotify
 
     sudo snap connect bottom:mount-observe

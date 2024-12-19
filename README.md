@@ -47,16 +47,12 @@ As current support for Debian and Fedora is currently limited, `all` platforms m
 | Tool              | Platforms | Description                                                               |
 | ----------------- | --------- | ------------------------------------------------------------------------- |
 | [7zip]            | all       | File archiver with a high compression ratio                               |
-| [Amberol]         | Ubuntu    | A small and simple sound and music player                                 |
 | [asciinema]       | Ubuntu    | Record and share terminal sessions                                        |
 | [bat]             | all       | A `cat(1)` clone with wings                                               |
 | [bottom]          | all       | Terminal graphical process/system monitor                                 |
-| [Caesium]         | Windows   | Image compressor                                                          |
 | [cargo-outdated]  | all       | cargo subcommand to show outdated Rust dependencies                       |
 | [Checkov]         | all       | Policy-as-code for everyone                                               |
-| [DBeaver]         | all       | Universal database tool                                                   |
 | [diskonaut]       | all       | Terminal disk space navigator                                             |
-| [draw.io]         | all       | Technology stack for building diagramming applications                    |
 | [eza]             | all       | Modern, maintained replacement for `ls`                                   |
 | [Flatpak]         | all       | The future of apps on Linux                                               |
 | [fzf]             | all       | Command-line fuzzy finder                                                 |
@@ -73,23 +69,33 @@ As current support for Debian and Fedora is currently limited, `all` platforms m
 | [nuget]           | Windows   | Package manager for .NET                                                  |
 | [pandoc]          | all       | Universal markup converter                                                |
 | [pnpm]            | all       | Fast, disk space efficient JavaScript package manager                     |
-| [Portmaster]      | Windows   | App firewall and monitor                                                  |
 | [powersession-rs] | Windows   | A Rust port of `asciinema` for Windows                                    |
 | [pre-commit]      | all       | A framework for managing and maintaining multi-language pre-commit hooks  |
 | [Pulumi]          | all       | Create, deploy, and manage infrastructure on any cloud using any language |
 | [PuTTY]           | Windows   | SSH and telnet client                                                     |
-| [RapidEE]         | Windows   | Rapid Environment Editor                                                  |
 | [rga]             | all       | Regex-based search tool for a multitude of file types                     |
 | [Scoop]           | Windows   | Command-line installer for Windows                                        |
-| [SpaceSniffer]    | Windows   | Visualise folder and file structures on disk                              |
-| [Spotify]         | all       | Digital music service                                                     |
 | [Starship]        | all       | Cross-shell prompt                                                        |
-| [Telegram]        | all       | Messaging                                                                 |
 | [UPX]             | all       | Executable packer                                                         |
-| [VS Code]         | all       | Code editor                                                               |
 | [Warp]            | Ubuntu    | The terminal reimagined                                                   |
 | [WSL]             | Windows   | Run a GNU/Linux environment directly on Windows                           |
 | [Zed]             | Ubuntu    | Zed is a high-performance, multiplayer code editor                        |
+
+### 📱 Apps
+
+| App            | Platforms | Description                                                                       |
+| -------------- | --------- | --------------------------------------------------------------------------------- |
+| [Amberol]      | Ubuntu    | A small and simple sound and music player                                         |
+| [Caesium]      | Windows   | Image compressor                                                                  |
+| [DBeaver]      | all       | Universal database tool                                                           |
+| [draw.io]      | all       | Technology stack for building diagramming applications                            |
+| [Obsidian]     | all       | Obsidian is the private and flexible writing app that adapts to the way you think |
+| [Portmaster]   | Windows   | App firewall and monitor                                                          |
+| [RapidEE]      | Windows   | Rapid Environment Editor                                                          |
+| [SpaceSniffer] | Windows   | Visualise folder and file structures on disk                                      |
+| [Spotify]      | all       | Digital music service                                                             |
+| [Telegram]     | all       | Messaging                                                                         |
+| [VS Code]      | all       | Code editor                                                                       |
 
 ### 🦀 Rust Modules
 
@@ -181,6 +187,7 @@ The initial inspiration came from a post by [Scott Hanselman] on how to make a p
 [minikube]: https://minikube.sigs.k8s.io/
 [Node.js]: https://nodejs.org/
 [nuget]: https://www.nuget.org/
+[Obsidian]: https://obsidian.md/
 [pandoc]: https://pandoc.org/
 [pnpm]: https://pnpm.io/
 [Portmaster]: https://safing.io/
