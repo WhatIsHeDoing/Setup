@@ -1,0 +1,101 @@
+---
+# Compares what is declared in this repo against what is actually installed.
+# Useful for discovering tools installed outside this repo that may be worth adding.
+# macOS only (Homebrew).
+- name: Diff declared vs installed Homebrew packages
+  hosts: localhost
+  gather_facts: true
+
+  tasks:
+      - name: Abort on non-macOS
+        ansible.builtin.fail:
+            msg: "This playbook is macOS only (requires Homebrew)."
+        when: ansible_os_family != "Darwin"
+
+      - name: Load tool vars
+        ansible.builtin.include_vars:
+            file: "{{ repo_root }}/ansible/roles/tools/vars/darwin.yml"
+
+      - name: Load app vars
+        ansible.builtin.include_vars:
+            file: "{{ repo_root }}/ansible/roles/apps/vars/darwin.yml"
+
+      - name: List installed Homebrew formulae
+        ansible.builtin.command: brew list --formula
+        changed_when: false
+        register: brew_formulae_raw
+
+      - name: List installed Homebrew casks
+        ansible.builtin.command: brew list --cask
+        changed_when: false
+        register: brew_casks_raw
+
+      - name: Compute formula diff
+        ansible.builtin.set_fact:
+            installed_formulae: "{{ brew_formulae_raw.stdout_lines }}"
+            undeclared_formulae: "{{ brew_formulae_raw.stdout_lines | difference(homebrew_tools) | sort }}"
+            uninstalled_formulae: "{{ homebrew_tools | difference(brew_formulae_raw.stdout_lines) | sort }}"
+            installed_casks: "{{ brew_casks_raw.stdout_lines }}"
+            undeclared_casks: "{{ brew_casks_raw.stdout_lines | difference(homebrew_casks) | sort }}"
+            uninstalled_casks: "{{ homebrew_casks | difference(brew_casks_raw.stdout_lines) | sort }}"
+
+      - name: Report formulae installed but not declared (candidates to add)
+        ansible.builtin.debug:
+            msg: "{{ undeclared_formulae }}"
+        when: undeclared_formulae | length > 0
+
+      - name: Report formulae declared but not installed (would be installed by just install)
+        ansible.builtin.debug:
+            msg: "{{ uninstalled_formulae }}"
+        when: uninstalled_formulae | length > 0
+
+      - name: Report casks installed but not declared (candidates to add)
+        ansible.builtin.debug:
+            msg: "{{ undeclared_casks }}"
+        when: undeclared_casks | length > 0
+
+      - name: Report casks declared but not installed (would be installed by just install)
+        ansible.builtin.debug:
+            msg: "{{ uninstalled_casks }}"
+        when: uninstalled_casks | length > 0
+
+      - name: Summary
+        ansible.builtin.debug:
+            msg: |
+                === Homebrew diff summary ===
+
+                Formulae installed but NOT declared (consider adding to tools/vars/darwin.yml):
+                {% if undeclared_formulae %}
+                {% for f in undeclared_formulae %}
+                  - {{ f }}
+                {% endfor %}
+                {% else %}
+                  (none)
+                {% endif %}
+
+                Formulae declared but NOT installed (will be added by just install):
+                {% if uninstalled_formulae %}
+                {% for f in uninstalled_formulae %}
+                  - {{ f }}
+                {% endfor %}
+                {% else %}
+                  (none)
+                {% endif %}
+
+                Casks installed but NOT declared (consider adding to apps/vars/darwin.yml):
+                {% if undeclared_casks %}
+                {% for c in undeclared_casks %}
+                  - {{ c }}
+                {% endfor %}
+                {% else %}
+                  (none)
+                {% endif %}
+
+                Casks declared but NOT installed (will be added by just install):
+                {% if uninstalled_casks %}
+                {% for c in uninstalled_casks %}
+                  - {{ c }}
+                {% endfor %}
+                {% else %}
+                  (none)
+                {% endif %}

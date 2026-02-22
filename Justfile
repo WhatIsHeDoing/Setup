@@ -30,6 +30,12 @@ upgrade:
     ansible-playbook ansible/playbooks/upgrade.yml \
         -i ansible/inventory/localhost.yml
 
+# Diff declared vs installed Homebrew packages (macOS only)
+diff:
+    ansible-playbook ansible/playbooks/diff.yml \
+        -i ansible/inventory/localhost.yml \
+        -e "repo_root=$(pwd)"
+
 # Verify the setup is complete and all tools are functional
 verify:
     ansible-playbook ansible/playbooks/verify.yml \
