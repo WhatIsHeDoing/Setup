@@ -1,6 +1,7 @@
 ---
 winget_apps:
   - 7zip.7zip
+  - Mozilla.Firefox
   - SabaAmaury.Caesium
   - dbeaver.dbeaver
   - JGraph.Draw

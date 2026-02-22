@@ -149,7 +149,7 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 | [Caesium]     | Windows         | Image compressor                                      |
 | [DBeaver]     | Windows         | Universal database tool                               |
 | [Amberol]     | Ubuntu          | Music player                                          |
-| [Brave]       | Ubuntu          | Web browser                                           |
+| [Firefox]     | all             | Web browser                                           |
 
 ### Cross-Platform Packages
 
@@ -193,7 +193,7 @@ just spellcheck
 [Amberol]: https://gitlab.gnome.org/World/amberol
 [bat]: https://github.com/sharkdp/bat
 [bottom]: https://clementtsang.github.io/bottom/
-[Brave]: https://brave.com/
+[Firefox]: https://www.mozilla.org/firefox/
 [Caesium]: https://saerasoft.com/caesium
 [DBeaver]: https://dbeaver.io/
 [Docker]: https://www.docker.com/
