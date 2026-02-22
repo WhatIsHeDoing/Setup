@@ -1,7 +1,7 @@
 ---
 - name: Verify desktop setup
   hosts: localhost
-  gather_facts: false
+  gather_facts: true
 
   vars:
       tools_to_verify:
@@ -35,6 +35,38 @@
         loop: "{{ verify_results.results }}"
         loop_control:
             label: "{{ item.item.name }}"
+
+      - name: Verify scripts are deployed and executable
+        ansible.builtin.stat:
+            path: "{{ ansible_env.HOME }}/.local/bin/{{ item }}"
+        register: script_stats
+        loop:
+            - ff
+            - ll
+        when: ansible_os_family != "Windows"
+
+      - name: Assert scripts are executable
+        ansible.builtin.assert:
+            that:
+                - item.stat.exists
+                - item.stat.executable
+            fail_msg: "{{ item.item }} not found or not executable at ~/.local/bin/{{ item.item }}"
+            success_msg: "OK {{ item.item }}: deployed and executable"
+        loop: "{{ script_stats.results }}"
+        loop_control:
+            label: "{{ item.item }}"
+        when: ansible_os_family != "Windows"
+
+      - name: Verify ll runs successfully
+        ansible.builtin.command: "{{ ansible_env.HOME }}/.local/bin/ll ."
+        changed_when: false
+        register: ll_result
+        when: ansible_os_family != "Windows"
+
+      - name: Print ll result
+        ansible.builtin.debug:
+            msg: "OK ll: listed {{ ll_result.stdout_lines | length }} lines"
+        when: ansible_os_family != "Windows"
 
       - name: Reminder about git signing
         ansible.builtin.debug:

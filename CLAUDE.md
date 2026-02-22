@@ -22,7 +22,7 @@ The `Justfile` provides convenience wrappers for the same commands.
 ```txt
 ansible/
   inventory/
-    group_vars/all.yml   # Cross-platform vars: cargo_packages, pip_packages, npm_packages, vscode_extensions
+    group_vars/all.yml   # Cross-platform vars: cargo_packages, pip_packages, vscode_extensions
     localhost.yml        # macOS / Ubuntu inventory
     windows.yml          # Windows inventory (WinRM from WSL2)
   playbooks/
@@ -31,7 +31,7 @@ ansible/
     verify.yml           # Smoke-tests every installed tool
   roles/
     bootstrap/           # Installs package managers (Homebrew, apt repos, WinGet)
-    runtimes/            # Installs Mise, Node/Python/Rust, global cargo/pip/npm packages
+    runtimes/            # Installs Mise, Node/Python/Rust, global cargo/pip packages
     tools/               # CLI tools per platform
     apps/                # GUI apps per platform
     dotfiles/            # Deploys config files and scripts/ to ~/.local/bin

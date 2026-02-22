@@ -1,21 +1,10 @@
 {
-    "cSpell.diagnosticLevel": "Information",
-    "cSpell.language": "en-GB,en",
-    "cSpell.words": [
-        "Amberol",
-        "asciicast",
-        "asciinema",
-        "bootstrapper",
-        "Cascadia",
-        "Grype",
-        "handoff",
-        "Justfile",
-        "linted",
-        "Powerline",
-        "runtimes",
-        "shellcheck",
-        "winget"
-    ],
+    "[markdown]": {
+        "editor.codeActionsOnSave": {
+            "source.fixAll.markdownlint": "always"
+        },
+        "editor.defaultFormatter": "yzhang.markdown-all-in-one"
+    },
     "editor.codeActionsOnSave": {
         "source.fixAll": "always"
     },

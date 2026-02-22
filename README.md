@@ -59,7 +59,7 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 .
 ├── ansible/
 │   ├── inventory/
-│   │   ├── group_vars/all.yml   # Cross-platform vars (git config, cargo/pip/npm packages)
+│   │   ├── group_vars/all.yml   # Cross-platform vars (git config, cargo/pip packages)
 │   │   ├── localhost.yml        # macOS / Ubuntu target
 │   │   └── windows.yml         # Windows target (WinRM via WSL2 gateway)
 │   ├── playbooks/
@@ -159,7 +159,7 @@ Installed on all platforms via their respective package managers:
 | ------- | ---------------------------------------------------------------------------------- |
 | Cargo   | `cargo-modules`, `cargo-outdated`, `cargo-update`, `diskonaut`, `wasm-pack`        |
 | pip     | `ansible-core`, `ansible-lint`, `checkov`, `ipykernel`, `pre-commit`, `setuptools` |
-| npm     | `npm-check-updates`                                                                |
+| pnpm    | `cspell`                                                                           |
 | VS Code | GitLens, EditorConfig, Markdownlint, Night Owl theme, VS Code Icons                |
 
 ### Scripts
@@ -183,6 +183,7 @@ Test the code in this repo with:
 ```sh
 just pre-commit
 just ansible-lint
+just spellcheck
 ```
 
 [Ansible]: https://www.ansible.com/

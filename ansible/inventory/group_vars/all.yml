@@ -24,10 +24,9 @@ pip_packages:
   - pre-commit
   - setuptools
 
-# npm packages installed on all platforms
-npm_packages:
-  - npm
-  - npm-check-updates
+# pnpm packages installed globally on all platforms
+pnpm_packages:
+  - cspell
 
 # VS Code extensions installed on all platforms
 vscode_extensions:

@@ -38,8 +38,8 @@
       environment:
         PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.PATH }}"
 
-    - name: Update npm packages globally
-      ansible.builtin.command: npm update -g
+    - name: Upgrade global pnpm packages
+      ansible.builtin.command: pnpm update -g
       changed_when: false
       environment:
         PATH: "{{ ansible_env.HOME }}/.local/share/mise/shims:{{ ansible_env.PATH }}"

@@ -29,8 +29,8 @@
   changed_when: false
   failed_when: false
 
-- name: Install global npm packages
-  ansible.builtin.command: "npm.exe install -g {{ npm_packages | join(' ') }}"
+- name: Install global pnpm packages
+  ansible.builtin.command: "pnpm.exe add -g {{ pnpm_packages | join(' ') }}"
   changed_when: false
   failed_when: false
 

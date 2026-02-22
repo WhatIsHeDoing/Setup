@@ -47,3 +47,7 @@ ansible-setup:
 # Lints Ansible files
 ansible-lint:
     PYTHONPATH=./collections ansible-lint
+
+# Check spelling across the repo
+spellcheck:
+    cspell lint --no-progress "**"

@@ -55,8 +55,8 @@
   failed_when: false
   when: effective_platform != "windows"
 
-- name: Install global npm packages
-  ansible.builtin.command: "npm install -g {{ npm_packages | join(' ') }}"
+- name: Install global pnpm packages
+  ansible.builtin.command: "pnpm add -g {{ pnpm_packages | join(' ') }}"
   environment:
     PATH: "{{ ansible_env.HOME }}/.local/share/mise/shims:{{ ansible_env.PATH }}"
   changed_when: false
