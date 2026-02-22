@@ -14,3 +14,4 @@ homebrew_tools:
     - shellcheck
     - starship
     - upx
+    - zsh-autocomplete

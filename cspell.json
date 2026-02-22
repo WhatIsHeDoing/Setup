@@ -68,6 +68,7 @@
         "keyring",
         "keyrings",
         "killall",
+        "lineinfile",
         "kubectl",
         "kubernetes",
         "lfs",

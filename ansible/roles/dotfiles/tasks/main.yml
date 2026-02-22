@@ -5,55 +5,73 @@
 
 - name: Ensure ~/.config directory exists
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/.config"
-    state: directory
-    mode: "0755"
+      path: "{{ ansible_env.HOME }}/.config"
+      state: directory
+      mode: "0755"
   when: effective_platform != "windows"
 
 - name: Deploy Starship configuration
   ansible.builtin.copy:
-    src: "{{ repo_root }}/config/starship.toml"
-    dest: "{{ ansible_env.HOME }}/.config/starship.toml"
-    mode: "0644"
-    backup: true
+      src: "{{ repo_root }}/config/starship.toml"
+      dest: "{{ ansible_env.HOME }}/.config/starship.toml"
+      mode: "0644"
+      backup: true
   when: effective_platform != "windows"
+
+- name: Enable Starship in .zshrc
+  ansible.builtin.lineinfile:
+      path: "{{ ansible_env.HOME }}/.zshrc"
+      line: 'eval "$(starship init zsh)"'
+      regexp: "starship init zsh"
+      create: true
+      mode: "0644"
+  when: effective_platform == "darwin"
 
 - name: Ensure bottom config directory exists
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/.config/bottom"
-    state: directory
-    mode: "0755"
+      path: "{{ ansible_env.HOME }}/.config/bottom"
+      state: directory
+      mode: "0755"
   when: effective_platform != "windows"
 
 - name: Deploy bottom configuration
   ansible.builtin.copy:
-    src: "{{ repo_root }}/config/bottom.toml"
-    dest: "{{ ansible_env.HOME }}/.config/bottom/bottom.toml"
-    mode: "0644"
-    backup: true
+      src: "{{ repo_root }}/config/bottom.toml"
+      dest: "{{ ansible_env.HOME }}/.config/bottom/bottom.toml"
+      mode: "0644"
+      backup: true
   when: effective_platform != "windows"
 
 - name: Deploy .bashrc (Ubuntu only)
   ansible.builtin.template:
-    src: "{{ repo_root }}/.bashrc"
-    dest: "{{ ansible_env.HOME }}/.bashrc"
-    mode: "0644"
-    backup: true
+      src: "{{ repo_root }}/.bashrc"
+      dest: "{{ ansible_env.HOME }}/.bashrc"
+      mode: "0644"
+      backup: true
   when: effective_platform == "debian"
 
 - name: Ensure ~/.local/bin exists
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/.local/bin"
-    state: directory
-    mode: "0755"
+      path: "{{ ansible_env.HOME }}/.local/bin"
+      state: directory
+      mode: "0755"
   when: effective_platform != "windows"
+
+- name: Enable zsh-autocomplete in .zshrc
+  ansible.builtin.lineinfile:
+      path: "{{ ansible_env.HOME }}/.zshrc"
+      line: 'source "/opt/homebrew/share/zsh-autocomplete/zsh-autocomplete.plugin.zsh"'
+      regexp: 'zsh-autocomplete\.plugin\.zsh'
+      create: true
+      mode: "0644"
+  when: effective_platform == "darwin"
 
 - name: Install scripts
   ansible.builtin.copy:
-    src: "{{ repo_root }}/scripts/{{ item }}"
-    dest: "{{ ansible_env.HOME }}/.local/bin/{{ item }}"
-    mode: "0755"
+      src: "{{ repo_root }}/scripts/{{ item }}"
+      dest: "{{ ansible_env.HOME }}/.local/bin/{{ item }}"
+      mode: "0755"
   loop:
-    - ff
-    - ll
+      - ff
+      - ll
   when: effective_platform != "windows"
