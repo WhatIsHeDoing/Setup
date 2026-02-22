@@ -195,7 +195,29 @@ copy tasks. Always declare `changed_when:`. For unavoidable shell patterns
 (e.g. install scripts piped to `sh`), suppress specific rules with `# noqa`
 and a comment explaining why. Target the `production` ansible-lint profile.
 
-## 14. Minimise the commands required to set up or update a machine
+## 14. Choose tools that developers love and that make them highly productive
+
+The bar for including a tool is not that it merely solves a problem — it is
+that it does so in a way that is genuinely enjoyable and makes the people
+using it significantly more productive. Prefer tools with high developer
+satisfaction, active communities, and a reputation for excellent UX and
+performance. Actively replace tools in the setup when something meaningfully
+better emerges.
+
+**Why:** A setup used reluctantly is not a productive setup. Tools that
+developers genuinely enjoy get used more, get learned more deeply, and
+compound into a positive productivity loop over time. The difference between
+a mediocre tool and a great one is not marginal — it accumulates across every
+working hour.
+
+**In practice:** When choosing between tools that solve the same problem,
+weigh community signals (developer surveys, adoption trends, conference
+mindshare) alongside technical merit. If a tool in the setup has a clearly
+superior successor — better performance, better UX, more active development —
+replace it. The goal is a setup that developers actively choose to use, not
+one they merely tolerate.
+
+## 15. Minimise the commands required to set up or update a machine
 
 Both initial setup and ongoing updates must be achievable with as few
 commands as possible — ideally one. Operational friction compounds over time;
