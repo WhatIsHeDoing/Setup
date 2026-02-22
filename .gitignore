@@ -1,0 +1,35 @@
+# Ansible
+collections/
+*.retry
+.vault_pass
+vault_password*
+*.vault
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+.pytest_cache/
+
+# Node
+node_modules/
+
+# Secrets / credentials
+.env
+*.env
+*.pem
+*.key
+id_rsa
+id_ed25519
+
+# Editors
+.DS_Store
+.idea/
+*.swp
+*.swo
+*~
+
+# mise / asdf
+.tool-versions

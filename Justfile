@@ -34,3 +34,16 @@ upgrade:
 verify:
     ansible-playbook ansible/playbooks/verify.yml \
         -i ansible/inventory/localhost.yml
+
+# Run pre-commit checks
+pre-commit:
+    pre-commit install
+    pre-commit run --all-files
+
+# Installs Ansible collections
+ansible-setup:
+    ansible-galaxy collection install -r ansible/requirements.yml -p ./collections --force
+
+# Lints Ansible files
+ansible-lint:
+    PYTHONPATH=./collections ansible-lint

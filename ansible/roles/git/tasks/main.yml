@@ -12,12 +12,12 @@
     value: "{{ item.value }}"
     scope: global
   loop:
-    - { key: "core.autocrlf",      value: "true" }
-    - { key: "credential.helper",  value: "wincred" }
+    - {key: "core.autocrlf", value: "true"}
+    - {key: "credential.helper", value: "wincred"}
   when: ansible_os_family == "Windows"
 
 - name: Enable Git LFS (macOS)
-  ansible.builtin.shell: git lfs install
+  ansible.builtin.command: git lfs install
   changed_when: false
   when: ansible_os_family == "Darwin"
 

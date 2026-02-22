@@ -1,15 +1,27 @@
+---
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
     - repo: https://github.com/pre-commit/pre-commit-hooks
-      rev: v4.6.0
+      rev: v5.0.0
       hooks:
           - id: trailing-whitespace
           - id: end-of-file-fixer
           - id: check-json
+          - id: check-yaml
           - id: check-added-large-files
+          - id: check-merge-conflict
+          - id: detect-private-key
 
     - repo: https://github.com/shellcheck-py/shellcheck-py
       rev: v0.10.0.1
       hooks:
           - id: shellcheck
+
+    - repo: https://github.com/adrienverge/yamllint
+      rev: v1.35.1
+      hooks:
+          - id: yamllint
+
+    # ansible-lint runs in CI (see .github/workflows/lint.yml) where
+    # Ansible Galaxy collections can be properly installed first.

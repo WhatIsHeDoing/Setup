@@ -1,0 +1,19 @@
+---
+name: Renovate
+
+on:
+    schedule:
+        - cron: "0 20 1 * *" # Monday 20:00 UTC — gated to first Monday by renovate.json schedule
+    workflow_dispatch:
+
+jobs:
+    renovate:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: renovatebot/github-action@v46.1.1
+              with:
+                  # Use a PAT (RENOVATE_TOKEN) for full PR creation capability.
+                  # Falls back to GITHUB_TOKEN for public repos.
+                  token: ${{ secrets.RENOVATE_TOKEN || github.token }}

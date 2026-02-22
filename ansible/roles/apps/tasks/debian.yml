@@ -29,7 +29,8 @@
   failed_when: false
 
 - name: Install Zed editor
-  ansible.builtin.shell: curl -sSfL https://zed.dev/install.sh | sh
+  ansible.builtin.shell: curl -sSfL https://zed.dev/install.sh | sh  # noqa: command-instead-of-module risky-shell-pipe
+  changed_when: zed_check.rc != 0
   when: zed_check.rc != 0
 
 - name: Check if minikube is installed
@@ -39,8 +40,9 @@
   failed_when: false
 
 - name: Install minikube
-  ansible.builtin.shell: |
-    curl -sLO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-    sudo install minikube-linux-amd64 /usr/local/bin/minikube
-    rm minikube-linux-amd64
+  ansible.builtin.get_url:
+    url: https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+    dest: /usr/local/bin/minikube
+    mode: "0755"
+  become: true
   when: minikube_check.rc != 0

@@ -1,0 +1,23 @@
+{
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "extends": ["config:recommended"],
+    "enabledManagers": ["github-actions", "pre-commit", "ansible-galaxy"],
+    "ansible-galaxy": {
+        "fileMatch": ["ansible/requirements\\.yml"]
+    },
+    "schedule": ["on the first monday of the month"],
+    "timezone": "Europe/London",
+    "minimumReleaseAge": "14 days",
+    "labels": ["dependencies"],
+    "platformAutomerge": false,
+    "packageRules": [
+        {
+            "matchUpdateTypes": ["major"],
+            "groupName": "major"
+        },
+        {
+            "matchUpdateTypes": ["minor", "patch"],
+            "groupName": "minor-and-patch"
+        }
+    ]
+}

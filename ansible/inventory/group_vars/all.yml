@@ -16,6 +16,8 @@ cargo_packages:
 
 # Python packages installed on all platforms
 pip_packages:
+  - ansible-core
+  - ansible-lint
   - checkov
   - ipykernel
   - pip

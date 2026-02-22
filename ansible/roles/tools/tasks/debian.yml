@@ -6,7 +6,7 @@
   become: true
 
 - name: Enable Git LFS
-  ansible.builtin.shell: git lfs install
+  ansible.builtin.command: git lfs install
   changed_when: false
 
 - name: Install snap tools
@@ -24,7 +24,8 @@
   failed_when: false
 
 - name: Install Starship
-  ansible.builtin.shell: curl -sS https://starship.rs/install.sh | sh -s -- --yes
+  ansible.builtin.shell: curl -sS https://starship.rs/install.sh | sh -s -- --yes  # noqa: command-instead-of-module risky-shell-pipe
+  changed_when: starship_check.rc != 0
   when: starship_check.rc != 0
 
 - name: Check if container-structure-test is installed
@@ -34,14 +35,15 @@
   failed_when: false
 
 - name: Install container-structure-test
-  ansible.builtin.shell: |
-    curl -sLO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64
-    chmod +x container-structure-test-linux-amd64
-    sudo mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
+  ansible.builtin.get_url:
+    url: https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64
+    dest: /usr/local/bin/container-structure-test
+    mode: "0755"
+  become: true
   when: cst_check.rc != 0
 
 - name: Install ripgrep-all
-  ansible.builtin.shell: cargo install ripgrep_all
+  ansible.builtin.command: cargo install ripgrep_all
   environment:
     PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
   args:
@@ -53,21 +55,8 @@
   changed_when: false
   failed_when: false
 
-- name: Install pnpm
+- name: Install pnpm  # noqa: command-instead-of-module risky-shell-pipe
   ansible.builtin.shell: |
     wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
+  changed_when: pnpm_check.rc != 0
   when: pnpm_check.rc != 0
-
-- name: Check if Earthly is installed
-  ansible.builtin.command: which earthly
-  register: earthly_check
-  changed_when: false
-  failed_when: false
-
-- name: Install Earthly
-  ansible.builtin.shell: |
-    sudo wget -nv https://github.com/earthly/earthly/releases/latest/download/earthly-linux-amd64 \
-      -O /usr/local/bin/earthly
-    sudo chmod +x /usr/local/bin/earthly
-    sudo /usr/local/bin/earthly bootstrap --with-autocomplete
-  when: earthly_check.rc != 0

@@ -3,7 +3,7 @@
   ansible.builtin.include_vars: windows.yml
 
 - name: Install WinGet runtimes
-  ansible.builtin.shell: >
+  ansible.builtin.command: >
     winget.exe install {{ item }}
     --accept-source-agreements
     --accept-package-agreements
@@ -14,28 +14,28 @@
   failed_when: false
 
 - name: Update Rust toolchain
-  ansible.builtin.shell: rustup.exe update
+  ansible.builtin.command: rustup.exe update
   changed_when: true
   failed_when: false
 
 - name: Install global Cargo packages
-  ansible.builtin.shell: "cargo.exe install {{ item }}"
+  ansible.builtin.command: "cargo.exe install {{ item }}"
   loop: "{{ cargo_packages }}"
   changed_when: false
   failed_when: false
 
 - name: Update all installed Cargo packages
-  ansible.builtin.shell: cargo.exe install-update -a
+  ansible.builtin.command: cargo.exe install-update -a
   changed_when: false
   failed_when: false
 
 - name: Install global npm packages
-  ansible.builtin.shell: "npm.exe install -g {{ npm_packages | join(' ') }}"
+  ansible.builtin.command: "npm.exe install -g {{ npm_packages | join(' ') }}"
   changed_when: false
   failed_when: false
 
 - name: Install Python packages
-  ansible.builtin.shell: >
+  ansible.builtin.command: >
     pip.exe install
     --no-cache-dir --no-color --progress-bar off
     --user --upgrade

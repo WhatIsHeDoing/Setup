@@ -175,18 +175,25 @@ Configuration drift begins the moment a step leaves the repo.
 task in the README rather than relying on memory. Aim to automate it in a
 subsequent change.
 
-## 13. Security is not optional
+## 13. Write automation code to production quality
 
-Configuration and infrastructure code is subject to the same security
-scrutiny as application code. Dependencies should be scanned for
-vulnerabilities, and scripts should be linted for unsafe patterns.
+Configuration and infrastructure code is subject to the same standards as
+application code. Playbooks and scripts must be idiomatic, linted, and free
+of unsafe patterns. Prefer dedicated modules over raw shell commands; set
+explicit file permissions; declare whether tasks change state; guard piped
+shell commands.
 
-**Why:** Setup scripts often run with elevated privileges on fresh machines,
-making them a high-value target. A compromised or insecure setup script can
-undermine everything built on top of it.
+**Why:** Setup scripts run with elevated privileges on real machines. Sloppy
+automation is a source of bugs, security risk, and subtle drift. Ansible
+provides purpose-built modules and rules (ansible-lint profile `production`)
+precisely to avoid these failure modes.
 
-**In practice:** Run Checkov and Grype as part of CI. Run ShellCheck on all
-shell scripts. Treat security scan failures as blocking, not advisory.
+**In practice:** Run `ansible-lint` and `shellcheck` in CI. Use
+`ansible.builtin.command` instead of `shell` unless shell features (pipes,
+redirects, subshells) are genuinely needed. Always set `mode:` on file and
+copy tasks. Always declare `changed_when:`. For unavoidable shell patterns
+(e.g. install scripts piped to `sh`), suppress specific rules with `# noqa`
+and a comment explaining why. Target the `production` ansible-lint profile.
 
 ## 14. Minimise the commands required to set up or update a machine
 

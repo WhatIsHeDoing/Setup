@@ -1,6 +1,6 @@
 {
     "cSpell.diagnosticLevel": "Information",
-    "cSpell.language": "en-GB",
+    "cSpell.language": "en-GB,en",
     "cSpell.words": [
         "Amberol",
         "asciicast",
@@ -19,5 +19,9 @@
     "editor.codeActionsOnSave": {
         "source.fixAll": "always"
     },
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "files.associations": {
+        ".ansible-lint": "yaml",
+        "scripts/*": "shellscript"
+    }
 }

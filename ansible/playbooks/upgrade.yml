@@ -20,32 +20,32 @@
       when: ansible_os_family == "Debian"
 
     - name: Upgrade Mise tools
-      ansible.builtin.shell: mise upgrade
+      ansible.builtin.command: mise upgrade
       changed_when: true
       environment:
         PATH: "{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
 
     - name: Update Rust toolchain via rustup
-      ansible.builtin.shell: rustup update
+      ansible.builtin.command: rustup update
       changed_when: true
       environment:
         PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
 
     - name: Update all installed Cargo packages
-      ansible.builtin.shell: cargo install-update -a
+      ansible.builtin.command: cargo install-update -a
       changed_when: false
       failed_when: false
       environment:
         PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.PATH }}"
 
     - name: Update npm packages globally
-      ansible.builtin.shell: npm update -g
+      ansible.builtin.command: npm update -g
       changed_when: false
       environment:
         PATH: "{{ ansible_env.HOME }}/.local/share/mise/shims:{{ ansible_env.PATH }}"
 
     - name: Upgrade pip packages
-      ansible.builtin.shell: "pip install --user --upgrade {{ pip_packages | join(' ') }}"
+      ansible.builtin.command: "pip install --user --upgrade {{ pip_packages | join(' ') }}"
       environment:
         PATH: "{{ ansible_env.HOME }}/.local/share/mise/shims:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
       changed_when: false

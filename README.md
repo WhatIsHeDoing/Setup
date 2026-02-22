@@ -155,12 +155,12 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 
 Installed on all platforms via their respective package managers:
 
-| Type    | Packages                                                                    |
-| ------- | --------------------------------------------------------------------------- |
-| Cargo   | `cargo-modules`, `cargo-outdated`, `cargo-update`, `diskonaut`, `wasm-pack` |
-| pip     | `checkov`, `ipykernel`, `pre-commit`, `setuptools`                          |
-| npm     | `npm-check-updates`                                                         |
-| VS Code | GitLens, EditorConfig, Markdownlint, Night Owl theme, VS Code Icons         |
+| Type    | Packages                                                                           |
+| ------- | ---------------------------------------------------------------------------------- |
+| Cargo   | `cargo-modules`, `cargo-outdated`, `cargo-update`, `diskonaut`, `wasm-pack`        |
+| pip     | `ansible-core`, `ansible-lint`, `checkov`, `ipykernel`, `pre-commit`, `setuptools` |
+| npm     | `npm-check-updates`                                                                |
+| VS Code | GitLens, EditorConfig, Markdownlint, Night Owl theme, VS Code Icons                |
 
 ### Scripts
 
@@ -178,11 +178,11 @@ Deployed to `~/.local/bin` on macOS and Ubuntu:
 
 ## Testing
 
-Run pre-commit checks:
+Test the code in this repo with:
 
 ```sh
-pre-commit install
-pre-commit run --all-files
+just pre-commit
+just ansible-lint
 ```
 
 [Ansible]: https://www.ansible.com/

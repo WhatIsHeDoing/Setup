@@ -1,12 +1,12 @@
 ---
 - name: Install VS Code extensions
-  ansible.builtin.shell: "code.exe --install-extension {{ item }}"
+  ansible.builtin.command: "code.exe --install-extension {{ item }}"
   loop: "{{ vscode_extensions }}"
   changed_when: false
   failed_when: false
 
 - name: Upgrade all WinGet packages
-  ansible.builtin.shell: >
+  ansible.builtin.command: >
     winget.exe upgrade --all
     --accept-source-agreements
     --accept-package-agreements
