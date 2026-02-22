@@ -43,6 +43,38 @@ just install
 just upgrade
 ```
 
+### Dry run
+
+Preview exactly what `just install` would change without touching the machine:
+
+```sh
+just dry-run
+```
+
+Runs the playbook with `--check --diff`: shows which tasks would make changes and diffs any file content that would be modified. The verification step is skipped because commands do not actually execute in check mode.
+
+### Running a subset
+
+Each role is tagged so you can re-run it without running the full playbook:
+
+| Tag         | Role                                      |
+| ----------- | ----------------------------------------- |
+| `bootstrap` | Package manager setup                     |
+| `runtimes`  | Mise, Node, Python, Rust, global packages |
+| `tools`     | CLI tools                                 |
+| `apps`      | GUI applications                          |
+| `dotfiles`  | Config files and scripts                  |
+| `git`       | Global git configuration                  |
+| `os_config` | VS Code extensions, macOS system defaults |
+
+```sh
+just install-tags dotfiles              # redeploy config files only
+just install-tags git                   # reapply git config (e.g. after editing local.yml)
+just install-tags dotfiles git          # multiple roles at once
+just dry-run-tags dotfiles              # preview config file changes only
+just dry-run-tags git                   # preview git config changes only
+```
+
 ## Windows Setup
 
 Windows packages are managed from WSL2 via Ansible + WinRM. The flow is:

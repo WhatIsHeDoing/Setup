@@ -35,3 +35,27 @@ jobs:
 
             - name: Run ansible-lint
               run: ansible-lint
+
+    powershell-lint:
+        runs-on: windows-latest
+        steps:
+            - uses: actions/checkout@v6.0.2
+
+            - name: Check PowerShell script syntax
+              shell: pwsh
+              run: |
+                  $errors = @()
+                  Get-ChildItem -Recurse -Filter "*.ps1" | ForEach-Object {
+                      $parseErrors = $null
+                      $null = [System.Management.Automation.Language.Parser]::ParseFile(
+                          $_.FullName, [ref]$null, [ref]$parseErrors
+                      )
+                      if ($parseErrors.Count -gt 0) {
+                          $errors += "$($_.FullName): $parseErrors"
+                      }
+                  }
+                  if ($errors.Count -gt 0) {
+                      $errors | ForEach-Object { Write-Error $_ }
+                      exit 1
+                  }
+                  Write-Output "All PowerShell scripts passed syntax check."

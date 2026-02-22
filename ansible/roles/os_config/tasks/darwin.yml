@@ -4,3 +4,53 @@
   loop: "{{ vscode_extensions }}"
   changed_when: false
   failed_when: false
+
+- name: Configure macOS system defaults
+  ansible.builtin.command: "{{ item.cmd }}"
+  loop:
+    # Finder
+    - cmd: defaults write com.apple.finder AppleShowAllExtensions -bool true
+      name: Show all file extensions in Finder
+    - cmd: defaults write com.apple.finder ShowPathbar -bool true
+      name: Show path bar in Finder
+    - cmd: defaults write com.apple.finder ShowStatusBar -bool true
+      name: Show status bar in Finder
+    - cmd: defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
+      name: Disable extension-change warning dialog
+    - cmd: defaults write com.apple.finder FXPreferredViewStyle -string clmv
+      name: Default Finder view to column layout
+    # Dock
+    - cmd: defaults write com.apple.dock autohide -bool true
+      name: Auto-hide the Dock
+    - cmd: defaults write com.apple.dock show-recents -bool false
+      name: Hide recent apps section in Dock
+    - cmd: defaults write com.apple.dock minimize-to-application -bool true
+      name: Minimise windows into their application icon
+    # Screenshots
+    - cmd: defaults write com.apple.screencapture type png
+      name: Set screenshot format to PNG
+    - cmd: defaults write com.apple.screencapture disable-shadow -bool true
+      name: Disable drop-shadow on screenshots
+    # Keyboard
+    - cmd: defaults write NSGlobalDomain KeyRepeat -int 2
+      name: Set fast key repeat rate
+    - cmd: defaults write NSGlobalDomain InitialKeyRepeat -int 15
+      name: Set short initial key repeat delay
+    # Misc
+    - cmd: defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+      name: Suppress .DS_Store creation on network volumes
+    - cmd: defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
+      name: Suppress .DS_Store creation on USB volumes
+  loop_control:
+    label: "{{ item.name }}"
+  changed_when: false
+
+- name: Restart Finder to apply changes
+  ansible.builtin.command: killall Finder
+  changed_when: false
+  failed_when: false
+
+- name: Restart Dock to apply changes
+  ansible.builtin.command: killall Dock
+  changed_when: false
+  failed_when: false

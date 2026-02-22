@@ -30,6 +30,31 @@ upgrade:
     ansible-playbook ansible/playbooks/upgrade.yml \
         -i ansible/inventory/localhost.yml
 
+# Run install for specific roles only: just install-tags dotfiles git
+install-tags +tags:
+    ansible-playbook ansible/playbooks/install.yml \
+        -i ansible/inventory/localhost.yml \
+        -e "repo_root=$(pwd)" \
+        --tags "{{ tags }}" \
+        --skip-tags verify
+
+# Preview what install would change without making any changes
+dry-run:
+    ansible-playbook ansible/playbooks/install.yml \
+        -i ansible/inventory/localhost.yml \
+        -e "repo_root=$(pwd)" \
+        --check --diff \
+        --skip-tags verify
+
+# Preview changes for specific roles only: just dry-run-tags dotfiles git
+dry-run-tags +tags:
+    ansible-playbook ansible/playbooks/install.yml \
+        -i ansible/inventory/localhost.yml \
+        -e "repo_root=$(pwd)" \
+        --check --diff \
+        --tags "{{ tags }}" \
+        --skip-tags verify
+
 # Diff declared vs installed Homebrew packages (macOS only)
 diff:
     ansible-playbook ansible/playbooks/diff.yml \

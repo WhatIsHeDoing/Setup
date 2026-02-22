@@ -8,12 +8,20 @@
         effective_platform: "{{ 'windows' if ansible_env.WSL_DISTRO_NAME is defined else ansible_os_family | lower }}"
   roles:
     - role: bootstrap
+      tags: [bootstrap]
     - role: runtimes
+      tags: [runtimes]
     - role: tools
+      tags: [tools]
     - role: apps
+      tags: [apps]
     - role: dotfiles
+      tags: [dotfiles]
     - role: git
+      tags: [git]
     - role: os_config
+      tags: [os_config]
 
 - name: Verify installation
   ansible.builtin.import_playbook: verify.yml
+  tags: [verify]

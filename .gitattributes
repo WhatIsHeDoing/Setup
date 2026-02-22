@@ -1,0 +1,21 @@
+# Normalise line endings to LF in the repo; check out as-is on each platform.
+# This prevents CRLF/LF conflicts when Windows contributors (or the Windows
+# bootstrap script) touch the repo.
+* text=auto eol=lf
+
+# Windows-specific scripts must be checked out with CRLF so they run correctly
+# in cmd.exe / PowerShell without modification.
+*.ps1 text eol=crlf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binaries — never transform
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.pdf  binary
+*.zip  binary
+*.tar  binary
+*.gz   binary
