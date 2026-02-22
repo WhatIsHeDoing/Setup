@@ -21,6 +21,16 @@
   changed_when: false
   when: ansible_os_family == "Darwin"
 
+- name: Configure git user identity
+  community.general.git_config:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    scope: global
+  loop:
+    - {key: "user.name", value: "{{ git_user_name }}"}
+    - {key: "user.email", value: "{{ git_user_email }}"}
+  when: git_user_name is defined and git_user_email is defined
+
 - name: Reminder about git signing
   ansible.builtin.debug:
     msg: |

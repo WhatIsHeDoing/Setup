@@ -59,7 +59,8 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 .
 ├── ansible/
 │   ├── inventory/
-│   │   ├── group_vars/all.yml   # Cross-platform vars (git config, cargo/pip packages)
+│   │   ├── group_vars/all.yml         # Cross-platform vars (git config, cargo/pip packages)
+│   │   ├── group_vars/local.yml.example  # Template for gitignored personal overrides
 │   │   ├── localhost.yml        # macOS / Ubuntu target
 │   │   └── windows.yml         # Windows target (WinRM via WSL2 gateway)
 │   ├── playbooks/
@@ -170,6 +171,23 @@ Deployed to `~/.local/bin` on macOS and Ubuntu:
 | ----------- | ------------------------------------------------------------ |
 | `ff <term>` | Fuzzy find files matching a search term, previewed with bat  |
 | `ll [path]` | List files with eza (long format, git-aware, human-readable) |
+
+## Customisation
+
+Machine-specific settings that should not be committed live in a gitignored file:
+
+```sh
+cp ansible/inventory/group_vars/local.yml.example ansible/inventory/group_vars/local.yml
+```
+
+Edit `local.yml` and fill in your details:
+
+```yaml
+git_user_name: "Your Name"
+git_user_email: "you@example.com"
+```
+
+Ansible picks this file up automatically. If it is absent the identity tasks are skipped — nothing breaks. The `.example` file documents the available options.
 
 ## Documentation
 

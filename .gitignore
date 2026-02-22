@@ -1,5 +1,6 @@
 # Ansible
 collections/
+ansible/inventory/group_vars/local.yml
 *.retry
 .vault_pass
 vault_password*

@@ -1,0 +1,5 @@
+---
+# Personal identity applied to global git config.
+# Copy this file to local.yml (gitignored) and fill in your details.
+git_user_name: "Your Name"
+git_user_email: "you@example.com"
