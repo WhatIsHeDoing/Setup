@@ -1,215 +1,227 @@
-# 💻 Prep My OS
+# Setup
 
-## 👋 Introduction
+Cross-platform desktop setup using [Ansible] and [Mise].
 
-This repository contains a group of scripts that set up my common environments.
+Targets **macOS**, **Ubuntu**, and **Windows** (via WSL2). Idempotent — run at any time to install missing tools or apply updates.
 
-These can be re-run at any time, and will update pre-installed packages, runtimes and their associated packages, plus global configuration.
-Each script is designed to set up each Operating System (OS) using similar tools where possible,
-such as [Starship] as the shell prompt and [VS Code] as the code editor,
-to simplify moving between them.
+## How It Works
 
-Click on the [Ubuntu] version below to see it in action:
+| Layer            | Tool                                 | Role                                               |
+| ---------------- | ------------------------------------ | -------------------------------------------------- |
+| Orchestrator     | [Ansible]                            | Idempotent install, config, and dotfile deployment |
+| Runtimes         | [Mise]                               | Node, Python, Rust version management              |
+| Package managers | Homebrew / apt+snap+flatpak / WinGet | Platform-native package installation               |
 
-[![asciicast](https://asciinema.org/a/kblRtgZYt1p78qMtcgQ8UNAMi.svg)](https://asciinema.org/a/kblRtgZYt1p78qMtcgQ8UNAMi)
+Ansible runs locally on macOS and Ubuntu (`connection: local`). On Windows, it runs from WSL2 and connects to the Windows host over WinRM using the WSL2 gateway address.
 
-## 🏃‍ Running
+## Quick Start
 
-Run one of the following for your OS in your terminal of choice:
+### 1. Bootstrap
+
+Run once on a fresh machine to install the prerequisites Ansible and Just on all platforms, and Git for Windows:
 
 ```sh
-sh setup_debian.sh
-sh setup_fedora.sh
-sh setup_ubuntu.sh
-.\setup_windows.ps1
+# macOS
+bash bootstrap/bootstrap_macos.sh
+
+# Ubuntu / WSL2
+bash bootstrap/bootstrap_ubuntu.sh
+
+# Windows — run first in PowerShell as Administrator
+.\bootstrap\bootstrap_windows.ps1
 ```
 
-## 🔋 Included
+### 2. Install
 
-As current support for Debian and Fedora is currently limited, `all` platforms means Ubuntu and Windows.
+```sh
+just install
+```
 
-### 👟 Runtimes
+### 3. Upgrade
 
-| Runtime      | Platforms | Description                                                           |
-| ------------ | --------- | --------------------------------------------------------------------- |
-| [.NET]       | all       | Free, open-source, cross-platform framework                           |
-| [Docker]     | all       | Containerize applications                                             |
-| [gcc]        | all       | GNU Compiler Collection                                               |
-| [kubectl]    | all       | kubectl controls the Kubernetes cluster manager                       |
-| [minikube]   | all       | Fast Kubernetes cluster set up                                        |
-| [Node.js]    | all       | Free, open-source, cross-platform JavaScript runtime environment      |
-| [Powershell] | all       | Automation and configuration tool/framework                           |
-| [Python]     | all       | Programming language                                                  |
-| [Rust]       | all       | Language empowering everyone to build reliable and efficient software |
+```sh
+just upgrade
+```
 
-### 🔨 Tools
+## Windows Setup
 
-| Tool              | Platforms | Description                                                               |
-| ----------------- | --------- | ------------------------------------------------------------------------- |
-| [7zip]            | all       | File archiver with a high compression ratio                               |
-| [asciinema]       | Ubuntu    | Record and share terminal sessions                                        |
-| [bat]             | all       | A `cat(1)` clone with wings                                               |
-| [bottom]          | all       | Terminal graphical process/system monitor                                 |
-| [cargo-outdated]  | all       | cargo subcommand to show outdated Rust dependencies                       |
-| [Checkov]         | all       | Policy-as-code for everyone                                               |
-| [diskonaut]       | all       | Terminal disk space navigator                                             |
-| [eza]             | all       | Modern, maintained replacement for `ls`                                   |
-| [Flatpak]         | all       | The future of apps on Linux                                               |
-| [fzf]             | all       | Command-line fuzzy finder                                                 |
-| [Git]             | all       | Distributed version control system                                        |
-| [Helm]            | all       | Package manager for Kubernetes                                            |
-| [innounp]         | Windows   | Inno Setup unpacker                                                       |
-| [IPython]         | all       | Toolkit to run Python interactively, including Jupyter                    |
-| [jid]             | all       | JSON incremental digger                                                   |
-| [jq]              | all       | `sed` for JSON data                                                       |
-| [just]            | all       | Just a command runner                                                     |
-| [k9s]             | Windows   | Kubernetes CLI to manage your clusters in style!                          |
-| [lens]            | all       | The Way The World Runs Kubernetes                                         |
-| [less]            | all       | Terminal pager                                                            |
-| [nuget]           | Windows   | Package manager for .NET                                                  |
-| [pandoc]          | all       | Universal markup converter                                                |
-| [pnpm]            | all       | Fast, disk space efficient JavaScript package manager                     |
-| [powersession-rs] | Windows   | A Rust port of `asciinema` for Windows                                    |
-| [pre-commit]      | all       | A framework for managing and maintaining multi-language pre-commit hooks  |
-| [Pulumi]          | all       | Create, deploy, and manage infrastructure on any cloud using any language |
-| [PuTTY]           | Windows   | SSH and telnet client                                                     |
-| [rga]             | all       | Regex-based search tool for a multitude of file types                     |
-| [Scoop]           | Windows   | Command-line installer for Windows                                        |
-| [Starship]        | all       | Cross-shell prompt                                                        |
-| [UPX]             | all       | Executable packer                                                         |
-| [Warp]            | Ubuntu    | The terminal reimagined                                                   |
-| [WSL]             | Windows   | Run a GNU/Linux environment directly on Windows                           |
-| [Zed]             | Ubuntu    | Zed is a high-performance, multiplayer code editor                        |
+Windows packages are managed from WSL2 via Ansible + WinRM. The flow is:
 
-### 📱 Apps
+1. Run `bootstrap\bootstrap_windows.ps1` in PowerShell as Administrator — installs Git, configures WinRM, sets up WSL2.
+2. In WSL2, clone this repo and run `bash bootstrap/bootstrap_ubuntu.sh` (installs Ansible).
+3. Run the install command above with the `windows.yml` inventory.
 
-| App            | Platforms | Description                                                                       |
-| -------------- | --------- | --------------------------------------------------------------------------------- |
-| [Amberol]      | Ubuntu    | A small and simple sound and music player                                         |
-| [Caesium]      | Windows   | Image compressor                                                                  |
-| [DBeaver]      | all       | Universal database tool                                                           |
-| [draw.io]      | all       | Technology stack for building diagramming applications                            |
-| [Obsidian]     | all       | Obsidian is the private and flexible writing app that adapts to the way you think |
-| [Portmaster]   | Windows   | App firewall and monitor                                                          |
-| [RapidEE]      | Windows   | Rapid Environment Editor                                                          |
-| [SpaceSniffer] | Windows   | Visualise folder and file structures on disk                                      |
-| [Spotify]      | all       | Digital music service                                                             |
-| [Telegram]     | all       | Messaging                                                                         |
-| [VS Code]      | all       | Code editor                                                                       |
+The Ansible playbook connects back to the Windows host over WinRM and installs everything via WinGet.
 
-### 🦀 Rust Modules
+## Repo Structure
 
-| Runtime          | Description                                                                   |
-| ---------------- | ----------------------------------------------------------------------------- |
-| [cargo-outdated] | A cargo subcommand for checking and applying updates to installed executables |
-| [cargo-modules]  | A cargo plugin for showing a tree-like overview of a crate's modules          |
-| [cargo-update]   | A cargo subcommand for checking and applying updates to installed executables |
-| [wasm-pack]      | 📦✨ your favourite rust -> wasm workflow tool!                                 |
+```txt
+.
+├── ansible/
+│   ├── inventory/
+│   │   ├── group_vars/all.yml   # Cross-platform vars (git config, cargo/pip/npm packages)
+│   │   ├── localhost.yml        # macOS / Ubuntu target
+│   │   └── windows.yml         # Windows target (WinRM via WSL2 gateway)
+│   ├── playbooks/
+│   │   ├── install.yml          # Main install playbook (runs verify at end)
+│   │   ├── upgrade.yml          # Upgrade all packages
+│   │   └── verify.yml           # Verify tools are installed
+│   ├── requirements.yml         # Ansible Galaxy collections
+│   └── roles/
+│       ├── bootstrap/           # Package manager setup (Homebrew, apt repos, WinGet)
+│       ├── runtimes/            # Node, Python, Rust via Mise
+│       ├── tools/               # CLI tools
+│       ├── apps/                # GUI applications
+│       ├── dotfiles/            # Config file and script deployment
+│       ├── git/                 # Git global configuration
+│       └── os_config/           # OS-level config (VS Code extensions, Docker group, etc.)
+├── bootstrap/
+│   ├── bootstrap_macos.sh       # Installs Homebrew, Ansible
+│   ├── bootstrap_ubuntu.sh      # Installs pipx, Ansible
+│   └── bootstrap_windows.ps1   # Installs Git, configures WinRM, sets up WSL2
+├── config/
+│   ├── starship.toml            # Starship prompt config
+│   └── bottom.toml              # bottom system monitor config
+├── docs/
+│   ├── principles.md            # Architecture principles
+│   └── adr/                     # Architecture Decision Records
+├── scripts/
+│   ├── ff                       # Fuzzy-find script (macOS, Ubuntu)
+│   └── ll                       # Colourful directory listing (macOS, Ubuntu)
+├── .bashrc                      # Bash config (Ubuntu)
+├── .mise.toml                   # Runtime version pins (Node, Python, Rust)
+└── Justfile                     # Convenience wrappers around ansible-playbook
+```
 
-### ⚙️ Scripts
+## What Gets Installed
 
-Some tools require extra configuration or combinations to get the best from them.
-The scripts below are available as aliases on Ubuntu and Windows:
+`all` means macOS, Ubuntu, and Windows.
 
-| Global Alias | Meaning      | Description                                                            |
-| ------------ | ------------ | ---------------------------------------------------------------------- |
-| `ll`         | long listing | Comprehensive listing of files in the current directory                |
-| `ff <term>`  | fuzzy find   | Fuzzy find of a search term for all files within the current directory |
+### Runtimes
 
-## 🧪 Testing
+| Runtime      | Platforms | Manager                                                             |
+| ------------ | --------- | ------------------------------------------------------------------- |
+| [Node.js]    | all       | Mise (macOS/Ubuntu), WinGet (Windows)                               |
+| [Python]     | all       | Mise (macOS/Ubuntu), WinGet (Windows)                               |
+| [Rust]       | all       | Mise (macOS/Ubuntu), WinGet/rustup (Windows)                        |
+| [.NET]       | Windows   | WinGet                                                              |
+| [Docker]     | all       | OrbStack (macOS), apt (Ubuntu), Docker Desktop via WinGet (Windows) |
+| [PowerShell] | all       | Homebrew (macOS), apt (Ubuntu), WinGet (Windows)                    |
 
-First, set up [pre-commit] and run an initial test:
+### Tools
+
+| Tool             | Platforms       | Description                            |
+| ---------------- | --------------- | -------------------------------------- |
+| [bat]            | all             | `cat` clone with syntax highlighting   |
+| [bottom]         | Ubuntu, Windows | Terminal system monitor                |
+| [eza]            | all             | Modern `ls` replacement                |
+| [fzf]            | all             | Command-line fuzzy finder              |
+| [Git LFS]        | all             | Git Large File Storage                 |
+| [jq]             | all             | `sed` for JSON                         |
+| [just]           | all             | Task runner                            |
+| [less]           | macOS, Windows  | Terminal pager                         |
+| [pandoc]         | all             | Universal markup converter             |
+| [pnpm]           | all             | Fast JavaScript package manager        |
+| [ripgrep]        | all             | Fast regex search                      |
+| [ripgrep-all]    | macOS, Ubuntu   | ripgrep across PDFs, Office docs, etc. |
+| [shellcheck]     | macOS, Ubuntu   | Shell script linter                    |
+| [Starship]       | all             | Cross-shell prompt                     |
+| [UPX]            | all             | Executable packer                      |
+| [NuGet]          | Windows         | .NET package manager                   |
+| [PuTTY]          | Windows         | SSH client                             |
+| [VS Build Tools] | Windows         | MSVC compiler toolchain                |
+| [Docker] (apt)   | Ubuntu          | Container runtime                      |
+| [Flatpak]        | Ubuntu          | Application distribution               |
+| [ffmpeg]         | Ubuntu          | Media processing                       |
+
+### Apps
+
+| App           | Platforms       | Description                                           |
+| ------------- | --------------- | ----------------------------------------------------- |
+| [VS Code]     | all             | Code editor                                           |
+| [draw.io]     | all             | Diagramming                                           |
+| [Obsidian]    | all             | Note-taking                                           |
+| [Spotify]     | Ubuntu, Windows | Music                                                 |
+| [Telegram]    | macOS, Windows  | Messaging                                             |
+| [OrbStack]    | macOS           | Container and VM runtime (Docker Desktop replacement) |
+| [Raindrop.io] | macOS           | Bookmark manager                                      |
+| [7-Zip]       | Windows         | File archiver                                         |
+| [Caesium]     | Windows         | Image compressor                                      |
+| [DBeaver]     | Windows         | Universal database tool                               |
+| [Amberol]     | Ubuntu          | Music player                                          |
+| [Brave]       | Ubuntu          | Web browser                                           |
+
+### Cross-Platform Packages
+
+Installed on all platforms via their respective package managers:
+
+| Type    | Packages                                                                    |
+| ------- | --------------------------------------------------------------------------- |
+| Cargo   | `cargo-modules`, `cargo-outdated`, `cargo-update`, `diskonaut`, `wasm-pack` |
+| pip     | `checkov`, `ipykernel`, `pre-commit`, `setuptools`                          |
+| npm     | `npm-check-updates`                                                         |
+| VS Code | GitLens, EditorConfig, Markdownlint, Night Owl theme, VS Code Icons         |
+
+### Scripts
+
+Deployed to `~/.local/bin` on macOS and Ubuntu:
+
+| Command     | Description                                                  |
+| ----------- | ------------------------------------------------------------ |
+| `ff <term>` | Fuzzy find files matching a search term, previewed with bat  |
+| `ll [path]` | List files with eza (long format, git-aware, human-readable) |
+
+## Documentation
+
+- [docs/principles.md](docs/principles.md) — Architecture principles guiding tool and approach choices
+- [docs/adr/](docs/adr/) — Architecture Decision Records
+
+## Testing
+
+Run pre-commit checks:
 
 ```sh
 pre-commit install
 pre-commit run --all-files
 ```
 
-The majority of the Ubuntu setup script can be tested on any platform using a [Docker] container. Build and run it with:
-
-```sh
-docker build --progress=plain -f Dockerfile.ubuntu -t setup_ubuntu .
-docker run -it setup_ubuntu
-```
-
-Similarly, the _entire_ Fedora script can be tested in Docker with:
-
-```sh
-docker build --progress=plain -f Dockerfile.fedora -t setup_fedora .
-docker run -it setup_fedora
-```
-
-Containers should be verified with [Container Structure Tests], vulnerabilities with [Grype] and best practices with [Kics]:
-
-```sh
-grype setup_ubuntu
-docker run -t -v /home/user/Setup:/Dockerfile checkmarx/kics:latest scan -p .
-container-structure-test test --image setup_ubuntu --config container-structure-test.yml
-```
-
-## 💡 Inspiration
-
-The initial inspiration came from a post by [Scott Hanselman] on how to make a pretty prompt in Windows Terminal.
-
+[Ansible]: https://www.ansible.com/
+[Mise]: https://mise.jdx.dev/
 [.NET]: https://dotnet.microsoft.com/
-[7zip]: https://7-zip.org/
+[7-Zip]: https://7-zip.org/
 [Amberol]: https://gitlab.gnome.org/World/amberol
-[asciinema]: https://asciinema.org/
 [bat]: https://github.com/sharkdp/bat
 [bottom]: https://clementtsang.github.io/bottom/
+[Brave]: https://brave.com/
 [Caesium]: https://saerasoft.com/caesium
-[cargo-outdated]: https://github.com/kbknapp/cargo-outdated
-[cargo-modules]: https://crates.io/crates/cargo-modules
-[cargo-update]: https://crates.io/crates/cargo-update
-[Checkov]: https://www.checkov.io/
-[Container Structure Tests]: https://github.com/GoogleContainerTools/container-structure-test
 [DBeaver]: https://dbeaver.io/
-[diskonaut]: https://github.com/imsnif/diskonaut
 [Docker]: https://www.docker.com/
 [draw.io]: https://www.drawio.com/
 [eza]: https://github.com/eza-community/eza
+[ffmpeg]: https://ffmpeg.org/
 [Flatpak]: https://flatpak.org/
 [fzf]: https://github.com/junegunn/fzf
-[gcc]: https://gcc.gnu.org/
-[Git]: https://git-scm.com/
-[Grype]: https://github.com/anchore/grype
-[Helm]: https://helm.sh/
-[innounp]: https://innounp.sourceforge.net/
-[IPython]: https://ipython.readthedocs.io/
-[jid]: https://github.com/simeji/jid
+[Git LFS]: https://git-lfs.com/
 [jq]: https://jqlang.github.io/jq/
 [just]: https://just.systems/
-[k9s]: https://k9scli.io/
-[Kics]: https://kics.io/
-[kubectl]: https://kubernetes.io/docs/reference/kubectl/kubectl/
-[lens]: https://k8slens.dev/
 [less]: https://www.greenwoodsoftware.com/less/
-[minikube]: https://minikube.sigs.k8s.io/
 [Node.js]: https://nodejs.org/
-[nuget]: https://www.nuget.org/
+[NuGet]: https://www.nuget.org/
 [Obsidian]: https://obsidian.md/
+[OrbStack]: https://orbstack.dev/
 [pandoc]: https://pandoc.org/
 [pnpm]: https://pnpm.io/
-[Portmaster]: https://safing.io/
-[powersession-rs]: https://github.com/Watfaq/PowerSession-rs
-[Powershell]: https://github.com/PowerShell/PowerShell
-[pre-commit]: https://pre-commit.com/
-[Pulumi]: https://www.pulumi.com/
+[PowerShell]: https://github.com/PowerShell/PowerShell
 [PuTTY]: https://putty.org/
 [Python]: https://www.python.org/
-[RapidEE]: https://www.rapidee.com/
-[rga]: https://github.com/phiresky/ripgrep-all
+[Raindrop.io]: https://raindrop.io/
+[ripgrep]: https://github.com/BurntSushi/ripgrep
+[ripgrep-all]: https://github.com/phiresky/ripgrep-all
 [Rust]: https://www.rust-lang.org/
-[Scoop]: https://scoop.sh/
-[Scott Hanselman]: https://www.hanselman.com/blog/HowToMakeAPrettyPromptInWindowsTerminalWithPowerlineNerdFontsCascadiaCodeWSLAndOhmyposh.aspx
-[SpaceSniffer]: http://www.uderzo.it/main_products/space_sniffer/
+[shellcheck]: https://www.shellcheck.net/
 [Spotify]: https://open.spotify.com/
 [Starship]: https://starship.rs/
 [Telegram]: https://telegram.org/
-[Ubuntu]: https://ubuntu.com/
 [UPX]: https://upx.github.io/
+[VS Build Tools]: https://visualstudio.microsoft.com/visual-cpp-build-tools/
 [VS Code]: https://code.visualstudio.com/
-[Warp]: https://www.warp.dev/
-[wasm-pack]: https://rustwasm.github.io/wasm-pack/
-[WSL]: https://learn.microsoft.com/en-us/windows/wsl/
-[Zed]: https://zed.dev/

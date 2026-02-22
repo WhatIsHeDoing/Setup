@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+eza -la --hyperlink --git-ignore --no-user --total-size --time-style=iso "$@"

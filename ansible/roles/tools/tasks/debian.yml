@@ -1,0 +1,73 @@
+---
+- name: Install apt tools
+  ansible.builtin.apt:
+    name: "{{ apt_tools }}"
+    state: present
+  become: true
+
+- name: Enable Git LFS
+  ansible.builtin.shell: git lfs install
+  changed_when: false
+
+- name: Install snap tools
+  community.general.snap:
+    name: "{{ item.name }}"
+    classic: "{{ item.classic | default(false) }}"
+    state: present
+  loop: "{{ snap_tools }}"
+  become: true
+
+- name: Check if Starship is installed
+  ansible.builtin.command: which starship
+  register: starship_check
+  changed_when: false
+  failed_when: false
+
+- name: Install Starship
+  ansible.builtin.shell: curl -sS https://starship.rs/install.sh | sh -s -- --yes
+  when: starship_check.rc != 0
+
+- name: Check if container-structure-test is installed
+  ansible.builtin.command: which container-structure-test
+  register: cst_check
+  changed_when: false
+  failed_when: false
+
+- name: Install container-structure-test
+  ansible.builtin.shell: |
+    curl -sLO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64
+    chmod +x container-structure-test-linux-amd64
+    sudo mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
+  when: cst_check.rc != 0
+
+- name: Install ripgrep-all
+  ansible.builtin.shell: cargo install ripgrep_all
+  environment:
+    PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+  args:
+    creates: "{{ ansible_env.HOME }}/.cargo/bin/rga"
+
+- name: Check if pnpm is installed
+  ansible.builtin.command: which pnpm
+  register: pnpm_check
+  changed_when: false
+  failed_when: false
+
+- name: Install pnpm
+  ansible.builtin.shell: |
+    wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
+  when: pnpm_check.rc != 0
+
+- name: Check if Earthly is installed
+  ansible.builtin.command: which earthly
+  register: earthly_check
+  changed_when: false
+  failed_when: false
+
+- name: Install Earthly
+  ansible.builtin.shell: |
+    sudo wget -nv https://github.com/earthly/earthly/releases/latest/download/earthly-linux-amd64 \
+      -O /usr/local/bin/earthly
+    sudo chmod +x /usr/local/bin/earthly
+    sudo /usr/local/bin/earthly bootstrap --with-autocomplete
+  when: earthly_check.rc != 0

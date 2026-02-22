@@ -1,0 +1,56 @@
+---
+- name: Handle Windows dotfiles via WSL2 interop
+  ansible.builtin.include_tasks: windows.yml
+  when: effective_platform == "windows"
+
+- name: Ensure ~/.config directory exists
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.config"
+    state: directory
+    mode: "0755"
+  when: effective_platform != "windows"
+
+- name: Deploy Starship configuration
+  ansible.builtin.copy:
+    src: "{{ repo_root }}/config/starship.toml"
+    dest: "{{ ansible_env.HOME }}/.config/starship.toml"
+    backup: true
+  when: effective_platform != "windows"
+
+- name: Ensure bottom config directory exists
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.config/bottom"
+    state: directory
+    mode: "0755"
+  when: effective_platform != "windows"
+
+- name: Deploy bottom configuration
+  ansible.builtin.copy:
+    src: "{{ repo_root }}/config/bottom.toml"
+    dest: "{{ ansible_env.HOME }}/.config/bottom/bottom.toml"
+    backup: true
+  when: effective_platform != "windows"
+
+- name: Deploy .bashrc (Ubuntu only)
+  ansible.builtin.template:
+    src: "{{ repo_root }}/.bashrc"
+    dest: "{{ ansible_env.HOME }}/.bashrc"
+    backup: true
+  when: effective_platform == "debian"
+
+- name: Ensure ~/.local/bin exists
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.local/bin"
+    state: directory
+    mode: "0755"
+  when: effective_platform != "windows"
+
+- name: Install scripts
+  ansible.builtin.copy:
+    src: "{{ repo_root }}/scripts/{{ item }}"
+    dest: "{{ ansible_env.HOME }}/.local/bin/{{ item }}"
+    mode: "0755"
+  loop:
+    - ff
+    - ll
+  when: effective_platform != "windows"

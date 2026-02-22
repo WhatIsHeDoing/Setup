@@ -1,0 +1,23 @@
+---
+- name: Check if Homebrew is installed (Apple Silicon)
+  ansible.builtin.stat:
+    path: /opt/homebrew/bin/brew
+  register: brew_arm
+
+- name: Check if Homebrew is installed (Intel)
+  ansible.builtin.stat:
+    path: /usr/local/bin/brew
+  register: brew_intel
+
+- name: Install Homebrew
+  ansible.builtin.shell: >
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  when:
+    - not brew_arm.stat.exists
+    - not brew_intel.stat.exists
+  environment:
+    NONINTERACTIVE: "1"
+
+- name: Update Homebrew
+  community.general.homebrew:
+    update_homebrew: true

@@ -1,0 +1,19 @@
+---
+- name: Install and configure desktop environment
+  hosts: localhost
+  gather_facts: true
+  pre_tasks:
+    - name: Set effective platform
+      ansible.builtin.set_fact:
+        effective_platform: "{{ 'windows' if ansible_env.WSL_DISTRO_NAME is defined else ansible_os_family | lower }}"
+  roles:
+    - role: bootstrap
+    - role: runtimes
+    - role: tools
+    - role: apps
+    - role: dotfiles
+    - role: git
+    - role: os_config
+
+- name: Verify installation
+  ansible.builtin.import_playbook: verify.yml

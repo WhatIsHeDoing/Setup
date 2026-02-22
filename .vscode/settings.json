@@ -5,12 +5,16 @@
         "Amberol",
         "asciicast",
         "asciinema",
+        "bootstrapper",
         "Cascadia",
         "Grype",
-        "Portmaster",
+        "handoff",
+        "Justfile",
+        "linted",
         "Powerline",
         "runtimes",
-        "shellcheck"
+        "shellcheck",
+        "winget"
     ],
     "editor.codeActionsOnSave": {
         "source.fixAll": "always"

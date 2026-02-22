@@ -1,0 +1,17 @@
+---
+# Inventory for running the Windows playbook from WSL2.
+# Ansible connects to the Windows host via WinRM.
+# The Windows host IP is the WSL2 default gateway (the Windows host address).
+#
+# Before first use, run bootstrap/bootstrap_windows.ps1 in PowerShell
+# as Administrator to configure WinRM.
+all:
+  hosts:
+    windows:
+      ansible_host: "{{ lookup('pipe', 'ip route | grep default | awk \"{print \\$3}\" | head -1') }}"
+      ansible_user: "{{ lookup('env', 'WINDOWS_USER') }}"
+      ansible_password: "{{ lookup('env', 'WINDOWS_PASSWORD') }}"
+      ansible_connection: winrm
+      ansible_winrm_transport: ntlm
+      ansible_port: 5985
+      ansible_winrm_server_cert_validation: ignore

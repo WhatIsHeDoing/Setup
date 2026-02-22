@@ -1,0 +1,31 @@
+---
+- name: Add user to docker group
+  ansible.builtin.user:
+    name: "{{ ansible_user_id }}"
+    groups: docker
+    append: true
+  become: true
+
+- name: Enable Docker service
+  ansible.builtin.systemd:
+    name: docker
+    enabled: true
+    state: started
+  become: true
+  failed_when: false  # Gracefully skipped in containers
+
+- name: Configure bottom snap permissions
+  ansible.builtin.shell: |
+    snap connect bottom:mount-observe
+    snap connect bottom:hardware-observe
+    snap connect bottom:system-observe
+    snap connect bottom:process-control
+  changed_when: false
+  failed_when: false
+  become: true
+
+- name: Install VS Code extensions
+  ansible.builtin.shell: "code --install-extension {{ item }}"
+  loop: "{{ vscode_extensions }}"
+  changed_when: false
+  failed_when: false

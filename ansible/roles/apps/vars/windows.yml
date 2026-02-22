@@ -1,0 +1,10 @@
+---
+winget_apps:
+  - 7zip.7zip
+  - SabaAmaury.Caesium
+  - dbeaver.dbeaver
+  - JGraph.Draw
+  - Obsidian.Obsidian
+  - Spotify.Spotify
+  - Telegram.TelegramDesktop
+  - Microsoft.VisualStudioCode

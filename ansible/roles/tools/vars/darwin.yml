@@ -1,0 +1,16 @@
+---
+homebrew_tools:
+    - bat
+    - eza
+    - fzf
+    - git-lfs
+    - jq
+    - just
+    - less
+    - pandoc
+    - pnpm
+    - ripgrep
+    - ripgrep-all
+    - shellcheck
+    - starship
+    - upx

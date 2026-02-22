@@ -1,0 +1,18 @@
+---
+winget_tools:
+  - sharkdp.bat
+  - Clement.bottom
+  - eza-community.eza
+  - junegunn.fzf
+  - GitHub.GitLFS
+  - jqlang.jq
+  - Casey.Just
+  - jftuga.less
+  - Microsoft.NuGet
+  - JohnMacFarlane.Pandoc
+  - pnpm.pnpm
+  - PuTTY.PuTTY
+  - BurntSushi.ripgrep.MSVC
+  - Starship.Starship
+  - UPX.UPX
+  - Microsoft.VisualStudio.2022.BuildTools

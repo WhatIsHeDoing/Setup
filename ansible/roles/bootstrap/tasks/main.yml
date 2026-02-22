@@ -1,0 +1,3 @@
+---
+- name: Include platform-specific bootstrap tasks
+  ansible.builtin.include_tasks: "{{ effective_platform }}.yml"

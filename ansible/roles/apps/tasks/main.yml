@@ -1,0 +1,6 @@
+---
+- name: Include platform-specific app variables
+  ansible.builtin.include_vars: "{{ effective_platform }}.yml"
+
+- name: Include platform-specific app tasks
+  ansible.builtin.include_tasks: "{{ effective_platform }}.yml"

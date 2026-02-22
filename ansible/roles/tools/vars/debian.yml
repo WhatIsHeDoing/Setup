@@ -1,0 +1,34 @@
+---
+apt_tools:
+  - bat
+  - build-essential
+  - containerd.io
+  - docker-buildx-plugin
+  - docker-ce
+  - docker-ce-cli
+  - docker-ce-rootless-extras
+  - docker-compose-plugin
+  - eza
+  - ffmpeg
+  - flatpak
+  - fzf
+  - git
+  - git-lfs
+  - gnome-software-plugin-flatpak
+  - gnupg
+  - jq
+  - just
+  - lld
+  - libpq-dev
+  - p7zip-full
+  - pandoc
+  - pkg-config
+  - poppler-utils
+  - powershell
+  - python3
+  - python3-pip
+  - ripgrep
+  - shellcheck
+  - upx-ucl
+
+snap_tools: []

@@ -1,0 +1,46 @@
+---
+- name: Verify desktop setup
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    tools_to_verify:
+      - { cmd: "git --version",      name: "git" }
+      - { cmd: "just --version",     name: "just" }
+      - { cmd: "mise --version",     name: "mise" }
+      - { cmd: "fzf --version",      name: "fzf" }
+      - { cmd: "bat --version",      name: "bat" }
+      - { cmd: "eza --version",      name: "eza" }
+      - { cmd: "rg --version",       name: "ripgrep" }
+      - { cmd: "jq --version",       name: "jq" }
+      - { cmd: "starship --version", name: "starship" }
+      - { cmd: "node --version",     name: "node" }
+      - { cmd: "python3 --version",  name: "python" }
+      - { cmd: "cargo --version",    name: "cargo" }
+      - { cmd: "kubectl version --client --short 2>/dev/null || kubectl version --client", name: "kubectl" }
+
+  tasks:
+    - name: Verify tool is installed and functional
+      ansible.builtin.shell: "{{ item.cmd }}"
+      loop: "{{ tools_to_verify }}"
+      loop_control:
+        label: "{{ item.name }}"
+      register: verify_results
+      changed_when: false
+      failed_when: verify_results.rc != 0
+
+    - name: Print verified versions
+      ansible.builtin.debug:
+        msg: "OK {{ item.item.name }}: {{ item.stdout_lines[0] }}"
+      loop: "{{ verify_results.results }}"
+      loop_control:
+        label: "{{ item.item.name }}"
+
+    - name: Reminder about git signing
+      ansible.builtin.debug:
+        msg: |
+          Git signing is not managed by this setup.
+          To enable SSH signing, run:
+            git config --global gpg.format ssh
+            git config --global user.signingkey ~/.ssh/<key>.pub
+            git config --global commit.gpgsign true

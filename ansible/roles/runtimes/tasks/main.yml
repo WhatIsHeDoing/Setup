@@ -1,0 +1,70 @@
+---
+- name: Handle Windows runtimes and global packages
+  ansible.builtin.include_tasks: windows.yml
+  when: effective_platform == "windows"
+
+- name: Install Mise (macOS via Homebrew)
+  community.general.homebrew:
+    name: mise
+    state: present
+  when: effective_platform == "darwin"
+
+- name: Install Mise (Ubuntu via install script)
+  ansible.builtin.shell: curl https://mise.run | sh
+  args:
+    creates: "{{ ansible_env.HOME }}/.local/bin/mise"
+  when: effective_platform == "debian"
+
+- name: Trust .mise.toml in repo root
+  ansible.builtin.shell: mise trust "{{ repo_root }}/.mise.toml"
+  environment:
+    PATH: "{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+  changed_when: false
+  when: effective_platform != "windows"
+
+- name: Install runtimes declared in .mise.toml
+  ansible.builtin.shell: mise install
+  args:
+    chdir: "{{ repo_root }}"
+  environment:
+    PATH: "{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+  changed_when: false
+  when: effective_platform != "windows"
+
+- name: Update Rust toolchain via rustup
+  ansible.builtin.shell: rustup update
+  environment:
+    PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+  changed_when: true
+  when: effective_platform != "windows"
+
+- name: Install global Cargo packages
+  ansible.builtin.shell: "cargo install {{ item }}"
+  loop: "{{ cargo_packages }}"
+  environment:
+    PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+  changed_when: false
+  failed_when: false
+  when: effective_platform != "windows"
+
+- name: Update all installed Cargo packages
+  ansible.builtin.shell: cargo install-update -a
+  environment:
+    PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+  changed_when: false
+  failed_when: false
+  when: effective_platform != "windows"
+
+- name: Install global npm packages
+  ansible.builtin.shell: "npm install -g {{ npm_packages | join(' ') }}"
+  environment:
+    PATH: "{{ ansible_env.HOME }}/.local/share/mise/shims:{{ ansible_env.PATH }}"
+  changed_when: false
+  when: effective_platform != "windows"
+
+- name: Install Python packages
+  ansible.builtin.shell: "pip install --user --upgrade {{ pip_packages | join(' ') }}"
+  environment:
+    PATH: "{{ ansible_env.HOME }}/.local/share/mise/shims:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+  changed_when: false
+  when: effective_platform != "windows"

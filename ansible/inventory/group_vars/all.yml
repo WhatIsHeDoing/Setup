@@ -1,0 +1,36 @@
+---
+# Git configuration applied on all platforms
+git_config:
+  fetch.prune: "true"
+  init.defaultBranch: "main"
+  push.autoSetupRemote: "true"
+  push.default: "current"
+
+# Cargo packages installed on all platforms
+cargo_packages:
+  - cargo-modules
+  - cargo-outdated
+  - cargo-update
+  - diskonaut
+  - wasm-pack
+
+# Python packages installed on all platforms
+pip_packages:
+  - checkov
+  - ipykernel
+  - pip
+  - pre-commit
+  - setuptools
+
+# npm packages installed on all platforms
+npm_packages:
+  - npm
+  - npm-check-updates
+
+# VS Code extensions installed on all platforms
+vscode_extensions:
+  - davidanson.vscode-markdownlint
+  - eamodio.gitlens
+  - editorconfig.editorconfig
+  - sdras.night-owl
+  - vscode-icons-team.vscode-icons

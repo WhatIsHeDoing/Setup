@@ -1,0 +1,46 @@
+---
+- name: Add Flathub remote
+  community.general.flatpak_remote:
+    name: flathub
+    state: present
+    flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+  become: true
+
+- name: Install Flatpak applications
+  community.general.flatpak:
+    name: "{{ item.name }}"
+    remote: "{{ item.remote }}"
+    state: present
+  loop: "{{ flatpak_apps }}"
+  become: true
+
+- name: Install snap applications
+  community.general.snap:
+    name: "{{ item.name }}"
+    classic: "{{ item.classic | default(false) }}"
+    state: present
+  loop: "{{ snap_apps }}"
+  become: true
+
+- name: Check if Zed is installed
+  ansible.builtin.command: which zed
+  register: zed_check
+  changed_when: false
+  failed_when: false
+
+- name: Install Zed editor
+  ansible.builtin.shell: curl -sSfL https://zed.dev/install.sh | sh
+  when: zed_check.rc != 0
+
+- name: Check if minikube is installed
+  ansible.builtin.command: which minikube
+  register: minikube_check
+  changed_when: false
+  failed_when: false
+
+- name: Install minikube
+  ansible.builtin.shell: |
+    curl -sLO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+    sudo install minikube-linux-amd64 /usr/local/bin/minikube
+    rm minikube-linux-amd64
+  when: minikube_check.rc != 0

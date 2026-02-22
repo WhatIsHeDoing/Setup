@@ -1,0 +1,54 @@
+---
+# All file operations use wslpath to resolve Windows environment variable paths
+# into WSL2-accessible mount paths (e.g. /mnt/c/Users/<user>/AppData/Roaming)
+
+- name: Resolve Windows APPDATA path
+  ansible.builtin.shell: wslpath "$(cmd.exe /c 'echo %APPDATA%' 2>/dev/null | tr -d '\r\n')"
+  register: appdata_path
+  changed_when: false
+
+- name: Resolve Windows USERPROFILE path
+  ansible.builtin.shell: wslpath "$(cmd.exe /c 'echo %USERPROFILE%' 2>/dev/null | tr -d '\r\n')"
+  register: userprofile_path
+  changed_when: false
+
+- name: Resolve PowerShell profile path
+  ansible.builtin.shell: wslpath "$(powershell.exe -NoProfile -Command 'echo $PROFILE' 2>/dev/null | tr -d '\r\n')"
+  register: ps_profile_path
+  changed_when: false
+
+- name: Ensure bottom config directory exists
+  ansible.builtin.file:
+    path: "{{ appdata_path.stdout | trim }}/bottom"
+    state: directory
+    mode: "0755"
+
+- name: Deploy bottom configuration
+  ansible.builtin.copy:
+    src: "{{ repo_root }}/config/bottom.toml"
+    dest: "{{ appdata_path.stdout | trim }}/bottom/bottom.toml"
+    backup: true
+
+- name: Ensure ~/.config directory exists
+  ansible.builtin.file:
+    path: "{{ userprofile_path.stdout | trim }}/.config"
+    state: directory
+    mode: "0755"
+
+- name: Deploy Starship configuration
+  ansible.builtin.copy:
+    src: "{{ repo_root }}/config/starship.toml"
+    dest: "{{ userprofile_path.stdout | trim }}/.config/starship.toml"
+    backup: true
+
+- name: Ensure PowerShell profile directory exists
+  ansible.builtin.file:
+    path: "{{ ps_profile_path.stdout | trim | dirname }}"
+    state: directory
+    mode: "0755"
+
+- name: Deploy PowerShell profile
+  ansible.builtin.copy:
+    src: "{{ repo_root }}/powershell-profile.ps1"
+    dest: "{{ ps_profile_path.stdout | trim }}"
+    backup: true

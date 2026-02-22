@@ -1,0 +1,96 @@
+---
+- name: Install bootstrap dependencies
+  ansible.builtin.apt:
+    name:
+      - apt-transport-https
+      - apt-utils
+      - build-essential
+      - ca-certificates
+      - curl
+      - gnupg
+      - lsb-release
+      - software-properties-common
+      - wget
+    state: present
+    update_cache: true
+  become: true
+
+- name: Set timezone
+  community.general.timezone:
+    name: Europe/London
+  become: true
+
+# Docker repository
+- name: Add Docker GPG key
+  ansible.builtin.shell: |
+    sudo install -m 0755 -d /etc/apt/keyrings
+    sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+    sudo chmod a+r /etc/apt/keyrings/docker.asc
+  args:
+    creates: /etc/apt/keyrings/docker.asc
+
+- name: Add Docker apt repository
+  ansible.builtin.apt_repository:
+    repo: "deb [arch={{ ansible_architecture }} signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+    state: present
+    filename: docker
+  become: true
+
+# kubectl repository
+- name: Add kubectl GPG key
+  ansible.builtin.shell: |
+    curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key | \
+      sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg --yes
+  args:
+    creates: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+- name: Add kubectl apt repository
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.31/deb/ /"
+    state: present
+    filename: kubernetes
+  become: true
+
+# eza repository
+- name: Add eza GPG key
+  ansible.builtin.shell: |
+    wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | \
+      sudo gpg --dearmor -o /etc/apt/keyrings/gierens.gpg --yes
+    sudo chmod 644 /etc/apt/keyrings/gierens.gpg
+  args:
+    creates: /etc/apt/keyrings/gierens.gpg
+
+- name: Add eza apt repository
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main"
+    state: present
+    filename: gierens
+  become: true
+
+# PowerShell repository
+- name: Add Microsoft repository package
+  ansible.builtin.apt:
+    deb: "https://packages.microsoft.com/config/ubuntu/{{ ansible_distribution_version }}/packages-microsoft-prod.deb"
+    state: present
+  become: true
+  ignore_errors: true  # Falls back gracefully if version not supported
+
+# Lens repository
+- name: Add Lens GPG key
+  ansible.builtin.shell: |
+    curl -fsSL https://downloads.k8slens.dev/keys/gpg | \
+      gpg --dearmor | sudo tee /usr/share/keyrings/lens-archive-keyring.gpg >/dev/null
+  args:
+    creates: /usr/share/keyrings/lens-archive-keyring.gpg
+
+- name: Add Lens apt repository
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/lens-archive-keyring.gpg] https://downloads.k8slens.dev/apt/debian stable main"
+    state: present
+    filename: lens
+  become: true
+
+- name: Update apt cache after adding repositories
+  ansible.builtin.apt:
+    update_cache: true
+  become: true

@@ -1,0 +1,11 @@
+---
+- name: Install WinGet tools
+  ansible.builtin.shell: >
+    winget.exe install {{ item }}
+    --accept-source-agreements
+    --accept-package-agreements
+    --silent
+    --disable-interactivity
+  loop: "{{ winget_tools }}"
+  changed_when: false
+  failed_when: false

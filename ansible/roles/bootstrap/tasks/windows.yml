@@ -1,0 +1,8 @@
+---
+- name: Update WinGet itself
+  ansible.builtin.shell: >
+    winget.exe upgrade --id Microsoft.AppInstaller
+    --accept-source-agreements
+    --silent
+  changed_when: false
+  failed_when: false

@@ -1,5 +1,0 @@
-checkov
-ipykernel
-pip
-pre-commit
-setuptools

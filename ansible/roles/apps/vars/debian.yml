@@ -1,0 +1,18 @@
+---
+snap_apps:
+  - name: bottom
+    classic: false
+  - name: brave
+    classic: false
+  - name: code
+    classic: true
+  - name: drawio
+    classic: false
+  - name: obsidian
+    classic: true
+  - name: spotify
+    classic: false
+
+flatpak_apps:
+  - name: io.bassi.Amberol
+    remote: flathub
