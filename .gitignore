@@ -34,3 +34,6 @@ id_ed25519
 
 # mise / asdf
 .tool-versions
+
+# Claude local settings.
+.claude/

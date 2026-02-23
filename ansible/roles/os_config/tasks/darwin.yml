@@ -5,52 +5,113 @@
   changed_when: false
   failed_when: false
 
-- name: Configure macOS system defaults
-  ansible.builtin.command: "{{ item.cmd }}"
-  loop:
-    # Finder
-    - cmd: defaults write com.apple.finder AppleShowAllExtensions -bool true
-      name: Show all file extensions in Finder
-    - cmd: defaults write com.apple.finder ShowPathbar -bool true
-      name: Show path bar in Finder
-    - cmd: defaults write com.apple.finder ShowStatusBar -bool true
-      name: Show status bar in Finder
-    - cmd: defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
-      name: Disable extension-change warning dialog
-    - cmd: defaults write com.apple.finder FXPreferredViewStyle -string clmv
-      name: Default Finder view to column layout
-    # Dock
-    - cmd: defaults write com.apple.dock autohide -bool true
-      name: Auto-hide the Dock
-    - cmd: defaults write com.apple.dock show-recents -bool false
-      name: Hide recent apps section in Dock
-    - cmd: defaults write com.apple.dock minimize-to-application -bool true
-      name: Minimise windows into their application icon
-    # Screenshots
-    - cmd: defaults write com.apple.screencapture type png
-      name: Set screenshot format to PNG
-    - cmd: defaults write com.apple.screencapture disable-shadow -bool true
-      name: Disable drop-shadow on screenshots
-    # Keyboard
-    - cmd: defaults write NSGlobalDomain KeyRepeat -int 2
-      name: Set fast key repeat rate
-    - cmd: defaults write NSGlobalDomain InitialKeyRepeat -int 15
-      name: Set short initial key repeat delay
-    # Misc
-    - cmd: defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
-      name: Suppress .DS_Store creation on network volumes
-    - cmd: defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
-      name: Suppress .DS_Store creation on USB volumes
-  loop_control:
-    label: "{{ item.name }}"
-  changed_when: false
+# Finder
+- name: Show all file extensions in Finder
+  community.general.osx_defaults:
+    domain: com.apple.finder
+    key: AppleShowAllExtensions
+    type: bool
+    value: true
+  notify: Restart Finder
 
-- name: Restart Finder to apply changes
-  ansible.builtin.command: killall Finder
-  changed_when: false
-  failed_when: false
+- name: Show path bar in Finder
+  community.general.osx_defaults:
+    domain: com.apple.finder
+    key: ShowPathbar
+    type: bool
+    value: true
+  notify: Restart Finder
 
-- name: Restart Dock to apply changes
-  ansible.builtin.command: killall Dock
-  changed_when: false
-  failed_when: false
+- name: Show status bar in Finder
+  community.general.osx_defaults:
+    domain: com.apple.finder
+    key: ShowStatusBar
+    type: bool
+    value: true
+  notify: Restart Finder
+
+- name: Disable extension-change warning dialog
+  community.general.osx_defaults:
+    domain: com.apple.finder
+    key: FXEnableExtensionChangeWarning
+    type: bool
+    value: false
+  notify: Restart Finder
+
+- name: Default Finder view to column layout
+  community.general.osx_defaults:
+    domain: com.apple.finder
+    key: FXPreferredViewStyle
+    type: string
+    value: clmv
+  notify: Restart Finder
+
+# Dock
+- name: Auto-hide the Dock
+  community.general.osx_defaults:
+    domain: com.apple.dock
+    key: autohide
+    type: bool
+    value: true
+  notify: Restart Dock
+
+- name: Hide recent apps section in Dock
+  community.general.osx_defaults:
+    domain: com.apple.dock
+    key: show-recents
+    type: bool
+    value: false
+  notify: Restart Dock
+
+- name: Minimise windows into their application icon
+  community.general.osx_defaults:
+    domain: com.apple.dock
+    key: minimize-to-application
+    type: bool
+    value: true
+  notify: Restart Dock
+
+# Screenshots
+- name: Set screenshot format to PNG
+  community.general.osx_defaults:
+    domain: com.apple.screencapture
+    key: type
+    type: string
+    value: png
+
+- name: Disable drop-shadow on screenshots
+  community.general.osx_defaults:
+    domain: com.apple.screencapture
+    key: disable-shadow
+    type: bool
+    value: true
+
+# Keyboard
+- name: Set fast key repeat rate
+  community.general.osx_defaults:
+    domain: NSGlobalDomain
+    key: KeyRepeat
+    type: int
+    value: 2
+
+- name: Set short initial key repeat delay
+  community.general.osx_defaults:
+    domain: NSGlobalDomain
+    key: InitialKeyRepeat
+    type: int
+    value: 15
+
+# Misc
+- name: Suppress .DS_Store creation on network volumes
+  community.general.osx_defaults:
+    domain: com.apple.desktopservices
+    key: DSDontWriteNetworkStores
+    type: bool
+    value: true
+
+- name: Suppress .DS_Store creation on USB volumes
+  community.general.osx_defaults:
+    domain: com.apple.desktopservices
+    key: DSDontWriteUSBStores
+    type: bool
+    value: true
