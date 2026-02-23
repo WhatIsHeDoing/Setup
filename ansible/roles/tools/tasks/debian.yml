@@ -5,6 +5,13 @@
     state: present
   become: true
 
+- name: Create fd symlink for fd-find
+  ansible.builtin.file:
+    src: /usr/bin/fdfind
+    dest: "{{ ansible_env.HOME }}/.local/bin/fd"
+    state: link
+  failed_when: false
+
 - name: Enable Git LFS
   ansible.builtin.command: git lfs install
   changed_when: false

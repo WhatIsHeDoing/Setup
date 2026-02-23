@@ -2,11 +2,15 @@
 winget_tools:
   - sharkdp.bat
   - Clement.bottom
+  - dandavison.delta
   - eza-community.eza
   - junegunn.fzf
+  - sharkdp.fd
+  - GitHub.cli
   - GitHub.GitLFS
   - jqlang.jq
   - Casey.Just
+  - JesseDuffield.lazygit
   - jftuga.less
   - Microsoft.NuGet
   - JohnMacFarlane.Pandoc
@@ -16,3 +20,4 @@ winget_tools:
   - Starship.Starship
   - UPX.UPX
   - Microsoft.VisualStudio.2022.BuildTools
+  - ajeetdsouza.zoxide

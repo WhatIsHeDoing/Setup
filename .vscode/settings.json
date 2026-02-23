@@ -12,6 +12,7 @@
     "files.associations": {
         ".ansible-lint": "yaml",
         "*.yml.example": "yaml",
+        "config/gitignore_global": "ignore",
         "scripts/*": "shellscript"
     }
 }

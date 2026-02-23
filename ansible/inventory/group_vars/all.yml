@@ -1,8 +1,15 @@
 ---
 # Git configuration applied on all platforms
 git_config:
+  core.excludesFile: "~/.gitignore_global"
+  core.pager: "delta"
+  delta.navigate: "true"
+  delta.dark: "true"
+  diff.colorMoved: "default"
   fetch.prune: "true"
   init.defaultBranch: "main"
+  interactive.diffFilter: "delta --color-only"
+  merge.conflictstyle: "zdiff3"
   push.autoSetupRemote: "true"
   push.default: "current"
 
@@ -34,4 +41,5 @@ vscode_extensions:
   - eamodio.gitlens
   - editorconfig.editorconfig
   - sdras.night-owl
+  - usernamehw.errorlens
   - vscode-icons-team.vscode-icons

@@ -3,6 +3,7 @@
 homebrew_casks:
   - drawio
   - firefox
+  - ghostty
   - obsidian
   - orbstack
   - raindropio

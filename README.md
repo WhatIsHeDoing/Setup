@@ -1,5 +1,7 @@
 # Setup
 
+[![Lint](https://github.com/WhatIsHeDoing/Setup/actions/workflows/lint.yml/badge.svg)](https://github.com/WhatIsHeDoing/Setup/actions/workflows/lint.yml)
+
 Cross-platform desktop setup using [Ansible] and [Mise].
 
 Targets **macOS**, **Ubuntu**, and **Windows** (via WSL2). Idempotent — run at any time to install missing tools or apply updates.
@@ -121,7 +123,6 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 ├── scripts/
 │   ├── ff                       # Fuzzy-find script (macOS, Ubuntu)
 │   └── ll                       # Colourful directory listing (macOS, Ubuntu)
-├── .bashrc                      # Bash config (Ubuntu)
 ├── .mise.toml                   # Runtime version pins (Node, Python, Rust)
 └── Justfile                     # Convenience wrappers around ansible-playbook
 ```
@@ -143,30 +144,37 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 
 ### Tools
 
-| Tool               | Platforms       | Description                            |
-| ------------------ | --------------- | -------------------------------------- |
-| [bat]              | all             | `cat` clone with syntax highlighting   |
-| [bottom]           | Ubuntu, Windows | Terminal system monitor                |
-| [eza]              | all             | Modern `ls` replacement                |
-| [fzf]              | all             | Command-line fuzzy finder              |
-| [Git LFS]          | all             | Git Large File Storage                 |
-| [jq]               | all             | `sed` for JSON                         |
-| [just]             | all             | Task runner                            |
-| [less]             | macOS, Windows  | Terminal pager                         |
-| [pandoc]           | all             | Universal markup converter             |
-| [pnpm]             | all             | Fast JavaScript package manager        |
-| [ripgrep]          | all             | Fast regex search                      |
-| [ripgrep-all]      | macOS, Ubuntu   | ripgrep across PDFs, Office docs, etc. |
-| [shellcheck]       | macOS, Ubuntu   | Shell script linter                    |
-| [Starship]         | all             | Cross-shell prompt                     |
-| [UPX]              | all             | Executable packer                      |
-| [zsh-autocomplete] | macOS           | Real-time tab completion for Zsh       |
-| [NuGet]            | Windows         | .NET package manager                   |
-| [PuTTY]            | Windows         | SSH client                             |
-| [VS Build Tools]   | Windows         | MSVC compiler toolchain                |
-| [Docker] (apt)     | Ubuntu          | Container runtime                      |
-| [Flatpak]          | Ubuntu          | Application distribution               |
-| [ffmpeg]           | Ubuntu          | Media processing                       |
+| Tool                  | Platforms       | Description                                       |
+| --------------------- | --------------- | ------------------------------------------------- |
+| [asciinema]           | macOS, Ubuntu   | Record and share terminal sessions                |
+| [bat]                 | all             | `cat` clone with syntax highlighting              |
+| [bottom]              | Ubuntu, Windows | Terminal system monitor                           |
+| [delta]               | all             | Syntax-highlighted diffs; configured as git pager |
+| [eza]                 | all             | Modern `ls` replacement                           |
+| [fd]                  | all             | Fast and user-friendly `find` alternative         |
+| [fzf]                 | all             | Command-line fuzzy finder                         |
+| [gh]                  | all             | GitHub CLI                                        |
+| [Git LFS]             | all             | Git Large File Storage                            |
+| [jq]                  | all             | `sed` for JSON                                    |
+| [just]                | all             | Task runner                                       |
+| [lazygit]             | all             | TUI for git                                       |
+| [less]                | macOS, Windows  | Terminal pager                                    |
+| [pandoc]              | all             | Universal markup converter                        |
+| [pnpm]                | all             | Fast JavaScript package manager                   |
+| [ripgrep]             | all             | Fast regex search                                 |
+| [ripgrep-all]         | macOS, Ubuntu   | ripgrep across PDFs, Office docs, etc.            |
+| [shellcheck]          | macOS, Ubuntu   | Shell script linter                               |
+| [Starship]            | all             | Cross-shell prompt                                |
+| [UPX]                 | all             | Executable packer                                 |
+| [zoxide]              | all             | Smarter `cd` that learns your habits              |
+| [zsh-autocomplete]    | macOS           | Real-time tab completion for Zsh                  |
+| [zsh-autosuggestions] | macOS           | Fish-style history suggestions for Zsh            |
+| [NuGet]               | Windows         | .NET package manager                              |
+| [PuTTY]               | Windows         | SSH client                                        |
+| [VS Build Tools]      | Windows         | MSVC compiler toolchain                           |
+| [Docker] (apt)        | Ubuntu          | Container runtime                                 |
+| [Flatpak]             | Ubuntu          | Application distribution                          |
+| [ffmpeg]              | Ubuntu          | Media processing                                  |
 
 ### Apps
 
@@ -177,6 +185,7 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 | [Obsidian]    | all             | Note-taking                                           |
 | [Spotify]     | Ubuntu, Windows | Music                                                 |
 | [Telegram]    | macOS, Windows  | Messaging                                             |
+| [ghostty]     | macOS           | Fast, native terminal emulator                        |
 | [OrbStack]    | macOS           | Container and VM runtime (Docker Desktop replacement) |
 | [Raindrop.io] | macOS           | Bookmark manager                                      |
 | [7-Zip]       | Windows         | File archiver                                         |
@@ -277,4 +286,12 @@ just spellcheck
 [UPX]: https://upx.github.io/
 [VS Build Tools]: https://visualstudio.microsoft.com/visual-cpp-build-tools/
 [VS Code]: https://code.visualstudio.com/
+[asciinema]: https://asciinema.org/
+[delta]: https://dandavison.github.io/delta/
+[fd]: https://github.com/sharkdp/fd
+[gh]: https://cli.github.com/
+[ghostty]: https://ghostty.org/
+[lazygit]: https://github.com/jesseduffield/lazygit
+[zoxide]: https://github.com/ajeetdsouza/zoxide
 [zsh-autocomplete]: https://github.com/marlonrichert/zsh-autocomplete
+[zsh-autosuggestions]: https://github.com/zsh-users/zsh-autosuggestions

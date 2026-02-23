@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(chmod:*)",
+      "Bash(pip3:*)",
+      "Bash(ansible-galaxy collection list:*)",
+      "Bash(pip show:*)",
+      "Bash(pipx list:*)",
+      "Bash(ansible-lint:*)",
+      "Bash(pre-commit run:*)",
+      "Bash(mise list:*)",
+      "Bash(pip index:*)",
+      "Bash(just ansible-lint:*)",
+      "Bash(python3:*)",
+      "Bash(PYTHONPATH=/Users/darrenhickling/Setup/collections python3:*)",
+      "Bash(ansible-galaxy collection install:*)",
+      "Bash(PYTHONPATH=./collections ansible-lint:*)",
+      "Bash(pnpm add:*)",
+      "Bash(just cspell:*)",
+      "Bash(cspell lint:*)",
+      "Bash(/Users/darrenhickling/Setup/ansible/playbooks/install.yml:*)",
+      "Bash(/Users/darrenhickling/Setup/ansible/roles/os_config/tasks/darwin.yml:*)",
+      "Bash(/Users/darrenhickling/Setup/.github/workflows/lint.yml:*)",
+      "Bash(/Users/darrenhickling/Setup/.github/CODEOWNERS:*)"
+    ]
+  }
+}

@@ -1,5 +1,6 @@
 ---
 apt_tools:
+  - asciinema
   - bat
   - build-essential
   - containerd.io
@@ -9,10 +10,13 @@ apt_tools:
   - docker-ce-rootless-extras
   - docker-compose-plugin
   - eza
+  - fd-find
   - ffmpeg
   - flatpak
   - fzf
+  - gh
   - git
+  - git-delta
   - git-lfs
   - gnome-software-plugin-flatpak
   - gnupg
@@ -30,5 +34,8 @@ apt_tools:
   - ripgrep
   - shellcheck
   - upx-ucl
+  - zoxide
 
-snap_tools: []
+snap_tools:
+  - name: lazygit
+    classic: false

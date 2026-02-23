@@ -8,7 +8,6 @@
 The repository contains configuration files that must be deployed to the
 correct locations on each platform:
 
-- `.bashrc` → `~/.bashrc` (Linux)
 - `config/starship.toml` → `~/.config/starship.toml` (all platforms)
 - `powershell-profile.ps1` → the path returned by `$PROFILE` (Windows)
 

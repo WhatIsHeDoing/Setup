@@ -1,11 +1,16 @@
 ---
 homebrew_tools:
+    - asciinema
     - bat
     - eza
+    - fd
     - fzf
+    - gh
+    - git-delta
     - git-lfs
     - jq
     - just
+    - lazygit
     - less
     - pandoc
     - pnpm
@@ -14,4 +19,6 @@ homebrew_tools:
     - shellcheck
     - starship
     - upx
+    - zoxide
     - zsh-autocomplete
+    - zsh-autosuggestions

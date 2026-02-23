@@ -1,0 +1,45 @@
+# Global gitignore — patterns that should never appear in any repository.
+# Deployed to ~/.gitignore_global and registered via core.excludesFile.
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Editors / IDEs
+.idea/
+*.iml
+*.iws
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+
+# Secrets / environment
+.env
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+*.egg-info/
+
+# Rust
+/target/

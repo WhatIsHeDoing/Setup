@@ -42,13 +42,13 @@
       backup: true
   when: effective_platform != "windows"
 
-- name: Deploy .bashrc (Ubuntu only)
-  ansible.builtin.template:
-      src: "{{ repo_root }}/.bashrc"
-      dest: "{{ ansible_env.HOME }}/.bashrc"
+- name: Deploy global gitignore
+  ansible.builtin.copy:
+      src: "{{ repo_root }}/config/gitignore_global"
+      dest: "{{ ansible_env.HOME }}/.gitignore_global"
       mode: "0644"
       backup: true
-  when: effective_platform == "debian"
+  when: effective_platform != "windows"
 
 - name: Ensure ~/.local/bin exists
   ansible.builtin.file:
@@ -62,6 +62,24 @@
       path: "{{ ansible_env.HOME }}/.zshrc"
       line: 'source "/opt/homebrew/share/zsh-autocomplete/zsh-autocomplete.plugin.zsh"'
       regexp: 'zsh-autocomplete\.plugin\.zsh'
+      create: true
+      mode: "0644"
+  when: effective_platform == "darwin"
+
+- name: Enable zsh-autosuggestions in .zshrc
+  ansible.builtin.lineinfile:
+      path: "{{ ansible_env.HOME }}/.zshrc"
+      line: 'source "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"'
+      regexp: 'zsh-autosuggestions\.zsh'
+      create: true
+      mode: "0644"
+  when: effective_platform == "darwin"
+
+- name: Enable zoxide in .zshrc
+  ansible.builtin.lineinfile:
+      path: "{{ ansible_env.HOME }}/.zshrc"
+      line: 'eval "$(zoxide init zsh)"'
+      regexp: "zoxide init zsh"
       create: true
       mode: "0644"
   when: effective_platform == "darwin"
