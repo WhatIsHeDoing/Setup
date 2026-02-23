@@ -69,7 +69,7 @@
 - name: Enable zsh-autosuggestions in .zshrc
   ansible.builtin.lineinfile:
       path: "{{ ansible_env.HOME }}/.zshrc"
-      line: 'source "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"'
+      line: 'source "/opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh"'
       regexp: 'zsh-autosuggestions\.zsh'
       create: true
       mode: "0644"
