@@ -71,6 +71,10 @@ pre-commit:
     pre-commit install
     pre-commit run --all-files
 
+# Update all pre-commit hooks to their latest versions
+update-hooks:
+    pre-commit autoupdate
+
 # Installs Ansible collections
 ansible-setup:
     ansible-galaxy collection install -r ansible/requirements.yml -p ./collections --force
