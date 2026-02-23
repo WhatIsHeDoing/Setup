@@ -1,6 +1,10 @@
 ---
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
+default_install_hook_types:
+    - pre-commit
+    - commit-msg
+
 repos:
     - repo: https://github.com/pre-commit/pre-commit-hooks
       rev: v6.0.0
@@ -9,8 +13,11 @@ repos:
           - id: end-of-file-fixer
           - id: check-json
           - id: check-yaml
+          - id: check-toml
           - id: check-added-large-files
+          - id: check-case-conflict
           - id: check-merge-conflict
+          - id: check-executables-have-shebangs
           - id: detect-private-key
 
     - repo: https://github.com/shellcheck-py/shellcheck-py
@@ -28,6 +35,17 @@ repos:
       hooks:
           - id: markdownlint-cli2
             exclude: ^LICENSE\.md$
+
+    - repo: https://github.com/rhysd/actionlint
+      rev: v1.7.7
+      hooks:
+          - id: actionlint
+
+    - repo: https://github.com/commitizen-tools/commitizen
+      rev: v4.2.2
+      hooks:
+          - id: commitizen
+            stages: [commit-msg]
 
     # ansible-lint runs in CI (see .github/workflows/lint.yml) where
     # Ansible Galaxy collections can be properly installed first.
