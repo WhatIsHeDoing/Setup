@@ -4,7 +4,8 @@ Guidelines for working in this repository.
 
 ## What This Repo Does
 
-Cross-platform desktop setup for macOS, Ubuntu, and Windows using Ansible and Mise. Running the install playbook produces an idempotent, fully-configured machine from scratch.
+Cross-platform desktop setup for macOS, Ubuntu, and Windows using Ansible and Mise.
+Running the install playbook produces an idempotent, fully-configured machine from scratch.
 
 ## Running the Setup
 
@@ -50,7 +51,8 @@ docs/
 
 ## Key Conventions
 
-- **Platform detection** uses `effective_platform` (set in `install.yml` pre_tasks): `darwin`, `debian`, or `windows`. Always use this variable, not raw `ansible_os_family`, in role conditionals.
+- **Platform detection** uses `effective_platform` (set in `install.yml` pre_tasks): `darwin`, `debian`, or `windows`.
+Always use this variable, not raw `ansible_os_family`, in role conditionals.
 - **Per-platform vars** live in `roles/<role>/vars/{darwin,debian,windows}.yml`. Cross-platform vars live in `ansible/inventory/group_vars/all.yml`.
 - **`roles_path`** is set to `ansible/roles` in `ansible.cfg` — use role names directly, not paths.
 - **Prefer `~/.local/bin`** over `/usr/local/bin` for user scripts. Avoids `become: true`.

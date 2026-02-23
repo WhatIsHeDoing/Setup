@@ -14,7 +14,8 @@ Targets **macOS**, **Ubuntu**, and **Windows** (via WSL2). Idempotent — run at
 | Runtimes         | [Mise]                               | Node, Python, Rust version management              |
 | Package managers | Homebrew / apt+snap+flatpak / WinGet | Platform-native package installation               |
 
-Ansible runs locally on macOS and Ubuntu (`connection: local`). On Windows, it runs from WSL2 and connects to the Windows host over WinRM using the WSL2 gateway address.
+Ansible runs locally on macOS and Ubuntu (`connection: local`).
+On Windows, it runs from WSL2 and connects to the Windows host over WinRM using the WSL2 gateway address.
 
 ## Quick Start
 
@@ -53,7 +54,8 @@ Preview exactly what `just install` would change without touching the machine:
 just dry-run
 ```
 
-Runs the playbook with `--check --diff`: shows which tasks would make changes and diffs any file content that would be modified. The verification step is skipped because commands do not actually execute in check mode.
+Runs the playbook with `--check --diff`: shows which tasks would make changes and diffs any file content that would be modified.
+The verification step is skipped because commands do not actually execute in check mode.
 
 ### Running a subset
 
@@ -229,7 +231,8 @@ git_user_name: "Your Name"
 git_user_email: "you@example.com"
 ```
 
-Ansible picks this file up automatically. If it is absent the identity tasks are skipped — nothing breaks. The `.example` file documents the available options.
+Ansible picks this file up automatically. If it is absent the identity tasks are skipped — nothing breaks.
+The `.example` file documents the available options.
 
 ## Documentation
 

@@ -9,6 +9,9 @@
         "source.fixAll": "always"
     },
     "editor.formatOnSave": true,
+    "editor.rulers": [
+        130
+    ],
     "files.associations": {
         ".ansible-lint": "yaml",
         "*.yml.example": "yaml",

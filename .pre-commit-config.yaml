@@ -23,5 +23,11 @@ repos:
       hooks:
           - id: yamllint
 
+    - repo: https://github.com/DavidAnson/markdownlint-cli2
+      rev: v0.17.2
+      hooks:
+          - id: markdownlint-cli2
+            exclude: ^LICENSE\.md$
+
     # ansible-lint runs in CI (see .github/workflows/lint.yml) where
     # Ansible Galaxy collections can be properly installed first.

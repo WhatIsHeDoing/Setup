@@ -28,7 +28,8 @@ Edit `ansible/inventory/group_vars/all.yml` and update the relevant table in `RE
 
 ### Documenting a decision
 
-Add a new ADR to `docs/adr/` following the existing format and numbered sequentially. ADRs are append-only — supersede rather than edit past decisions.
+Add a new ADR to `docs/adr/` following the existing format and numbered sequentially.
+ADRs are append-only — supersede rather than edit past decisions.
 
 ## Testing
 

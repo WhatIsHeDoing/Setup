@@ -21,7 +21,8 @@
       "Bash(/Users/darrenhickling/Setup/ansible/playbooks/install.yml:*)",
       "Bash(/Users/darrenhickling/Setup/ansible/roles/os_config/tasks/darwin.yml:*)",
       "Bash(/Users/darrenhickling/Setup/.github/workflows/lint.yml:*)",
-      "Bash(/Users/darrenhickling/Setup/.github/CODEOWNERS:*)"
+      "Bash(/Users/darrenhickling/Setup/.github/CODEOWNERS:*)",
+      "Bash(/Users/darrenhickling/Setup/ansible/roles/os_config/handlers/main.yml:*)"
     ]
   }
 }
