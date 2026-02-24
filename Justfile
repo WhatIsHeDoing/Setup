@@ -1,3 +1,6 @@
+# Explicitly set config path — WSL2 mounts appear world-writable, causing Ansible to ignore ansible.cfg
+export ANSIBLE_CONFIG := justfile_directory() + "/ansible.cfg"
+
 # List all available recipes
 default:
     @just --list
@@ -12,6 +15,8 @@ bootstrap:
     esac
 
 # Install and configure everything on this machine (macOS / Ubuntu / WSL2)
+[linux]
+[macos]
 install:
     ansible-playbook ansible/playbooks/install.yml \
         -i ansible/inventory/localhost.yml \

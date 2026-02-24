@@ -16,15 +16,9 @@ winget install Git.Git --accept-source-agreements --accept-package-agreements --
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + `
             [System.Environment]::GetEnvironmentVariable("Path", "User")
 
-Write-Step "Configuring Git"
-git config --global core.autocrlf true
-git config --global credential.helper wincred
-git config --global fetch.prune true
-git config --global init.defaultBranch main
-git config --global push.autoSetupRemote true
-git config --global push.default current
-
 Write-Step "Configuring WinRM for Ansible"
+# WinRM requires a non-Public network profile; set any Public adapters to Private
+Get-NetConnectionProfile | Where-Object NetworkCategory -eq 'Public' | Set-NetConnectionProfile -NetworkCategory Private
 Enable-PSRemoting -Force -SkipNetworkProfileCheck
 winrm set winrm/config/service/auth '@{Basic="true"}'
 Set-Item -Path WSMan:\localhost\Service\AllowUnencrypted -Value $true
@@ -48,5 +42,5 @@ Write-Host ""
 Write-Host "Next steps:"
 Write-Host "  1. Restart if WSL2 was just installed."
 Write-Host "  2. Open WSL2 and clone this repo."
-Write-Host "  3. Run: just bootstrap          (installs Ansible in WSL2)"
+Write-Host "  3. Run: bash bootstrap/bootstrap_ubuntu.sh   (installs Ansible and just)"
 Write-Host "  4. Run: WINDOWS_PASSWORD=<your-password> just install-windows"

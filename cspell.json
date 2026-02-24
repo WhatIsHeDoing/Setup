@@ -87,6 +87,7 @@
         "localport",
         "markdownlint",
         "minikube",
+        "misconfig",
         "mise",
         "MSVC",
         "netsh",

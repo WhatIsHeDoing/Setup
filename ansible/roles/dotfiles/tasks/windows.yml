@@ -21,37 +21,31 @@
   ansible.builtin.file:
     path: "{{ appdata_path.stdout | trim }}/bottom"
     state: directory
-    mode: "0755"
 
 - name: Deploy bottom configuration
   ansible.builtin.copy:
     src: "{{ repo_root }}/config/bottom.toml"
     dest: "{{ appdata_path.stdout | trim }}/bottom/bottom.toml"
-    mode: "0644"
     backup: true
 
 - name: Ensure ~/.config directory exists
   ansible.builtin.file:
     path: "{{ userprofile_path.stdout | trim }}/.config"
     state: directory
-    mode: "0755"
 
 - name: Deploy Starship configuration
   ansible.builtin.copy:
     src: "{{ repo_root }}/config/starship.toml"
     dest: "{{ userprofile_path.stdout | trim }}/.config/starship.toml"
-    mode: "0644"
     backup: true
 
 - name: Ensure PowerShell profile directory exists
   ansible.builtin.file:
     path: "{{ ps_profile_path.stdout | trim | dirname }}"
     state: directory
-    mode: "0755"
 
 - name: Deploy PowerShell profile
   ansible.builtin.copy:
     src: "{{ repo_root }}/powershell-profile.ps1"
     dest: "{{ ps_profile_path.stdout | trim }}"
-    mode: "0644"
     backup: true

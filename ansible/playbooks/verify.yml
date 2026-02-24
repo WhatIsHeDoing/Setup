@@ -19,6 +19,18 @@
           - { cmd: "cargo --version", name: "cargo" }
           - { cmd: "pnpm --version", name: "pnpm" }
 
+      windows_tools_to_verify:
+          - { cmd: "dotnet --version", name: "dotnet" }
+          - { cmd: "dotnet --list-runtimes", name: "dotnet-runtimes" }
+          - { cmd: "pwsh --version", name: "powershell" }
+          - { cmd: "gh --version", name: "gh" }
+          - { cmd: "git-lfs --version", name: "git-lfs" }
+          - { cmd: "lazygit --version", name: "lazygit" }
+          - { cmd: "fd --version", name: "fd" }
+          - { cmd: "delta --version", name: "delta" }
+          - { cmd: "btm --version", name: "bottom" }
+          - { cmd: "zoxide --version", name: "zoxide" }
+
   tasks:
       - name: Verify tool is installed and functional
         ansible.builtin.command: "{{ item.cmd }}"
@@ -67,6 +79,24 @@
         ansible.builtin.debug:
             msg: "OK ll: listed {{ ll_result.stdout_lines | length }} lines"
         when: ansible_os_family != "Windows"
+
+      - name: Verify Windows tool is installed and functional
+        ansible.builtin.command: "{{ item.cmd }}"
+        loop: "{{ windows_tools_to_verify }}"
+        loop_control:
+            label: "{{ item.name }}"
+        register: windows_verify_results
+        changed_when: false
+        failed_when: windows_verify_results.rc != 0
+        when: ansible_os_family == "Windows"
+
+      - name: Print verified Windows versions
+        ansible.builtin.debug:
+            msg: "OK {{ item.item.name }}: {{ item.stdout_lines[0] }}"
+        loop: "{{ windows_verify_results.results }}"
+        loop_control:
+            label: "{{ item.item.name }}"
+        when: ansible_os_family == "Windows"
 
       - name: Reminder about git signing
         ansible.builtin.debug:
