@@ -4,8 +4,8 @@
 # All package installation is then handled by Ansible via: just install-windows (from WSL2)
 
 function Write-Step ($text) {
-    Write-Host ""
-    Write-Host -ForegroundColor Cyan "==> $text"
+    Write-Output ""
+    Write-Output -ForegroundColor Cyan "==> $text"
 }
 
 Write-Step "Updating WinGet"
@@ -23,24 +23,24 @@ Enable-PSRemoting -Force -SkipNetworkProfileCheck
 winrm set winrm/config/service/auth '@{Basic="true"}'
 Set-Item -Path WSMan:\localhost\Service\AllowUnencrypted -Value $true
 netsh advfirewall firewall add rule name="WinRM HTTP" protocol=TCP dir=in localport=5985 action=allow | Out-Null
-Write-Host "WinRM configured on port 5985."
+Write-Output "WinRM configured on port 5985."
 
 Write-Step "Setting up WSL2"
 try {
     if (Get-Command wsl -ErrorAction Stop) {
-        Write-Host "Updating WSL..."
+        Write-Output "Updating WSL..."
         wsl --update
     }
 } catch {
-    Write-Host "Installing WSL (a restart will be required)..."
+    Write-Output "Installing WSL (a restart will be required)..."
     wsl --install
 }
 
-Write-Host ""
-Write-Host -ForegroundColor Green "Bootstrap complete!"
-Write-Host ""
-Write-Host "Next steps:"
-Write-Host "  1. Restart if WSL2 was just installed."
-Write-Host "  2. Open WSL2 and clone this repo."
-Write-Host "  3. Run: bash bootstrap/bootstrap_ubuntu.sh   (installs Ansible and just)"
-Write-Host "  4. Run: WINDOWS_PASSWORD=<your-password> just install-windows"
+Write-Output ""
+Write-Output -ForegroundColor Green "Bootstrap complete!"
+Write-Output ""
+Write-Output "Next steps:"
+Write-Output "  1. Restart if WSL2 was just installed."
+Write-Output "  2. Open WSL2 and clone this repo."
+Write-Output "  3. Run: bash bootstrap/bootstrap_ubuntu.sh   (installs Ansible and just)"
+Write-Output "  4. Run: WINDOWS_PASSWORD=<your-password> just install-windows"

@@ -1,3 +1,6 @@
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingInvokeExpression', '', Justification = 'Required for Starship shell initialisation')]
+param()
+
 Invoke-Expression (&starship init powershell)
 
 Function ll { eza -la --git-ignore --hyperlink --total-size --time-style=iso }
