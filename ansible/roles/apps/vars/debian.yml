@@ -12,7 +12,15 @@ snap_apps:
       classic: true
     - name: spotify
       classic: false
+    - name: telegram-desktop
+      classic: false
 
 flatpak_apps:
     - name: io.bassi.Amberol
+      remote: flathub
+    - name: it.bandanza.Caesium
+      remote: flathub
+    - name: io.dbeaver.DBeaverCommunity
+      remote: flathub
+    - name: com.mitchellh.ghostty
       remote: flathub

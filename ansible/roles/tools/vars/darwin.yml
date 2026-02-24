@@ -5,6 +5,7 @@ homebrew_tools:
     - bottom
     - eza
     - fd
+    - ffmpeg
     - fzf
     - gh
     - git-delta

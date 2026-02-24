@@ -4,6 +4,7 @@ winget_tools:
     - Clement.bottom
     - dandavison.delta
     - eza-community.eza
+    - Gyan.FFmpeg
     - junegunn.fzf
     - sharkdp.fd
     - GitHub.cli
@@ -17,6 +18,7 @@ winget_tools:
     - pnpm.pnpm
     - PuTTY.PuTTY
     - BurntSushi.ripgrep.MSVC
+    - koalaman.shellcheck
     - Starship.Starship
     - UPX.UPX
     - Microsoft.VisualStudio.2022.BuildTools

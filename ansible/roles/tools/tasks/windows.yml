@@ -9,3 +9,9 @@
   loop: "{{ winget_tools }}"
   changed_when: false
   failed_when: false
+
+- name: Install ripgrep-all (rga)
+  ansible.builtin.command: cargo.exe install ripgrep_all
+  args:
+      creates: "{{ ansible_env.USERPROFILE }}\\.cargo\\bin\\rga.exe"
+  failed_when: false

@@ -138,14 +138,14 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 
 ### Runtimes
 
-| Runtime      | Platforms | Manager                                                             |
-| ------------ | --------- | ------------------------------------------------------------------- |
-| [Node.js]    | all       | Mise (macOS/Ubuntu), WinGet (Windows)                               |
-| [Python]     | all       | Mise (macOS/Ubuntu), WinGet (Windows)                               |
-| [Rust]       | all       | Mise (macOS/Ubuntu), WinGet/rustup (Windows)                        |
-| [.NET]       | Windows   | WinGet                                                              |
-| [Docker]     | all       | OrbStack (macOS), apt (Ubuntu), Docker Desktop via WinGet (Windows) |
-| [PowerShell] | all       | Homebrew (macOS), apt (Ubuntu), WinGet (Windows)                    |
+| Runtime      | Platforms       | Manager                                                             |
+| ------------ | --------------- | ------------------------------------------------------------------- |
+| [Node.js]    | all             | Mise (macOS/Ubuntu), WinGet (Windows)                               |
+| [Python]     | all             | Mise (macOS/Ubuntu), WinGet (Windows)                               |
+| [Rust]       | all             | Mise (macOS/Ubuntu), WinGet/rustup (Windows)                        |
+| [.NET]       | Windows         | WinGet                                                              |
+| [Docker]     | all             | OrbStack (macOS), apt (Ubuntu), Docker Desktop via WinGet (Windows) |
+| [PowerShell] | Ubuntu, Windows | apt (Ubuntu), WinGet (Windows)                                      |
 
 ### Tools
 
@@ -167,8 +167,8 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 | [pandoc]              | all            | Universal markup converter                        |
 | [pnpm]                | all            | Fast JavaScript package manager                   |
 | [ripgrep]             | all            | Fast regex search                                 |
-| [ripgrep-all]         | macOS, Ubuntu  | ripgrep across PDFs, Office docs, etc.            |
-| [shellcheck]          | macOS, Ubuntu  | Shell script linter                               |
+| [ripgrep-all]         | all            | ripgrep across PDFs, Office docs, etc.            |
+| [shellcheck]          | all            | Shell script linter                               |
 | [Starship]            | all            | Cross-shell prompt                                |
 | [UPX]                 | all            | Executable packer                                 |
 | [zoxide]              | all            | Smarter `cd` that learns your habits              |
@@ -179,7 +179,7 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 | [VS Build Tools]      | Windows        | MSVC compiler toolchain                           |
 | [Docker] (apt)        | Ubuntu         | Container runtime                                 |
 | [Flatpak]             | Ubuntu         | Application distribution                          |
-| [ffmpeg]              | Ubuntu         | Media processing                                  |
+| [ffmpeg]              | all            | Media processing                                  |
 
 ### Apps
 
@@ -188,14 +188,14 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 | [VS Code]     | all             | Code editor                                           |
 | [draw.io]     | all             | Diagramming                                           |
 | [Obsidian]    | all             | Note-taking                                           |
-| [Spotify]     | Ubuntu, Windows | Music                                                 |
-| [Telegram]    | macOS, Windows  | Messaging                                             |
-| [ghostty]     | macOS           | Fast, native terminal emulator                        |
+| [Spotify]     | all             | Music                                                 |
+| [Telegram]    | all             | Messaging                                             |
+| [ghostty]     | macOS, Ubuntu   | Fast, native terminal emulator                        |
 | [OrbStack]    | macOS           | Container and VM runtime (Docker Desktop replacement) |
-| [Raindrop.io] | macOS           | Bookmark manager                                      |
+| [Raindrop.io] | macOS, Windows  | Bookmark manager                                      |
 | [7-Zip]       | Windows         | File archiver                                         |
-| [Caesium]     | Windows         | Image compressor                                      |
-| [DBeaver]     | Windows         | Universal database tool                               |
+| [Caesium]     | Ubuntu, Windows | Image compressor                                      |
+| [DBeaver]     | all             | Universal database tool                               |
 | [Amberol]     | Ubuntu          | Music player                                          |
 | [Firefox]     | all             | Web browser                                           |
 

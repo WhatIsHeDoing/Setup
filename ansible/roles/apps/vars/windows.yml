@@ -6,6 +6,7 @@ winget_apps:
     - dbeaver.dbeaver
     - JGraph.Draw
     - Obsidian.Obsidian
+    - Raindrop.Raindrop
     - Spotify.Spotify
     - Telegram.TelegramDesktop
     - Microsoft.VisualStudioCode
