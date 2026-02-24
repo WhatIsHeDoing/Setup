@@ -152,7 +152,7 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 | --------------------- | --------------- | ------------------------------------------------- |
 | [asciinema]           | macOS, Ubuntu   | Record and share terminal sessions                |
 | [bat]                 | all             | `cat` clone with syntax highlighting              |
-| [bottom]              | Ubuntu, Windows | Terminal system monitor                           |
+| [bottom]              | all             | Terminal system monitor                           |
 | [delta]               | all             | Syntax-highlighted diffs; configured as git pager |
 | [eza]                 | all             | Modern `ls` replacement                           |
 | [fd]                  | all             | Fast and user-friendly `find` alternative         |

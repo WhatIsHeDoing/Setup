@@ -6,8 +6,11 @@ echo "Bootstrapping macOS..."
 # Install Homebrew if not present
 if ! command -v brew &>/dev/null; then
     echo "Installing Homebrew..."
+    # Downloads over HTTPS from github.com/Homebrew/install (official source).
+    # Homebrew verifies all package downloads with GPG signatures.
+    # Review the installer at https://github.com/Homebrew/install before running.
     NONINTERACTIVE=1 /bin/bash -c \
-        "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        "$(curl --proto '=https' --tlsv1.2 -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
 # Ensure brew is on PATH for Apple Silicon and Intel

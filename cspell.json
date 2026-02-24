@@ -51,6 +51,7 @@
         "ensurepath",
         "errorlens",
         "esac",
+        "excludesfile",
         "eza",
         "Farlane",
         "fdfind",

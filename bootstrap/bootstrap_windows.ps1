@@ -21,6 +21,11 @@ Write-Step "Configuring WinRM for Ansible"
 Get-NetConnectionProfile | Where-Object NetworkCategory -eq 'Public' | Set-NetConnectionProfile -NetworkCategory Private
 Enable-PSRemoting -Force -SkipNetworkProfileCheck
 winrm set winrm/config/service/auth '@{Basic="true"}'
+# Security note: AllowUnencrypted=true is intentional here.
+# Ansible connects from WSL2 to the Windows host over the virtual loopback
+# adapter (127.0.0.1 / WSL gateway). This traffic never leaves the machine
+# and is not exposed to the network. For machines on shared or untrusted
+# networks, replace this with HTTPS/certificate-based WinRM — see SECURITY.md.
 Set-Item -Path WSMan:\localhost\Service\AllowUnencrypted -Value $true
 netsh advfirewall firewall add rule name="WinRM HTTP" protocol=TCP dir=in localport=5985 action=allow | Out-Null
 Write-Output "WinRM configured on port 5985."

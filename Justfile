@@ -1,9 +1,10 @@
 # Explicitly set config path — WSL2 mounts appear world-writable, causing Ansible to ignore ansible.cfg
+
 export ANSIBLE_CONFIG := justfile_directory() + "/ansible.cfg"
 
-# List all available recipes
+# Choose from all available recipes
 default:
-    @just --list
+    @just --choose
 
 # Bootstrap prerequisites on this machine (run once on a fresh machine)
 bootstrap:
@@ -80,8 +81,9 @@ pre-commit:
 update-hooks:
     pre-commit autoupdate
 
-# Installs Ansible collections
+# Installs Ansible and collections via pip (matches CI; avoids CLI/module version mismatch from brew)
 ansible-setup:
+    pip3 install --upgrade ansible-core ansible-lint
     ansible-galaxy collection install -r ansible/requirements.yml -p ./collections --force
 
 # Lints Ansible files

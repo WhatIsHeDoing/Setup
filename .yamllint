@@ -1,6 +1,9 @@
 ---
 extends: default
 
+ignore: |
+    collections/
+
 rules:
     line-length:
         max: 160
@@ -13,6 +16,7 @@ rules:
         min-spaces-from-content: 1
     comments-indentation: false
     braces:
+        forbid: true
         max-spaces-inside: 1
     octal-values:
         forbid-implicit-octal: true

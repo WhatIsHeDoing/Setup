@@ -9,21 +9,21 @@ jobs:
     pre-commit:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v6.0.2
+            - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
 
-            - uses: actions/setup-python@v6
+            - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
               with:
                   python-version: "3.12"
 
             - name: Run pre-commit
-              uses: pre-commit/action@v3.0.1
+              uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd
 
     ansible-lint:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v6.0.2
+            - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
 
-            - uses: actions/setup-python@v6
+            - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
               with:
                   python-version: "3.12"
 
@@ -39,7 +39,7 @@ jobs:
     powershell-lint:
         runs-on: windows-latest
         steps:
-            - uses: actions/checkout@v6.0.2
+            - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
 
             - name: Install PSScriptAnalyzer
               shell: pwsh
@@ -55,9 +55,9 @@ jobs:
     trivy:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v6.0.2
+            - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
 
-            - uses: aquasecurity/trivy-action@0.30.0
+            - uses: aquasecurity/trivy-action@6c175e9c4083a92bbca2f9724c8a5e33bc2d97a5
               with:
                   scan-type: fs
                   scanners: secret,misconfig

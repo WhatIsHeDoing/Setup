@@ -10,43 +10,100 @@
 
   vars:
       tools_to_verify:
-          - { cmd: "git --version", name: "git" }
-          - { cmd: "just --version", name: "just" }
-          - { cmd: "mise --version", name: "mise" }
-          - { cmd: "fzf --version", name: "fzf" }
-          - { cmd: "bat --version", name: "bat" }
-          - { cmd: "eza --version", name: "eza" }
-          - { cmd: "rg --version", name: "ripgrep" }
-          - { cmd: "jq --version", name: "jq" }
-          - { cmd: "starship --version", name: "starship" }
-          - { cmd: "node --version", name: "node" }
-          - { cmd: "python3 --version", name: "python" }
-          - { cmd: "cargo --version", name: "cargo" }
-          - { cmd: "pnpm --version", name: "pnpm" }
+          - cmd: "git --version"
+            name: "git"
+          - cmd: "just --version"
+            name: "just"
+          - cmd: "mise --version"
+            name: "mise"
+          - cmd: "fzf --version"
+            name: "fzf"
+          - cmd: "bat --version"
+            name: "bat"
+          - cmd: "eza --version"
+            name: "eza"
+          - cmd: "rg --version"
+            name: "ripgrep"
+          - cmd: "jq --version"
+            name: "jq"
+          - cmd: "starship --version"
+            name: "starship"
+          - cmd: "node --version"
+            name: "node"
+          - cmd: "python3 --version"
+            name: "python"
+          - cmd: "cargo --version"
+            name: "cargo"
+          - cmd: "pnpm --version"
+            name: "pnpm"
+          - cmd: "gh --version"
+            name: "gh"
+          - cmd: "git-lfs --version"
+            name: "git-lfs"
+          - cmd: "lazygit --version"
+            name: "lazygit"
+          - cmd: "fd --version"
+            name: "fd"
+          - cmd: "delta --version"
+            name: "delta"
+          - cmd: "btm --version"
+            name: "bottom"
+          - cmd: "zoxide --version"
+            name: "zoxide"
 
       windows_tools_to_verify:
-          - { cmd: "git --version", name: "git" }
-          - { cmd: "just --version", name: "just" }
-          - { cmd: "fzf --version", name: "fzf" }
-          - { cmd: "bat --version", name: "bat" }
-          - { cmd: "eza --version", name: "eza" }
-          - { cmd: "rg --version", name: "ripgrep" }
-          - { cmd: "jq --version", name: "jq" }
-          - { cmd: "starship --version", name: "starship" }
-          - { cmd: "node --version", name: "node" }
-          - { cmd: "python --version", name: "python" }
-          - { cmd: "cargo --version", name: "cargo" }
-          - { cmd: "pnpm --version", name: "pnpm" }
-          - { cmd: "dotnet --version", name: "dotnet" }
-          - { cmd: "dotnet --list-runtimes", name: "dotnet-runtimes" }
-          - { cmd: "pwsh --version", name: "powershell" }
-          - { cmd: "gh --version", name: "gh" }
-          - { cmd: "git-lfs --version", name: "git-lfs" }
-          - { cmd: "lazygit --version", name: "lazygit" }
-          - { cmd: "fd --version", name: "fd" }
-          - { cmd: "delta --version", name: "delta" }
-          - { cmd: "btm --version", name: "bottom" }
-          - { cmd: "zoxide --version", name: "zoxide" }
+          - cmd: "git --version"
+            name: "git"
+          - cmd: "just --version"
+            name: "just"
+          - cmd: "fzf --version"
+            name: "fzf"
+          - cmd: "bat --version"
+            name: "bat"
+          - cmd: "eza --version"
+            name: "eza"
+          - cmd: "rg --version"
+            name: "ripgrep"
+          - cmd: "jq --version"
+            name: "jq"
+          - cmd: "starship --version"
+            name: "starship"
+          - cmd: "node --version"
+            name: "node"
+          - cmd: "python --version"
+            name: "python"
+          - cmd: "cargo --version"
+            name: "cargo"
+          - cmd: "pnpm --version"
+            name: "pnpm"
+          - cmd: "dotnet --version"
+            name: "dotnet"
+          - cmd: "dotnet --list-runtimes"
+            name: "dotnet-runtimes"
+          - cmd: "pwsh --version"
+            name: "powershell"
+          - cmd: "gh --version"
+            name: "gh"
+          - cmd: "git-lfs --version"
+            name: "git-lfs"
+          - cmd: "lazygit --version"
+            name: "lazygit"
+          - cmd: "fd --version"
+            name: "fd"
+          - cmd: "delta --version"
+            name: "delta"
+          - cmd: "btm --version"
+            name: "bottom"
+          - cmd: "zoxide --version"
+            name: "zoxide"
+
+      dotfiles_to_verify:
+          - path: "{{ ansible_env.HOME }}/.config/starship.toml"
+            name: "starship config"
+          - path: "{{ ansible_env.HOME }}/.config/bottom/bottom.toml"
+            name: "bottom config"
+          - path: "{{ ansible_env.HOME }}/.gitignore_global"
+            name: "global gitignore"
 
   tasks:
       - name: Verify tool is installed and functional
@@ -66,6 +123,37 @@
         loop: "{{ verify_results.results }}"
         loop_control:
             label: "{{ item.item.name }}"
+        when: effective_platform != "windows"
+
+      - name: Verify dotfiles are deployed
+        ansible.builtin.stat:
+            path: "{{ item.path }}"
+        register: dotfile_stats
+        loop: "{{ dotfiles_to_verify }}"
+        loop_control:
+            label: "{{ item.name }}"
+        when: effective_platform != "windows"
+
+      - name: Assert dotfiles are present
+        ansible.builtin.assert:
+            that: item.stat.exists
+            fail_msg: "{{ item.item.name }} not found at {{ item.item.path }}"
+            success_msg: "OK {{ item.item.name }}: present"
+        loop: "{{ dotfile_stats.results }}"
+        loop_control:
+            label: "{{ item.item.name }}"
+        when: effective_platform != "windows"
+
+      - name: Verify global gitignore is configured # noqa: command-instead-of-module
+        ansible.builtin.command: git config --global core.excludesfile
+        register: git_excludes
+        changed_when: false
+        failed_when: git_excludes.rc != 0
+        when: effective_platform != "windows"
+
+      - name: Print global gitignore path
+        ansible.builtin.debug:
+            msg: "OK git: core.excludesfile = {{ git_excludes.stdout | trim }}"
         when: effective_platform != "windows"
 
       - name: Verify scripts are deployed and executable
