@@ -1,4 +1,33 @@
 ---
+- name: Configure WSL2 DNS resolution
+  delegate_to: localhost
+  become: true
+  block:
+      - name: Remove immutable flag from resolv.conf
+        ansible.builtin.file:
+            path: /etc/resolv.conf
+            attributes: -i
+        failed_when: false
+
+      - name: Disable resolv.conf auto-generation in wsl.conf
+        community.general.ini_file:
+            path: /etc/wsl.conf
+            section: network
+            option: generateResolvConf
+            value: "false"
+            mode: "0644"
+
+      - name: Deploy static resolv.conf with reliable nameserver
+        ansible.builtin.copy:
+            dest: /etc/resolv.conf
+            content: "nameserver 8.8.8.8\n"
+            mode: "0644"
+
+      - name: Make resolv.conf immutable to prevent WSL from regenerating it
+        ansible.builtin.file:
+            path: /etc/resolv.conf
+            attributes: +i
+
 - name: Install VS Code extensions
   ansible.builtin.command: "code.exe --install-extension {{ item }}"
   loop: "{{ vscode_extensions }}"
@@ -7,9 +36,9 @@
 
 - name: Upgrade all WinGet packages
   ansible.builtin.command: >
-    winget.exe upgrade --all
-    --accept-source-agreements
-    --accept-package-agreements
-    --silent
+      winget.exe upgrade --all
+      --accept-source-agreements
+      --accept-package-agreements
+      --silent
   changed_when: false
   failed_when: false

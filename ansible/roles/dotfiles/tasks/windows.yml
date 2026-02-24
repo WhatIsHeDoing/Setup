@@ -17,35 +17,35 @@
   register: ps_profile_path
   changed_when: false
 
-- name: Ensure bottom config directory exists
+- name: Ensure bottom config directory exists # noqa: risky-file-permissions
   ansible.builtin.file:
       path: "{{ appdata_path.stdout | trim }}/bottom"
       state: directory
 
-- name: Deploy bottom configuration
+- name: Deploy bottom configuration # noqa: risky-file-permissions
   ansible.builtin.copy:
       src: "{{ repo_root }}/config/bottom.toml"
       dest: "{{ appdata_path.stdout | trim }}/bottom/bottom.toml"
       backup: true
 
-- name: Ensure ~/.config directory exists
+- name: Ensure ~/.config directory exists # noqa: risky-file-permissions
   ansible.builtin.file:
       path: "{{ userprofile_path.stdout | trim }}/.config"
       state: directory
 
-- name: Deploy Starship configuration
+- name: Deploy Starship configuration # noqa: risky-file-permissions
   ansible.builtin.copy:
       src: "{{ repo_root }}/config/starship.toml"
       dest: "{{ userprofile_path.stdout | trim }}/.config/starship.toml"
       backup: true
 
-- name: Ensure PowerShell profile directory exists
+- name: Ensure PowerShell profile directory exists # noqa: risky-file-permissions
   ansible.builtin.file:
       path: "{{ ps_profile_path.stdout | trim | dirname }}"
       state: directory
 
-- name: Deploy PowerShell profile
+- name: Deploy PowerShell profile # noqa: risky-file-permissions
   ansible.builtin.copy:
-      src: "{{ repo_root }}/powershell-profile.ps1"
+      src: "{{ repo_root }}/config/powershell-profile.ps1"
       dest: "{{ ps_profile_path.stdout | trim }}"
       backup: true
