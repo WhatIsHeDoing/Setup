@@ -1,4 +1,4 @@
-# Windows bootstrap script
+﻿# Windows bootstrap script
 # Run this in PowerShell as Administrator on a fresh machine.
 # This script installs Git, configures WinRM for Ansible, and sets up WSL2.
 # All package installation is then handled by Ansible via: just install-windows (from WSL2)
