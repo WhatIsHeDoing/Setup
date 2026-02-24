@@ -1,11 +1,11 @@
 ---
 # OrbStack is used in place of Docker Desktop on macOS (drop-in replacement per principle 2)
 homebrew_casks:
-  - drawio
-  - firefox
-  - ghostty
-  - obsidian
-  - orbstack
-  - raindropio
-  - telegram
-  - visual-studio-code
+    - drawio
+    - firefox
+    - ghostty
+    - obsidian
+    - orbstack
+    - raindropio
+    - telegram
+    - visual-studio-code

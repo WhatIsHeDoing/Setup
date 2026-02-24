@@ -1,15 +1,15 @@
 ---
 - name: Install apt tools
   ansible.builtin.apt:
-    name: "{{ apt_tools }}"
-    state: present
+      name: "{{ apt_tools }}"
+      state: present
   become: true
 
 - name: Create fd symlink for fd-find
   ansible.builtin.file:
-    src: /usr/bin/fdfind
-    dest: "{{ ansible_env.HOME }}/.local/bin/fd"
-    state: link
+      src: /usr/bin/fdfind
+      dest: "{{ ansible_env.HOME }}/.local/bin/fd"
+      state: link
   failed_when: false
 
 - name: Enable Git LFS
@@ -18,9 +18,9 @@
 
 - name: Install snap tools
   community.general.snap:
-    name: "{{ item.name }}"
-    classic: "{{ item.classic | default(false) }}"
-    state: present
+      name: "{{ item.name }}"
+      classic: "{{ item.classic | default(false) }}"
+      state: present
   loop: "{{ snap_tools }}"
   become: true
 
@@ -31,7 +31,7 @@
   failed_when: false
 
 - name: Install Starship
-  ansible.builtin.shell: curl -sS https://starship.rs/install.sh | sh -s -- --yes  # noqa: command-instead-of-module risky-shell-pipe
+  ansible.builtin.shell: curl -sS https://starship.rs/install.sh | sh -s -- --yes # noqa: command-instead-of-module risky-shell-pipe
   changed_when: starship_check.rc != 0
   when: starship_check.rc != 0
 
@@ -43,18 +43,18 @@
 
 - name: Install container-structure-test
   ansible.builtin.get_url:
-    url: https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64
-    dest: /usr/local/bin/container-structure-test
-    mode: "0755"
+      url: https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64
+      dest: /usr/local/bin/container-structure-test
+      mode: "0755"
   become: true
   when: cst_check.rc != 0
 
 - name: Install ripgrep-all
   ansible.builtin.command: cargo install ripgrep_all
   environment:
-    PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+      PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
   args:
-    creates: "{{ ansible_env.HOME }}/.cargo/bin/rga"
+      creates: "{{ ansible_env.HOME }}/.cargo/bin/rga"
 
 - name: Check if pnpm is installed
   ansible.builtin.command: which pnpm
@@ -62,8 +62,8 @@
   changed_when: false
   failed_when: false
 
-- name: Install pnpm  # noqa: command-instead-of-module risky-shell-pipe
+- name: Install pnpm # noqa: command-instead-of-module risky-shell-pipe
   ansible.builtin.shell: |
-    wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
+      wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
   changed_when: pnpm_check.rc != 0
   when: pnpm_check.rc != 0

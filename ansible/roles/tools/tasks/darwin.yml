@@ -1,5 +1,5 @@
 ---
 - name: Install Homebrew tools
   community.general.homebrew:
-    name: "{{ homebrew_tools }}"
-    state: present
+      name: "{{ homebrew_tools }}"
+      state: present

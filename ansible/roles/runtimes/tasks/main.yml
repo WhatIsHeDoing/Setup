@@ -5,36 +5,36 @@
 
 - name: Install Mise (macOS via Homebrew)
   community.general.homebrew:
-    name: mise
-    state: present
+      name: mise
+      state: present
   when: effective_platform == "darwin"
 
 - name: Install Mise (Ubuntu via install script)
-  ansible.builtin.shell: curl https://mise.run | sh  # noqa: command-instead-of-module risky-shell-pipe
+  ansible.builtin.shell: curl https://mise.run | sh # noqa: command-instead-of-module risky-shell-pipe
   args:
-    creates: "{{ ansible_env.HOME }}/.local/bin/mise"
+      creates: "{{ ansible_env.HOME }}/.local/bin/mise"
   when: effective_platform == "debian"
 
 - name: Trust .mise.toml in repo root
   ansible.builtin.command: mise trust "{{ repo_root }}/.mise.toml"
   environment:
-    PATH: "{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+      PATH: "{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
   changed_when: false
   when: effective_platform != "windows"
 
 - name: Install runtimes declared in .mise.toml
   ansible.builtin.command: mise install
   args:
-    chdir: "{{ repo_root }}"
+      chdir: "{{ repo_root }}"
   environment:
-    PATH: "{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+      PATH: "{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
   changed_when: false
   when: effective_platform != "windows"
 
 - name: Update Rust toolchain via rustup
   ansible.builtin.command: rustup update
   environment:
-    PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+      PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
   changed_when: true
   when: effective_platform != "windows"
 
@@ -42,7 +42,7 @@
   ansible.builtin.command: "cargo install {{ item }}"
   loop: "{{ cargo_packages }}"
   environment:
-    PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+      PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
   changed_when: false
   failed_when: false
   when: effective_platform != "windows"
@@ -50,7 +50,7 @@
 - name: Update all installed Cargo packages
   ansible.builtin.command: cargo install-update -a
   environment:
-    PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+      PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
   changed_when: false
   failed_when: false
   when: effective_platform != "windows"
@@ -58,13 +58,13 @@
 - name: Install global pnpm packages
   ansible.builtin.command: "pnpm add -g {{ pnpm_packages | join(' ') }}"
   environment:
-    PATH: "{{ ansible_env.HOME }}/.local/share/mise/shims:{{ ansible_env.PATH }}"
+      PATH: "{{ ansible_env.HOME }}/.local/share/mise/shims:{{ ansible_env.PATH }}"
   changed_when: false
   when: effective_platform != "windows"
 
 - name: Install Python packages
   ansible.builtin.command: "pip install --user --upgrade {{ pip_packages | join(' ') }}"
   environment:
-    PATH: "{{ ansible_env.HOME }}/.local/share/mise/shims:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+      PATH: "{{ ansible_env.HOME }}/.local/share/mise/shims:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
   changed_when: false
   when: effective_platform != "windows"

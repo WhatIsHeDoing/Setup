@@ -3,15 +3,15 @@
 # https://ansible-lint.readthedocs.io/configuring/
 
 warn_list:
-  - command-instead-of-module  # curl/wget installs accepted for known sources
-  - command-instead-of-shell   # shell tasks with creates: guards are intentional
-  - risky-shell-pipe           # curl | sh installs accepted for known sources
-  - risky-file-permissions     # permissions set explicitly where needed
-  - no-changed-when            # some shell tasks track state via creates: or rc
+    - command-instead-of-module # curl/wget installs accepted for known sources
+    - command-instead-of-shell # shell tasks with creates: guards are intentional
+    - risky-shell-pipe # curl | sh installs accepted for known sources
+    - risky-file-permissions # permissions set explicitly where needed
+    - no-changed-when # some shell tasks track state via creates: or rc
 
 skip_list:
-  - var-naming[no-role-prefix] # register variable prefixes not required in a setup repo
-  - yaml[line-length]          # enforced by yamllint with a higher limit
+    - var-naming[no-role-prefix] # register variable prefixes not required in a setup repo
+    - yaml[line-length] # enforced by yamllint with a higher limit
 
 exclude_paths:
-  - bootstrap/                 # plain shell scripts, not Ansible
+    - bootstrap/ # plain shell scripts, not Ansible

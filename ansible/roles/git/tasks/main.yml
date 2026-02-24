@@ -1,19 +1,19 @@
 ---
 - name: Configure global git settings
   community.general.git_config:
-    name: "{{ item.key }}"
-    value: "{{ item.value }}"
-    scope: global
+      name: "{{ item.key }}"
+      value: "{{ item.value }}"
+      scope: global
   loop: "{{ git_config | dict2items }}"
 
 - name: Configure Windows-specific git settings
   community.general.git_config:
-    name: "{{ item.key }}"
-    value: "{{ item.value }}"
-    scope: global
+      name: "{{ item.key }}"
+      value: "{{ item.value }}"
+      scope: global
   loop:
-    - {key: "core.autocrlf", value: "true"}
-    - {key: "credential.helper", value: "wincred"}
+      - { key: "core.autocrlf", value: "true" }
+      - { key: "credential.helper", value: "wincred" }
   when: ansible_os_family == "Windows"
 
 - name: Enable Git LFS (macOS)
@@ -23,19 +23,19 @@
 
 - name: Configure git user identity
   community.general.git_config:
-    name: "{{ item.key }}"
-    value: "{{ item.value }}"
-    scope: global
+      name: "{{ item.key }}"
+      value: "{{ item.value }}"
+      scope: global
   loop:
-    - {key: "user.name", value: "{{ git_user_name }}"}
-    - {key: "user.email", value: "{{ git_user_email }}"}
+      - { key: "user.name", value: "{{ git_user_name }}" }
+      - { key: "user.email", value: "{{ git_user_email }}" }
   when: git_user_name is defined and git_user_email is defined
 
 - name: Reminder about git signing
   ansible.builtin.debug:
-    msg: |
-      Git signing is not managed automatically. See principle 12.
-      To enable SSH signing:
-        git config --global gpg.format ssh
-        git config --global user.signingkey ~/.ssh/<key>.pub
-        git config --global commit.gpgsign true
+      msg: |
+          Git signing is not managed automatically. See principle 12.
+          To enable SSH signing:
+            git config --global gpg.format ssh
+            git config --global user.signingkey ~/.ssh/<key>.pub
+            git config --global commit.gpgsign true

@@ -1,11 +1,11 @@
 ---
 winget_apps:
-  - 7zip.7zip
-  - Mozilla.Firefox
-  - SabaAmaury.Caesium
-  - dbeaver.dbeaver
-  - JGraph.Draw
-  - Obsidian.Obsidian
-  - Spotify.Spotify
-  - Telegram.TelegramDesktop
-  - Microsoft.VisualStudioCode
+    - 7zip.7zip
+    - Mozilla.Firefox
+    - SabaAmaury.Caesium
+    - dbeaver.dbeaver
+    - JGraph.Draw
+    - Obsidian.Obsidian
+    - Spotify.Spotify
+    - Telegram.TelegramDesktop
+    - Microsoft.VisualStudioCode
