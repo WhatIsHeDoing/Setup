@@ -1,6 +1,8 @@
 # Setup
 
 [![Lint](https://github.com/WhatIsHeDoing/Setup/actions/workflows/lint.yml/badge.svg)](https://github.com/WhatIsHeDoing/Setup/actions/workflows/lint.yml)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.md)
+[![Security Policy](https://img.shields.io/badge/security-policy-informational.svg)](SECURITY.md)
 
 Cross-platform desktop setup using [Ansible] and [Mise].
 
