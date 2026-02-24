@@ -48,7 +48,7 @@ jobs:
             - name: Run PSScriptAnalyzer
               shell: pwsh
               run: |
-                  $results = Invoke-ScriptAnalyzer -Path . -Recurse -Settings Security -Severity Error, Warning
+                  $results = Invoke-ScriptAnalyzer -Path . -Recurse -Severity Error, Warning
                   $results | Format-Table -AutoSize
                   if ($results.Count -gt 0) { exit 1 }
 
