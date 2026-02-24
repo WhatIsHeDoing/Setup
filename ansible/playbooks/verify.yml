@@ -34,6 +34,8 @@
             name: "python"
           - cmd: "cargo --version"
             name: "cargo"
+          - cmd: "dotnet --version"
+            name: "dotnet"
           - cmd: "pnpm --version"
             name: "pnpm"
           - cmd: "gh --version"

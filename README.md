@@ -143,43 +143,43 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 | [Node.js]    | all             | Mise (macOS/Ubuntu), WinGet (Windows)                               |
 | [Python]     | all             | Mise (macOS/Ubuntu), WinGet (Windows)                               |
 | [Rust]       | all             | Mise (macOS/Ubuntu), WinGet/rustup (Windows)                        |
-| [.NET]       | Windows         | WinGet                                                              |
+| [.NET]       | all             | Homebrew (macOS), apt (Ubuntu), WinGet (Windows)                    |
 | [Docker]     | all             | OrbStack (macOS), apt (Ubuntu), Docker Desktop via WinGet (Windows) |
 | [PowerShell] | Ubuntu, Windows | apt (Ubuntu), WinGet (Windows)                                      |
 
 ### Tools
 
-| Tool                  | Platforms      | Description                                       |
-| --------------------- | -------------- | ------------------------------------------------- |
-| [asciinema]           | macOS, Ubuntu  | Record and share terminal sessions                |
-| [bat]                 | all            | `cat` clone with syntax highlighting              |
-| [bottom]              | all            | Terminal system monitor                           |
-| [delta]               | all            | Syntax-highlighted diffs; configured as git pager |
-| [eza]                 | all            | Modern `ls` replacement                           |
-| [fd]                  | all            | Fast and user-friendly `find` alternative         |
-| [fzf]                 | all            | Command-line fuzzy finder                         |
-| [gh]                  | all            | GitHub CLI                                        |
-| [Git LFS]             | all            | Git Large File Storage                            |
-| [jq]                  | all            | `sed` for JSON                                    |
-| [just]                | all            | Task runner                                       |
-| [lazygit]             | all            | TUI for git                                       |
-| [less]                | macOS, Windows | Terminal pager                                    |
-| [pandoc]              | all            | Universal markup converter                        |
-| [pnpm]                | all            | Fast JavaScript package manager                   |
-| [ripgrep]             | all            | Fast regex search                                 |
-| [ripgrep-all]         | all            | ripgrep across PDFs, Office docs, etc.            |
-| [shellcheck]          | all            | Shell script linter                               |
-| [Starship]            | all            | Cross-shell prompt                                |
-| [UPX]                 | all            | Executable packer                                 |
-| [zoxide]              | all            | Smarter `cd` that learns your habits              |
-| [zsh-autocomplete]    | macOS          | Real-time tab completion for Zsh                  |
-| [zsh-autosuggestions] | macOS          | Fish-style history suggestions for Zsh            |
-| [NuGet]               | Windows        | .NET package manager                              |
-| [PuTTY]               | Windows        | SSH client                                        |
-| [VS Build Tools]      | Windows        | MSVC compiler toolchain                           |
-| [Docker] (apt)        | Ubuntu         | Container runtime                                 |
-| [Flatpak]             | Ubuntu         | Application distribution                          |
-| [ffmpeg]              | all            | Media processing                                  |
+| Tool                  | Platforms     | Description                                       |
+| --------------------- | ------------- | ------------------------------------------------- |
+| [asciinema]           | macOS, Ubuntu | Record and share terminal sessions                |
+| [bat]                 | all           | `cat` clone with syntax highlighting              |
+| [bottom]              | all           | Terminal system monitor                           |
+| [delta]               | all           | Syntax-highlighted diffs; configured as git pager |
+| [eza]                 | all           | Modern `ls` replacement                           |
+| [fd]                  | all           | Fast and user-friendly `find` alternative         |
+| [fzf]                 | all           | Command-line fuzzy finder                         |
+| [gh]                  | all           | GitHub CLI                                        |
+| [Git LFS]             | all           | Git Large File Storage                            |
+| [jq]                  | all           | `sed` for JSON                                    |
+| [just]                | all           | Task runner                                       |
+| [lazygit]             | all           | TUI for git                                       |
+| [less]                | all           | Terminal pager                                    |
+| [pandoc]              | all           | Universal markup converter                        |
+| [pnpm]                | all           | Fast JavaScript package manager                   |
+| [ripgrep]             | all           | Fast regex search                                 |
+| [ripgrep-all]         | all           | ripgrep across PDFs, Office docs, etc.            |
+| [shellcheck]          | all           | Shell script linter                               |
+| [Starship]            | all           | Cross-shell prompt                                |
+| [UPX]                 | all           | Executable packer                                 |
+| [zoxide]              | all           | Smarter `cd` that learns your habits              |
+| [zsh-autocomplete]    | macOS         | Real-time tab completion for Zsh                  |
+| [zsh-autosuggestions] | macOS         | Fish-style history suggestions for Zsh            |
+| [NuGet]               | all           | .NET package manager                              |
+| [PuTTY]               | Windows       | SSH client                                        |
+| [VS Build Tools]      | Windows       | MSVC compiler toolchain                           |
+| [Docker] (apt)        | Ubuntu        | Container runtime                                 |
+| [Flatpak]             | Ubuntu        | Application distribution                          |
+| [ffmpeg]              | all           | Media processing                                  |
 
 ### Apps
 

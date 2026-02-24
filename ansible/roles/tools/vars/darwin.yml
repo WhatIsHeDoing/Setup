@@ -4,6 +4,7 @@ homebrew_tools:
     - bat
     - bottom
     - eza
+    - dotnet-sdk
     - fd
     - ffmpeg
     - fzf
@@ -14,6 +15,7 @@ homebrew_tools:
     - just
     - lazygit
     - less
+    - nuget
     - pandoc
     - pnpm
     - ripgrep

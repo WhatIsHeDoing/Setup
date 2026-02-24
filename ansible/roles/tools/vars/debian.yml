@@ -4,6 +4,7 @@ apt_tools:
     - bat
     - build-essential
     - containerd.io
+    - dotnet-sdk-10.0
     - docker-buildx-plugin
     - docker-ce
     - docker-ce-cli
@@ -22,8 +23,10 @@ apt_tools:
     - gnupg
     - jq
     - just
+    - less
     - lld
     - libpq-dev
+    - nuget
     - p7zip-full
     - pandoc
     - pkg-config
