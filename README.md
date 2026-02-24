@@ -1,6 +1,7 @@
 # Setup
 
 [![Lint](https://github.com/WhatIsHeDoing/Setup/actions/workflows/lint.yml/badge.svg)](https://github.com/WhatIsHeDoing/Setup/actions/workflows/lint.yml)
+[![Install](https://github.com/WhatIsHeDoing/Setup/actions/workflows/install.yml/badge.svg)](https://github.com/WhatIsHeDoing/Setup/actions/workflows/install.yml)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.md)
 [![Security Policy](https://img.shields.io/badge/security-policy-informational.svg)](SECURITY.md)
 
@@ -148,37 +149,37 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 
 ### Tools
 
-| Tool                  | Platforms       | Description                                       |
-| --------------------- | --------------- | ------------------------------------------------- |
-| [asciinema]           | macOS, Ubuntu   | Record and share terminal sessions                |
-| [bat]                 | all             | `cat` clone with syntax highlighting              |
-| [bottom]              | all             | Terminal system monitor                           |
-| [delta]               | all             | Syntax-highlighted diffs; configured as git pager |
-| [eza]                 | all             | Modern `ls` replacement                           |
-| [fd]                  | all             | Fast and user-friendly `find` alternative         |
-| [fzf]                 | all             | Command-line fuzzy finder                         |
-| [gh]                  | all             | GitHub CLI                                        |
-| [Git LFS]             | all             | Git Large File Storage                            |
-| [jq]                  | all             | `sed` for JSON                                    |
-| [just]                | all             | Task runner                                       |
-| [lazygit]             | all             | TUI for git                                       |
-| [less]                | macOS, Windows  | Terminal pager                                    |
-| [pandoc]              | all             | Universal markup converter                        |
-| [pnpm]                | all             | Fast JavaScript package manager                   |
-| [ripgrep]             | all             | Fast regex search                                 |
-| [ripgrep-all]         | macOS, Ubuntu   | ripgrep across PDFs, Office docs, etc.            |
-| [shellcheck]          | macOS, Ubuntu   | Shell script linter                               |
-| [Starship]            | all             | Cross-shell prompt                                |
-| [UPX]                 | all             | Executable packer                                 |
-| [zoxide]              | all             | Smarter `cd` that learns your habits              |
-| [zsh-autocomplete]    | macOS           | Real-time tab completion for Zsh                  |
-| [zsh-autosuggestions] | macOS           | Fish-style history suggestions for Zsh            |
-| [NuGet]               | Windows         | .NET package manager                              |
-| [PuTTY]               | Windows         | SSH client                                        |
-| [VS Build Tools]      | Windows         | MSVC compiler toolchain                           |
-| [Docker] (apt)        | Ubuntu          | Container runtime                                 |
-| [Flatpak]             | Ubuntu          | Application distribution                          |
-| [ffmpeg]              | Ubuntu          | Media processing                                  |
+| Tool                  | Platforms      | Description                                       |
+| --------------------- | -------------- | ------------------------------------------------- |
+| [asciinema]           | macOS, Ubuntu  | Record and share terminal sessions                |
+| [bat]                 | all            | `cat` clone with syntax highlighting              |
+| [bottom]              | all            | Terminal system monitor                           |
+| [delta]               | all            | Syntax-highlighted diffs; configured as git pager |
+| [eza]                 | all            | Modern `ls` replacement                           |
+| [fd]                  | all            | Fast and user-friendly `find` alternative         |
+| [fzf]                 | all            | Command-line fuzzy finder                         |
+| [gh]                  | all            | GitHub CLI                                        |
+| [Git LFS]             | all            | Git Large File Storage                            |
+| [jq]                  | all            | `sed` for JSON                                    |
+| [just]                | all            | Task runner                                       |
+| [lazygit]             | all            | TUI for git                                       |
+| [less]                | macOS, Windows | Terminal pager                                    |
+| [pandoc]              | all            | Universal markup converter                        |
+| [pnpm]                | all            | Fast JavaScript package manager                   |
+| [ripgrep]             | all            | Fast regex search                                 |
+| [ripgrep-all]         | macOS, Ubuntu  | ripgrep across PDFs, Office docs, etc.            |
+| [shellcheck]          | macOS, Ubuntu  | Shell script linter                               |
+| [Starship]            | all            | Cross-shell prompt                                |
+| [UPX]                 | all            | Executable packer                                 |
+| [zoxide]              | all            | Smarter `cd` that learns your habits              |
+| [zsh-autocomplete]    | macOS          | Real-time tab completion for Zsh                  |
+| [zsh-autosuggestions] | macOS          | Fish-style history suggestions for Zsh            |
+| [NuGet]               | Windows        | .NET package manager                              |
+| [PuTTY]               | Windows        | SSH client                                        |
+| [VS Build Tools]      | Windows        | MSVC compiler toolchain                           |
+| [Docker] (apt)        | Ubuntu         | Container runtime                                 |
+| [Flatpak]             | Ubuntu         | Application distribution                          |
+| [ffmpeg]              | Ubuntu         | Media processing                                  |
 
 ### Apps
 

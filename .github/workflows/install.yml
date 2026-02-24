@@ -1,0 +1,84 @@
+---
+name: Install
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+    workflow_dispatch:
+
+jobs:
+    macos:
+        runs-on: macos-latest
+        steps:
+            - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+            - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
+              with:
+                  python-version: "3.12"
+                  cache: pip
+
+            - uses: actions/cache@v5.0.3
+              with:
+                  path: ~/.ansible/collections
+                  key: ${{ runner.os }}-ansible-${{ hashFiles('ansible/requirements.yml') }}
+                  restore-keys: |
+                      ${{ runner.os }}-ansible-
+
+            - uses: actions/cache@v5.0.3
+              with:
+                  path: ~/.local/share/mise
+                  key: ${{ runner.os }}-mise-${{ hashFiles('.mise.toml') }}
+                  restore-keys: |
+                      ${{ runner.os }}-mise-
+
+            - name: Install Ansible
+              run: pip install ansible-core
+
+            - name: Install Ansible collections
+              run: ansible-galaxy collection install -r ansible/requirements.yml
+
+            - name: Run install (skip GUI apps)
+              run: |
+                  ansible-playbook ansible/playbooks/install.yml \
+                      -i ansible/inventory/localhost.yml \
+                      -e "repo_root=$(pwd)" \
+                      --skip-tags apps
+
+    ubuntu:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+            - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
+              with:
+                  python-version: "3.12"
+                  cache: pip
+
+            - uses: actions/cache@v5.0.3
+              with:
+                  path: ~/.ansible/collections
+                  key: ${{ runner.os }}-ansible-${{ hashFiles('ansible/requirements.yml') }}
+                  restore-keys: |
+                      ${{ runner.os }}-ansible-
+
+            - uses: actions/cache@v5.0.3
+              with:
+                  path: ~/.local/share/mise
+                  key: ${{ runner.os }}-mise-${{ hashFiles('.mise.toml') }}
+                  restore-keys: |
+                      ${{ runner.os }}-mise-
+
+            - name: Install Ansible
+              run: pip install ansible-core
+
+            - name: Install Ansible collections
+              run: ansible-galaxy collection install -r ansible/requirements.yml
+
+            - name: Run install (skip GUI apps — Snap requires systemd unavailable on CI)
+              run: |
+                  ansible-playbook ansible/playbooks/install.yml \
+                      -i ansible/inventory/localhost.yml \
+                      -e "repo_root=$(pwd)" \
+                      --skip-tags apps

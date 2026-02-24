@@ -4,6 +4,7 @@ extends: default
 ignore: |
     collections/
 
+# Some settings are required by ansible-lint.
 rules:
     line-length:
         max: 160
@@ -11,7 +12,6 @@ rules:
     truthy:
         allowed-values: ["true", "false"]
         check-keys: false
-    # Settings below are required by ansible-lint
     comments:
         min-spaces-from-content: 1
     comments-indentation: false
@@ -25,3 +25,5 @@ rules:
     indentation:
         spaces: 4
     trailing-spaces: enable
+    brackets:
+        forbid: false
