@@ -41,6 +41,11 @@ repos:
       hooks:
           - id: actionlint
 
+    - repo: https://github.com/gitleaks/gitleaks
+      rev: v8.24.0
+      hooks:
+          - id: gitleaks
+
     - repo: https://github.com/commitizen-tools/commitizen
       rev: v4.2.2
       hooks:

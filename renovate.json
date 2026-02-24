@@ -12,6 +12,10 @@
     "platformAutomerge": false,
     "packageRules": [
         {
+            "matchManagers": ["github-actions"],
+            "pinDigests": true
+        },
+        {
             "matchUpdateTypes": ["major"],
             "groupName": "major"
         },
