@@ -3,6 +3,11 @@
   hosts: localhost
   gather_facts: true
 
+  pre_tasks:
+      - name: Set effective platform
+        ansible.builtin.set_fact:
+            effective_platform: "{{ 'windows' if ansible_env.WSL_DISTRO_NAME is defined else ansible_os_family | lower }}"
+
   vars:
       tools_to_verify:
           - { cmd: "git --version", name: "git" }
@@ -20,6 +25,18 @@
           - { cmd: "pnpm --version", name: "pnpm" }
 
       windows_tools_to_verify:
+          - { cmd: "git --version", name: "git" }
+          - { cmd: "just --version", name: "just" }
+          - { cmd: "fzf --version", name: "fzf" }
+          - { cmd: "bat --version", name: "bat" }
+          - { cmd: "eza --version", name: "eza" }
+          - { cmd: "rg --version", name: "ripgrep" }
+          - { cmd: "jq --version", name: "jq" }
+          - { cmd: "starship --version", name: "starship" }
+          - { cmd: "node --version", name: "node" }
+          - { cmd: "python --version", name: "python" }
+          - { cmd: "cargo --version", name: "cargo" }
+          - { cmd: "pnpm --version", name: "pnpm" }
           - { cmd: "dotnet --version", name: "dotnet" }
           - { cmd: "dotnet --list-runtimes", name: "dotnet-runtimes" }
           - { cmd: "pwsh --version", name: "powershell" }
@@ -39,7 +56,9 @@
             label: "{{ item.name }}"
         register: verify_results
         changed_when: false
-        failed_when: verify_results.rc != 0
+        environment:
+            PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.HOME }}/.local/share/mise/shims:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+        when: effective_platform != "windows"
 
       - name: Print verified versions
         ansible.builtin.debug:
@@ -47,6 +66,7 @@
         loop: "{{ verify_results.results }}"
         loop_control:
             label: "{{ item.item.name }}"
+        when: effective_platform != "windows"
 
       - name: Verify scripts are deployed and executable
         ansible.builtin.stat:
@@ -55,7 +75,7 @@
         loop:
             - ff
             - ll
-        when: ansible_os_family != "Windows"
+        when: effective_platform != "windows"
 
       - name: Assert scripts are executable
         ansible.builtin.assert:
@@ -67,28 +87,27 @@
         loop: "{{ script_stats.results }}"
         loop_control:
             label: "{{ item.item }}"
-        when: ansible_os_family != "Windows"
+        when: effective_platform != "windows"
 
       - name: Verify ll runs successfully
         ansible.builtin.command: "{{ ansible_env.HOME }}/.local/bin/ll ."
         changed_when: false
         register: ll_result
-        when: ansible_os_family != "Windows"
+        when: effective_platform != "windows"
 
       - name: Print ll result
         ansible.builtin.debug:
             msg: "OK ll: listed {{ ll_result.stdout_lines | length }} lines"
-        when: ansible_os_family != "Windows"
+        when: effective_platform != "windows"
 
       - name: Verify Windows tool is installed and functional
-        ansible.builtin.command: "{{ item.cmd }}"
+        ansible.builtin.shell: 'powershell.exe -NoProfile -Command "{{ item.cmd }}" 2>/dev/null' # noqa: risky-shell-pipe
         loop: "{{ windows_tools_to_verify }}"
         loop_control:
             label: "{{ item.name }}"
         register: windows_verify_results
         changed_when: false
-        failed_when: windows_verify_results.rc != 0
-        when: ansible_os_family == "Windows"
+        when: effective_platform == "windows"
 
       - name: Print verified Windows versions
         ansible.builtin.debug:
@@ -96,7 +115,7 @@
         loop: "{{ windows_verify_results.results }}"
         loop_control:
             label: "{{ item.item.name }}"
-        when: ansible_os_family == "Windows"
+        when: effective_platform == "windows"
 
       - name: Reminder about git signing
         ansible.builtin.debug:
