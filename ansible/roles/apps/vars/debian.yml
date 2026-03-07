@@ -1,7 +1,5 @@
 ---
 snap_apps:
-    - name: bottom
-      classic: false
     - name: firefox
       classic: false
     - name: code

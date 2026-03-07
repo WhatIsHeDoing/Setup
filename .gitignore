@@ -5,6 +5,7 @@ ansible/inventory/group_vars/local.yml
 .vault_pass
 vault_password*
 *.vault
+.lock
 
 # Python
 __pycache__/

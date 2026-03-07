@@ -16,6 +16,7 @@ git_config:
 
 # Cargo packages installed on all platforms
 cargo_packages:
+    - bottom
     - cargo-modules
     - cargo-outdated
     - cargo-update

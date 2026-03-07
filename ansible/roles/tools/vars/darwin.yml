@@ -2,7 +2,6 @@
 homebrew_tools:
     - asciinema
     - bat
-    - bottom
     - eza
     - dotnet
     - fd

@@ -14,16 +14,6 @@
   become: true
   failed_when: false # Gracefully skipped in containers
 
-- name: Configure bottom snap permissions
-  ansible.builtin.shell: |
-      snap connect bottom:mount-observe
-      snap connect bottom:hardware-observe
-      snap connect bottom:system-observe
-      snap connect bottom:process-control
-  changed_when: false
-  failed_when: false
-  become: true
-
 - name: Install VS Code extensions
   ansible.builtin.command: "code --install-extension {{ item }}"
   loop: "{{ vscode_extensions }}"
