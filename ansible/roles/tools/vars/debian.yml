@@ -26,7 +26,6 @@ apt_tools:
     - less
     - lld
     - libpq-dev
-    - nuget
     - p7zip-full
     - pandoc
     - pkg-config

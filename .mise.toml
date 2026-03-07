@@ -1,4 +1,5 @@
 [tools]
 node   = "latest"
+pnpm   = "latest"
 python = "latest"
 rust   = "latest"

@@ -28,6 +28,7 @@
       chdir: "{{ repo_root }}"
   environment:
       PATH: "{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+      MISE_YES: "1"
   changed_when: false
   when: effective_platform != "windows"
 
@@ -58,7 +59,8 @@
 - name: Install global pnpm packages
   ansible.builtin.command: "pnpm add -g {{ pnpm_packages | join(' ') }}"
   environment:
-      PATH: "{{ ansible_env.HOME }}/.local/share/mise/shims:{{ ansible_env.PATH }}"
+      PATH: "{{ ansible_env.HOME }}/.local/share/pnpm:{{ ansible_env.HOME }}/.local/share/mise/shims:{{ ansible_env.PATH }}"
+      PNPM_HOME: "{{ ansible_env.HOME }}/.local/share/pnpm"
   changed_when: false
   when: effective_platform != "windows"
 

@@ -13,9 +13,10 @@
   changed_when: false
 
 - name: Resolve PowerShell profile path
-  ansible.builtin.shell: wslpath "$(powershell.exe -NoProfile -Command 'echo $PROFILE' 2>/dev/null | tr -d '\r\n')" # noqa: risky-shell-pipe
+  ansible.builtin.shell: wslpath "$(powershell.exe -NoProfile -Command '$PROFILE' 2>/dev/null | tr -d '\r\n')" # noqa: risky-shell-pipe
   register: ps_profile_path
   changed_when: false
+  failed_when: false
 
 - name: Ensure bottom config directory exists # noqa: risky-file-permissions
   ansible.builtin.file:
@@ -43,9 +44,11 @@
   ansible.builtin.file:
       path: "{{ ps_profile_path.stdout | trim | dirname }}"
       state: directory
+  when: ps_profile_path.stdout | trim | dirname | length > 0
 
 - name: Deploy PowerShell profile # noqa: risky-file-permissions
   ansible.builtin.copy:
       src: "{{ repo_root }}/config/powershell-profile.ps1"
       dest: "{{ ps_profile_path.stdout | trim }}"
       backup: true
+  when: ps_profile_path.stdout | trim | dirname | length > 0

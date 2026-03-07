@@ -20,6 +20,7 @@ cargo_packages:
     - cargo-outdated
     - cargo-update
     - diskonaut
+    - ripgrep_all
     - wasm-pack
 
 # Python packages installed on all platforms

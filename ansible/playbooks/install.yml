@@ -5,7 +5,7 @@
   pre_tasks:
       - name: Set effective platform
         ansible.builtin.set_fact:
-            effective_platform: "{{ 'windows' if ansible_env.WSL_DISTRO_NAME is defined else ansible_os_family | lower }}"
+            effective_platform: "{{ 'windows' if (ansible_env.WSL_DISTRO_NAME is defined or 'microsoft' in ansible_kernel | lower) else ansible_os_family | lower }}"
   roles:
       - role: bootstrap
         tags: [bootstrap]

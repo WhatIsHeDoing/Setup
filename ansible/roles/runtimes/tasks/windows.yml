@@ -4,12 +4,79 @@
 
 - name: Install WinGet runtimes
   ansible.builtin.command: >
-    winget.exe install {{ item }}
-    --accept-source-agreements
-    --accept-package-agreements
-    --silent
-    --disable-interactivity
+      winget.exe install {{ item }}
+      --accept-source-agreements
+      --accept-package-agreements
+      --silent
+      --disable-interactivity
   loop: "{{ winget_runtimes }}"
+  changed_when: false
+  failed_when: false
+
+- name: Install Mise
+  ansible.builtin.command: >
+      winget.exe install jdx.mise
+      --accept-source-agreements
+      --accept-package-agreements
+      --silent
+      --disable-interactivity
+  changed_when: false
+  failed_when: false
+
+# mise.exe is not on PATH in the current WinRM session after WinGet installs it,
+# so refresh PATH from the registry before calling mise.
+- name: Trust .mise.toml in repo root
+  ansible.windows.win_powershell:
+      script: |
+          $env:PATH = [System.Environment]::GetEnvironmentVariable('PATH','Machine') + ';' + [System.Environment]::GetEnvironmentVariable('PATH','User')
+          $env:MISE_YES = '1'
+          mise.exe trust "{{ repo_root }}\.mise.toml"
+  changed_when: false
+  failed_when: false
+
+- name: Install runtimes declared in .mise.toml
+  ansible.windows.win_powershell:
+      script: |
+          $env:PATH = [System.Environment]::GetEnvironmentVariable('PATH','Machine') + ';' + [System.Environment]::GetEnvironmentVariable('PATH','User')
+          $env:MISE_YES = '1'
+          Set-Location "{{ repo_root }}"
+          mise.exe install
+  changed_when: false
+  failed_when: false
+
+- name: Add Mise shims to user PATH
+  ansible.windows.win_powershell:
+      script: |
+          $shimsPath = "$env:USERPROFILE\.local\share\mise\shims"
+          $userPath = [System.Environment]::GetEnvironmentVariable('PATH', 'User')
+          if ($userPath -notlike "*$shimsPath*") {
+              [System.Environment]::SetEnvironmentVariable('PATH', "$shimsPath;$userPath", 'User')
+          }
+  changed_when: false
+  failed_when: false
+
+- name: Activate Mise in PowerShell profile
+  ansible.windows.win_powershell:
+      script: |
+          $env:PATH = [System.Environment]::GetEnvironmentVariable('PATH','Machine') + ';' + [System.Environment]::GetEnvironmentVariable('PATH','User')
+          $line = 'mise activate pwsh | Out-String | Invoke-Expression'
+          if (-not (Test-Path $PROFILE)) {
+              New-Item -ItemType File -Path $PROFILE -Force | Out-Null
+          }
+          if ((Get-Content $PROFILE -Raw -ErrorAction SilentlyContinue) -notlike '*mise activate*') {
+              Add-Content -Path $PROFILE -Value "`n$line"
+          }
+  changed_when: false
+  failed_when: false
+
+- name: Install Visual Studio Build Tools with C++ workload
+  ansible.builtin.command: >
+      winget.exe install Microsoft.VisualStudio.2022.BuildTools
+      --accept-source-agreements
+      --accept-package-agreements
+      --silent
+      --disable-interactivity
+      --override "--quiet --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
   changed_when: false
   failed_when: false
 
@@ -36,9 +103,9 @@
 
 - name: Install Python packages
   ansible.builtin.command: >
-    pip.exe install
-    --no-cache-dir --no-color --progress-bar off
-    --user --upgrade
-    {{ pip_packages | join(' ') }}
+      pip.exe install
+      --no-cache-dir --no-color --progress-bar off
+      --user --upgrade
+      {{ pip_packages | join(' ') }}
   changed_when: false
   failed_when: false

@@ -3,6 +3,4 @@ winget_runtimes:
     - Docker.DockerDesktop
     - Microsoft.DotNet.SDK.10
     - Microsoft.PowerShell
-    - OpenJS.NodeJS.LTS
-    - Python.Python.3
     - Rustlang.Rustup

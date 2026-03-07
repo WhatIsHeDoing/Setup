@@ -31,7 +31,7 @@
 
 - name: Add Docker apt repository
   ansible.builtin.apt_repository:
-      repo: "deb [arch={{ ansible_architecture }} signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable" # yamllint disable-line rule:line-length
+      repo: "deb [arch={{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }} signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable" # yamllint disable-line rule:line-length
       state: present
       filename: docker
   become: true

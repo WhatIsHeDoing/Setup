@@ -12,6 +12,13 @@
       state: link
   failed_when: false
 
+- name: Create bat symlink for batcat
+  ansible.builtin.file:
+      src: /usr/bin/batcat
+      dest: "{{ ansible_env.HOME }}/.local/bin/bat"
+      state: link
+  failed_when: false
+
 - name: Enable Git LFS
   ansible.builtin.command: git lfs install
   changed_when: false

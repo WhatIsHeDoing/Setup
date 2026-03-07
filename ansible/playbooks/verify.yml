@@ -6,7 +6,7 @@
   pre_tasks:
       - name: Set effective platform
         ansible.builtin.set_fact:
-            effective_platform: "{{ 'windows' if ansible_env.WSL_DISTRO_NAME is defined else ansible_os_family | lower }}"
+            effective_platform: "{{ 'windows' if (ansible_env.WSL_DISTRO_NAME is defined or 'microsoft' in ansible_kernel | lower) else ansible_os_family | lower }}"
 
   vars:
       tools_to_verify:
@@ -128,7 +128,7 @@
         register: verify_results
         changed_when: false
         environment:
-            PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.HOME }}/.local/share/mise/shims:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+            PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.HOME }}/.local/share/mise/shims:{{ ansible_env.HOME }}/.local/bin:/snap/bin:{{ ansible_env.PATH }}"
         when: effective_platform != "windows"
 
       - name: Print verified versions
@@ -209,11 +209,14 @@
             label: "{{ item.name }}"
         register: windows_verify_results
         changed_when: false
+        failed_when: false
+        environment:
+            PATH: "/mnt/c/Windows/System32/WindowsPowerShell/v1.0:/mnt/c/Windows/System32:{{ ansible_env.PATH }}"
         when: effective_platform == "windows"
 
       - name: Print verified Windows versions
         ansible.builtin.debug:
-            msg: "OK {{ item.item.name }}: {{ item.stdout_lines[0] }}"
+            msg: "{{ 'OK' if item.rc == 0 else 'MISSING' }} {{ item.item.name }}{{ ': ' + item.stdout_lines[0] if item.stdout_lines else '' }}"
         loop: "{{ windows_verify_results.results }}"
         loop_control:
             label: "{{ item.item.name }}"

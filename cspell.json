@@ -93,6 +93,7 @@
         "mise",
         "MSVC",
         "netsh",
+        "notlike",
         "NONINTERACTIVE",
         "noqa",
         "nord",
