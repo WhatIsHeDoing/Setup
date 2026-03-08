@@ -18,6 +18,15 @@
       backup: true
   when: effective_platform != "windows"
 
+- name: Enable mise activate in .zshrc
+  ansible.builtin.lineinfile:
+      path: "{{ ansible_env.HOME }}/.zshrc"
+      line: 'eval "$(mise activate zsh)"'
+      regexp: "mise activate zsh"
+      create: true
+      mode: "0644"
+  when: effective_platform == "darwin"
+
 - name: Enable Starship in .zshrc
   ansible.builtin.lineinfile:
       path: "{{ ansible_env.HOME }}/.zshrc"
@@ -26,6 +35,15 @@
       create: true
       mode: "0644"
   when: effective_platform == "darwin"
+
+- name: Enable mise activate in .bashrc
+  ansible.builtin.lineinfile:
+      path: "{{ ansible_env.HOME }}/.bashrc"
+      line: 'eval "$(mise activate bash)"'
+      regexp: "mise activate bash"
+      create: true
+      mode: "0644"
+  when: effective_platform == "debian"
 
 - name: Ensure bottom config directory exists
   ansible.builtin.file:
