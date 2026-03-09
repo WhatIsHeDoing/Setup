@@ -2,6 +2,8 @@
 
 export ANSIBLE_CONFIG := justfile_directory() + "/ansible.cfg"
 
+set windows-shell := ["powershell.exe", "-NoProfile", "-Command"]
+
 # Choose from all available recipes
 default:
     @just --choose
@@ -83,7 +85,7 @@ update-hooks:
 
 # Installs Ansible and collections via pip (matches CI; avoids CLI/module version mismatch from brew)
 ansible-setup:
-    pip3 install --upgrade ansible-core ansible-lint
+    pip3 install --upgrade ansible-core ansible-lint --break-system-packages
     ansible-galaxy collection install -r ansible/requirements.yml -p ./collections --force
 
 # Lints Ansible files

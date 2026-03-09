@@ -79,6 +79,18 @@ ansible-galaxy collection install -r ansible/requirements.yml
 1. Add the package name to `roles/apps/vars/{darwin,debian,windows}.yml`.
 2. Update the Apps table in `README.md`.
 
+## Keeping README Tables Accurate
+
+After any change that affects which platforms a tool or app is installed on, review the Tools,
+Apps, Runtimes, and Cross-Platform Packages tables in `README.md` and update the Platforms column
+to match the actual vars files:
+
+- `roles/tools/vars/{darwin,debian,windows}.yml` — per-platform CLI tools
+- `roles/apps/vars/{darwin,debian,windows}.yml` — per-platform GUI apps
+- `ansible/inventory/group_vars/all.yml` — cross-platform cargo/pip/pnpm packages
+
+Use "all" only when the item genuinely appears in all three platform files (or in `all.yml` with platform-agnostic installation).
+
 ## Docs
 
 - `docs/principles.md` — architecture principles; update when a new cross-cutting decision is made.

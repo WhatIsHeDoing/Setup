@@ -13,6 +13,7 @@ git_config:
     pull.rebase: "false"
     push.autoSetupRemote: "true"
     push.default: "current"
+    push.followTags: "true"
 
 # Cargo packages installed on all platforms
 cargo_packages:
