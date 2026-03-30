@@ -85,6 +85,28 @@ Touch **all** of these files — none are optional:
 
 If the tool is only available via a custom installer on a platform, also add a check-and-install task to `roles/tools/tasks/{darwin,debian,windows}.yml`.
 
+## Adding a New MCP Server
+
+MCP servers are configured at user scope via `claude mcp add`. The list lives in
+`ansible/inventory/group_vars/all.yml` under `mcp_servers`; a single loop task in
+`roles/dotfiles/tasks/main.yml` iterates over it.
+
+`claude mcp add` exits 1 if the server already exists, so the loop task pre-checks
+with `claude mcp list | grep -q` before running — do not remove this guard.
+
+To add a new MCP server:
+
+1. **`ansible/inventory/group_vars/all.yml`** — append to `mcp_servers` (alphabetically):
+
+   ```yaml
+   - name: my-server
+     command: npx @scope/my-mcp-package
+   ```
+
+2. **`cspell.json`** — add any non-dictionary words (package scope, server name).
+
+No changes to the dotfiles task or verify playbook are needed.
+
 ## Adding a New App
 
 1. **`roles/apps/vars/{darwin,debian,windows}.yml`** — add the package name.

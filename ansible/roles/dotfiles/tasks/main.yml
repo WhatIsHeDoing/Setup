@@ -333,3 +333,16 @@
       - ff
       - ll
   when: effective_platform != "windows"
+
+# ── Claude Code MCP servers ──────────────────────────────────────────────
+- name: Configure Claude Code MCP servers
+  ansible.builtin.shell: |
+    claude mcp list 2>/dev/null | grep -q "{{ item.name }}" || \
+    claude mcp add {{ item.name }} -s user -- {{ item.command }}
+  args:
+      executable: /bin/bash
+  loop: "{{ mcp_servers }}"
+  loop_control:
+      label: "{{ item.name }}"
+  changed_when: false
+  when: effective_platform != "windows"

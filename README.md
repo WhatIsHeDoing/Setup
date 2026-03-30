@@ -192,6 +192,7 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 
 | App                         | Platforms       | Description                                           |
 | --------------------------- | --------------- | ----------------------------------------------------- |
+| [Claude Code]               | all             | AI coding assistant CLI and desktop app               |
 | [VS Code]                   | all             | Code editor                                           |
 | [draw.io]                   | all             | Diagramming                                           |
 | [Obsidian]                  | all             | Note-taking                                           |
@@ -268,6 +269,7 @@ just spellcheck
 [7-Zip]: https://7-zip.org/
 [Amberol]: https://gitlab.gnome.org/World/amberol
 [bat]: https://github.com/sharkdp/bat
+[Claude Code]: https://claude.ai/code
 [bottom]: https://clementtsang.github.io/bottom/
 [Firefox]: https://www.mozilla.org/firefox/
 [Caesium]: https://saerasoft.com/caesium

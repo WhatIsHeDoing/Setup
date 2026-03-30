@@ -22,6 +22,20 @@
   loop: "{{ snap_apps }}"
   become: true
 
+- name: Check if Claude Code CLI is installed
+  ansible.builtin.command: which claude
+  register: claude_check
+  changed_when: false
+  failed_when: false
+
+- name: Install Claude Code CLI via pnpm
+  ansible.builtin.command: pnpm add -g @anthropic-ai/claude-code
+  environment:
+      PATH: "{{ ansible_env.HOME }}/.local/share/pnpm:{{ ansible_env.PATH }}"
+      PNPM_HOME: "{{ ansible_env.HOME }}/.local/share/pnpm"
+  changed_when: claude_check.rc != 0
+  when: claude_check.rc != 0
+
 - name: Check if Zed is installed
   ansible.builtin.command: which zed
   register: zed_check

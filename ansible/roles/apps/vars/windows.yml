@@ -1,6 +1,7 @@
 ---
 winget_apps:
     - 7zip.7zip
+    - Anthropic.Claude
     - Mozilla.Firefox
     - SabaAmaury.Caesium
     - dbeaver.dbeaver

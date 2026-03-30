@@ -33,6 +33,17 @@ pip_packages:
     - ipykernel
     - pre-commit
 
+# Claude Code MCP servers configured at user scope
+mcp_servers:
+    - name: cloudflare
+      command: npx @cloudflare/mcp-server-cloudflare
+    - name: context7
+      command: npx @upstash/context7-mcp
+    - name: github
+      command: npx @modelcontextprotocol/server-github
+    - name: playwright
+      command: npx @playwright/mcp@latest
+
 # pnpm packages installed globally on all platforms
 pnpm_packages:
     - cspell
