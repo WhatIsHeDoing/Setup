@@ -3,47 +3,90 @@
   ansible.builtin.include_tasks: windows.yml
   when: effective_platform == "windows"
 
-- name: Install Mise (macOS via Homebrew)
-  community.general.homebrew:
-      name: mise
-      state: present
-  when: effective_platform == "darwin"
-
-- name: Install Mise (Ubuntu via install script)
-  ansible.builtin.shell: curl https://mise.run | sh # noqa: command-instead-of-module risky-shell-pipe
+# ── Rust (rustup) ────────────────────────────────────────────────────────
+- name: Install rustup
+  ansible.builtin.shell: |
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y # noqa: risky-shell-pipe
   args:
-      creates: "{{ ansible_env.HOME }}/.local/bin/mise"
-  when: effective_platform == "debian"
-
-- name: Trust .mise.toml in repo root
-  ansible.builtin.command: mise trust "{{ repo_root }}/.mise.toml"
-  environment:
-      PATH: "{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
-  changed_when: false
-  when: effective_platform != "windows"
-
-- name: Install runtimes declared in .mise.toml
-  ansible.builtin.command: mise install
-  args:
-      chdir: "{{ repo_root }}"
-  environment:
-      PATH: "{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
-      MISE_YES: "1"
-  changed_when: false
+      creates: "{{ ansible_env.HOME }}/.cargo/bin/rustup"
   when: effective_platform != "windows"
 
 - name: Update Rust toolchain via rustup
   ansible.builtin.command: rustup update
   environment:
-      PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+      PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.PATH }}"
   changed_when: true
   when: effective_platform != "windows"
 
+# ── Node.js (nvm) ────────────────────────────────────────────────────────
+- name: Install nvm (macOS via Homebrew)
+  community.general.homebrew:
+      name: nvm
+      state: present
+  when: effective_platform == "darwin"
+
+- name: Install nvm (Ubuntu via official installer)
+  ansible.builtin.shell: |
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash # noqa: risky-shell-pipe
+  args:
+      creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
+  when: effective_platform == "debian"
+
+- name: Install Node.js LTS via nvm (macOS)
+  ansible.builtin.shell: |
+    . /opt/homebrew/opt/nvm/nvm.sh
+    nvm install --lts
+    nvm alias default lts/*
+  args:
+      executable: /bin/bash
+  changed_when: false
+  when: effective_platform == "darwin"
+
+- name: Install Node.js LTS via nvm (Ubuntu)
+  ansible.builtin.shell: |
+    . ~/.nvm/nvm.sh
+    nvm install --lts
+    nvm alias default lts/*
+  args:
+      executable: /bin/bash
+  changed_when: false
+  when: effective_platform == "debian"
+
+# ── Python (uv) ──────────────────────────────────────────────────────────
+- name: Install uv (macOS via Homebrew)
+  community.general.homebrew:
+      name: uv
+      state: present
+  when: effective_platform == "darwin"
+
+- name: Install uv (Ubuntu via official installer)
+  ansible.builtin.shell: |
+    curl -LsSf https://astral.sh/uv/install.sh | sh # noqa: risky-shell-pipe
+  args:
+      creates: "{{ ansible_env.HOME }}/.local/bin/uv"
+  when: effective_platform == "debian"
+
+- name: Install latest Python via uv
+  ansible.builtin.command: uv python install
+  environment:
+      PATH: "/opt/homebrew/bin:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+  changed_when: false
+  when: effective_platform != "windows"
+
+# ── pnpm (Ubuntu only — macOS uses Homebrew, Windows uses WinGet) ─────────
+- name: Install pnpm (Ubuntu via standalone installer)
+  ansible.builtin.shell: |
+    curl -fsSL https://get.pnpm.io/install.sh | sh - # noqa: risky-shell-pipe
+  args:
+      creates: "{{ ansible_env.HOME }}/.local/share/pnpm/pnpm"
+  when: effective_platform == "debian"
+
+# ── Global packages ──────────────────────────────────────────────────────
 - name: Install global Cargo packages
   ansible.builtin.command: "cargo install {{ item }}"
   loop: "{{ cargo_packages }}"
   environment:
-      PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+      PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.PATH }}"
   changed_when: false
   failed_when: false
   when: effective_platform != "windows"
@@ -51,22 +94,32 @@
 - name: Update all installed Cargo packages
   ansible.builtin.command: cargo install-update -a
   environment:
-      PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+      PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.PATH }}"
   changed_when: false
   failed_when: false
   when: effective_platform != "windows"
 
-- name: Install global pnpm packages
+- name: Install global pnpm packages (macOS)
   ansible.builtin.command: "pnpm add -g {{ pnpm_packages | join(' ') }}"
   environment:
-      PATH: "{{ ansible_env.HOME }}/.local/share/pnpm:{{ ansible_env.HOME }}/.local/share/mise/shims:{{ ansible_env.PATH }}"
+      PATH: "/opt/homebrew/bin:{{ ansible_env.HOME }}/.local/share/pnpm:{{ ansible_env.PATH }}"
       PNPM_HOME: "{{ ansible_env.HOME }}/.local/share/pnpm"
   changed_when: false
-  when: effective_platform != "windows"
+  when: effective_platform == "darwin"
 
-- name: Install Python packages
-  ansible.builtin.command: "pip install --user --upgrade {{ pip_packages | join(' ') }}"
+- name: Install global pnpm packages (Ubuntu)
+  ansible.builtin.command: "pnpm add -g {{ pnpm_packages | join(' ') }}"
   environment:
-      PATH: "{{ ansible_env.HOME }}/.local/share/mise/shims:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+      PATH: "{{ ansible_env.HOME }}/.local/share/pnpm:{{ ansible_env.PATH }}"
+      PNPM_HOME: "{{ ansible_env.HOME }}/.local/share/pnpm"
   changed_when: false
+  when: effective_platform == "debian"
+
+- name: Install Python tools via uv
+  ansible.builtin.command: "uv tool install {{ item }}"
+  loop: "{{ pip_packages }}"
+  environment:
+      PATH: "/opt/homebrew/bin:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+  changed_when: false
+  failed_when: false
   when: effective_platform != "windows"

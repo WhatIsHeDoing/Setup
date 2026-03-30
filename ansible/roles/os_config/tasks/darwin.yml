@@ -38,13 +38,41 @@
       value: false
   notify: Restart Finder
 
-- name: Default Finder view to column layout
+- name: Show hidden files in Finder
+  community.general.osx_defaults:
+      domain: com.apple.finder
+      key: AppleShowAllFiles
+      type: bool
+      value: true
+  notify: Restart Finder
+
+- name: Default Finder view to list layout
   community.general.osx_defaults:
       domain: com.apple.finder
       key: FXPreferredViewStyle
       type: string
-      value: clmv
+      value: Nlsv
   notify: Restart Finder
+
+- name: Set Finder list view sort column to name
+  ansible.builtin.shell: |
+      plist="{{ ansible_env.HOME }}/Library/Preferences/com.apple.finder.plist"
+      /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:ListViewSettings:sortColumn name" "$plist" 2>/dev/null \
+          || /usr/libexec/PlistBuddy -c "Add :StandardViewSettings:ListViewSettings:sortColumn string name" "$plist"
+  changed_when: false
+  notify: Restart Finder
+
+- name: Set Finder list view icon size to large
+  ansible.builtin.shell: |
+      plist="{{ ansible_env.HOME }}/Library/Preferences/com.apple.finder.plist"
+      /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:ListViewSettings:iconSize 32" "$plist" 2>/dev/null \
+          || /usr/libexec/PlistBuddy -c "Add :StandardViewSettings:ListViewSettings:iconSize integer 32" "$plist"
+  changed_when: false
+  notify: Restart Finder
+
+- name: Set VS Code as default app for Markdown files
+  ansible.builtin.command: duti -s com.microsoft.VSCode net.daringfireball.markdown all
+  changed_when: false
 
 # Dock
 - name: Auto-hide the Dock

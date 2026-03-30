@@ -1,0 +1,30 @@
+# Atuin configuration
+# Full reference: atuin default-config
+
+## Prevent commands matching these regexes from being written to history.
+## Complements HIST_IGNORE_SPACE (leading-space commands are also suppressed).
+history_filter = [
+    "^export\\s.*API_KEY",
+    "^export\\s.*API_TOKEN",
+    "^export\\s.*PASSWORD",
+    "^export\\s.*SECRET",
+    "^export\\s.*TOKEN",
+]
+
+## Filter commands that look like they contain secrets (tokens, passwords, etc.)
+secrets_filter = true
+
+## Disable automatic update checks
+update_check = false
+
+## Use fuzzy search for history
+search_mode = "fuzzy"
+
+## Up-arrow searches within the current shell session only
+filter_mode_shell_up_key_binding = "session"
+
+## Compact UI style
+style = "compact"
+
+## Show a preview of the selected command
+show_preview = true

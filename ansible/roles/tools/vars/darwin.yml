@@ -1,9 +1,12 @@
 ---
 homebrew_tools:
     - asciinema
+    - atuin
     - bat
-    - eza
     - dotnet
+    - dust
+    - duti
+    - eza
     - fd
     - ffmpeg
     - fzf
@@ -14,6 +17,7 @@ homebrew_tools:
     - just
     - lazygit
     - less
+    - miller
     - nuget
     - pandoc
     - pnpm
@@ -21,7 +25,10 @@ homebrew_tools:
     - ripgrep-all
     - shellcheck
     - starship
+    - tlrc
     - upx
+    - yq
     - zoxide
     - zsh-autocomplete
     - zsh-autosuggestions
+    - zsh-syntax-highlighting

@@ -24,6 +24,7 @@ apt_tools:
     - jq
     - just
     - less
+    - miller
     - lld
     - libpq-dev
     - p7zip-full
@@ -36,6 +37,7 @@ apt_tools:
     - ripgrep
     - shellcheck
     - upx-ucl
+    - yq
     - zoxide
 
 snap_tools:

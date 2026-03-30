@@ -1,6 +1,6 @@
 # ADR-0002: Mise as universal runtime version manager
 
-**Status:** Accepted
+**Status:** Superseded by [ADR-0006](0006-tech-specific-runtime-managers.md)
 **Date:** 2026-02-21
 
 ## Context

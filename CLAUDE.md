@@ -4,7 +4,7 @@ Guidelines for working in this repository.
 
 ## What This Repo Does
 
-Cross-platform desktop setup for macOS, Ubuntu, and Windows using Ansible and Mise.
+Cross-platform desktop setup for macOS, Ubuntu, and Windows using Ansible.
 Running the install playbook produces an idempotent, fully-configured machine from scratch.
 
 ## Running the Setup
@@ -32,7 +32,7 @@ ansible/
     verify.yml           # Smoke-tests every installed tool
   roles/
     bootstrap/           # Installs package managers (Homebrew, apt repos, WinGet)
-    runtimes/            # Installs Mise, Node/Python/Rust, global cargo/pip packages
+    runtimes/            # Installs nvm/uv/rustup, Node/Python/Rust, global cargo/pip packages
     tools/               # CLI tools per platform
     apps/                # GUI apps per platform
     dotfiles/            # Deploys config files and scripts/ to ~/.local/bin
@@ -56,7 +56,7 @@ Always use this variable, not raw `ansible_os_family`, in role conditionals.
 - **Per-platform vars** live in `roles/<role>/vars/{darwin,debian,windows}.yml`. Cross-platform vars live in `ansible/inventory/group_vars/all.yml`.
 - **`roles_path`** is set to `ansible/roles` in `ansible.cfg` — use role names directly, not paths.
 - **Prefer `~/.local/bin`** over `/usr/local/bin` for user scripts. Avoids `become: true`.
-- **Shell tasks over `ansible.builtin.pip`** — the system Python uses PEP 668. Use `pip install` via the mise shims PATH instead.
+- **Shell tasks over `ansible.builtin.pip`** — the system Python uses PEP 668. Use `uv tool install` for Python tools instead.
 - **`changed_when: false`** on shell tasks that are inherently idempotent (installs that check before acting, `cargo install`, etc.).
 
 ## Ansible Collections
@@ -69,15 +69,40 @@ ansible-galaxy collection install -r ansible/requirements.yml
 
 ## Adding a New Tool
 
-1. Add the package name to the appropriate `roles/tools/vars/{darwin,debian,windows}.yml`.
-2. If the tool is only available via a custom installer on a platform, add a check-and-install task to `roles/tools/tasks/{darwin,debian,windows}.yml`.
-3. Add a `--version` verification entry to `ansible/playbooks/verify.yml`.
-4. Update the Tools table in `README.md`.
+Touch **all** of these files — none are optional:
+
+1. **`roles/tools/vars/{darwin,debian,windows}.yml`** — add the package name to the appropriate platform list(s).
+   Use WinGet IDs for Windows (e.g. `MikeFarah.yq`). Lists are alphabetically sorted.
+2. **`ansible/playbooks/verify.yml`** — add a `--version` entry to `tools_to_verify` (Unix)
+   **and** `windows_tools_to_verify` (Windows) if cross-platform.
+3. **`README.md` table row** — add a row to the Tools table.
+   **Before inserting, check the README Table Alignment rules below.**
+4. **`README.md` link reference** — add `[tool-name]: https://...` in the alphabetically sorted reference block at the bottom.
+5. **`cspell.json`** — add any non-dictionary words (tool names, author handles, WinGet IDs)
+   to the `words` array in alphabetical order.
+6. **`roles/dotfiles/tasks/main.yml`** — if the tool requires shell activation (e.g. sourcing a `.sh` file
+   or setting an env var), add `lineinfile` tasks here.
+
+If the tool is only available via a custom installer on a platform, also add a check-and-install task to `roles/tools/tasks/{darwin,debian,windows}.yml`.
 
 ## Adding a New App
 
-1. Add the package name to `roles/apps/vars/{darwin,debian,windows}.yml`.
-2. Update the Apps table in `README.md`.
+1. **`roles/apps/vars/{darwin,debian,windows}.yml`** — add the package name.
+2. **`README.md` table row** — add a row to the Apps table. **Check column widths first (see README Table Alignment below).**
+3. **`README.md` link reference** — add the link reference in the sorted block at the bottom.
+4. **`cspell.json`** — add any non-dictionary words.
+
+## README Table Alignment
+
+Tables use the `aligned` style enforced by markdownlint. Violating this always causes a full-column rewrite.
+**Check before inserting any row:**
+
+1. Measure the proposed link text including brackets (e.g. `[zsh-syntax-highlighting]` = 25 chars).
+2. Compare against the current column 1 content width: count the characters between the leading and trailing
+   space inside the pipes on any existing row.
+3. If the new text would exceed that width, **expand every row and the separator in that column first**, then add the new row.
+
+The separator line must match: `| ---...--- |` with the same number of dashes as the content width.
 
 ## Keeping README Tables Accurate
 

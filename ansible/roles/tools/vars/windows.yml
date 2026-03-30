@@ -13,6 +13,7 @@ winget_tools:
     - Casey.Just
     - JesseDuffield.lazygit
     - jftuga.less
+    - johnkerl.miller
     - Microsoft.NuGet
     - JohnMacFarlane.Pandoc
     - pnpm.pnpm
@@ -22,4 +23,5 @@ winget_tools:
     - Starship.Starship
     - UPX.UPX
     - Microsoft.VisualStudio.2022.BuildTools
+    - MikeFarah.yq
     - ajeetdsouza.zoxide

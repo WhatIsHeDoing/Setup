@@ -1,0 +1,11 @@
+# Search hidden files and directories by default
+--hidden
+
+# Case-insensitive unless the pattern contains uppercase letters
+--smart-case
+
+# Ignore common generated/dependency directories
+--glob=!.git/
+--glob=!node_modules/
+--glob=!target/
+--glob=!.DS_Store

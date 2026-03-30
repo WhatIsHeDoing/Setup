@@ -25,15 +25,13 @@ cargo_packages:
     - ripgrep_all
     - wasm-pack
 
-# Python packages installed on all platforms
+# Python tools installed on all platforms via uv tool install
 pip_packages:
     - ansible-core
     - ansible-lint
     - checkov
     - ipykernel
-    - pip
     - pre-commit
-    - setuptools
 
 # pnpm packages installed globally on all platforms
 pnpm_packages:

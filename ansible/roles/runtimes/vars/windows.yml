@@ -1,5 +1,7 @@
 ---
 winget_runtimes:
+    - astral-sh.uv
+    - CoreyButler.NVMforWindows
     - Docker.DockerDesktop
     - Microsoft.DotNet.SDK.10
     - Microsoft.PowerShell

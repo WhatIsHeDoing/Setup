@@ -3,13 +3,13 @@
   hosts: localhost
   gather_facts: true
   pre_tasks:
-      - name: Find mise binary
-        ansible.builtin.command: which mise
-        register: mise_available
+      - name: Find uv binary
+        ansible.builtin.command: which uv
+        register: uv_available
         failed_when: false
         changed_when: false
         environment:
-            PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+            PATH: "/opt/homebrew/bin:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
 
   tasks:
       - name: Upgrade Homebrew packages and casks
@@ -27,12 +27,35 @@
         become: true
         when: ansible_os_family == "Debian"
 
-      - name: Upgrade Mise tools
-        ansible.builtin.command: mise upgrade
+      - name: Install latest Node.js LTS via nvm (macOS)
+        ansible.builtin.shell: |
+            . /opt/homebrew/opt/nvm/nvm.sh
+            nvm install --lts
+            nvm alias default lts/*
+        args:
+            executable: /bin/bash
         changed_when: true
-        when: mise_available.rc == 0
+        failed_when: false
+        when: ansible_os_family == "Darwin"
+
+      - name: Install latest Node.js LTS via nvm (Ubuntu)
+        ansible.builtin.shell: |
+            . ~/.nvm/nvm.sh
+            nvm install --lts
+            nvm alias default lts/*
+        args:
+            executable: /bin/bash
+        changed_when: true
+        failed_when: false
+        when: ansible_os_family == "Debian"
+
+      - name: Upgrade Python tools via uv
+        ansible.builtin.command: uv tool upgrade --all
+        changed_when: true
+        failed_when: false
         environment:
-            PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+            PATH: "/opt/homebrew/bin:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+        when: uv_available.rc == 0
 
       - name: Update Rust toolchain via rustup
         ansible.builtin.command: rustup update
@@ -53,12 +76,5 @@
         changed_when: false
         failed_when: false
         environment:
-            PATH: "{{ ansible_env.HOME }}/.local/share/pnpm:{{ ansible_env.HOME }}/.local/share/mise/shims:{{ ansible_env.PATH }}"
+            PATH: "/opt/homebrew/bin:{{ ansible_env.HOME }}/.local/share/pnpm:{{ ansible_env.PATH }}"
             PNPM_HOME: "{{ ansible_env.HOME }}/.local/share/pnpm"
-
-      - name: Upgrade pip packages
-        ansible.builtin.command: "pip install --user --upgrade {{ pip_packages | join(' ') }}"
-        failed_when: false
-        environment:
-            PATH: "{{ ansible_env.HOME }}/.local/share/mise/shims:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
-        changed_when: false

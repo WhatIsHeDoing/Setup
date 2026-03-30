@@ -10,6 +10,21 @@
       mode: "0755"
   when: effective_platform != "windows"
 
+- name: Ensure ~/.config/atuin directory exists
+  ansible.builtin.file:
+      path: "{{ ansible_env.HOME }}/.config/atuin"
+      state: directory
+      mode: "0755"
+  when: effective_platform != "windows"
+
+- name: Deploy Atuin configuration
+  ansible.builtin.copy:
+      src: "{{ repo_root }}/config/atuin.toml"
+      dest: "{{ ansible_env.HOME }}/.config/atuin/config.toml"
+      mode: "0644"
+      backup: true
+  when: effective_platform != "windows"
+
 - name: Deploy Starship configuration
   ansible.builtin.copy:
       src: "{{ repo_root }}/config/starship.toml"
@@ -18,11 +33,29 @@
       backup: true
   when: effective_platform != "windows"
 
-- name: Enable mise activate in .zshrc
+- name: Initialise Homebrew environment in .zshrc
   ansible.builtin.lineinfile:
       path: "{{ ansible_env.HOME }}/.zshrc"
-      line: 'eval "$(mise activate zsh)"'
-      regexp: "mise activate zsh"
+      line: 'eval "$(/opt/homebrew/bin/brew shellenv)"'
+      regexp: "brew shellenv"
+      create: true
+      mode: "0644"
+  when: effective_platform == "darwin"
+
+- name: Set NVM_DIR in .zshrc
+  ansible.builtin.lineinfile:
+      path: "{{ ansible_env.HOME }}/.zshrc"
+      line: 'export NVM_DIR="$HOME/.nvm"'
+      regexp: "export NVM_DIR="
+      create: true
+      mode: "0644"
+  when: effective_platform == "darwin"
+
+- name: Source nvm.sh in .zshrc
+  ansible.builtin.lineinfile:
+      path: "{{ ansible_env.HOME }}/.zshrc"
+      line: '[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"'
+      regexp: 'opt/homebrew/opt/nvm/nvm\.sh'
       create: true
       mode: "0644"
   when: effective_platform == "darwin"
@@ -36,15 +69,6 @@
       mode: "0644"
   when: effective_platform == "darwin"
 
-- name: Enable mise activate in .bashrc
-  ansible.builtin.lineinfile:
-      path: "{{ ansible_env.HOME }}/.bashrc"
-      line: 'eval "$(mise activate bash)"'
-      regexp: "mise activate bash"
-      create: true
-      mode: "0644"
-  when: effective_platform == "debian"
-
 - name: Ensure bottom config directory exists
   ansible.builtin.file:
       path: "{{ ansible_env.HOME }}/.config/bottom"
@@ -56,6 +80,36 @@
   ansible.builtin.copy:
       src: "{{ repo_root }}/config/bottom.toml"
       dest: "{{ ansible_env.HOME }}/.config/bottom/bottom.toml"
+      mode: "0644"
+      backup: true
+  when: effective_platform != "windows"
+
+- name: Ensure ~/.config/bat directory exists
+  ansible.builtin.file:
+      path: "{{ ansible_env.HOME }}/.config/bat"
+      state: directory
+      mode: "0755"
+  when: effective_platform != "windows"
+
+- name: Deploy bat configuration
+  ansible.builtin.copy:
+      src: "{{ repo_root }}/config/bat/config"
+      dest: "{{ ansible_env.HOME }}/.config/bat/config"
+      mode: "0644"
+      backup: true
+  when: effective_platform != "windows"
+
+- name: Ensure ~/.config/ripgrep directory exists
+  ansible.builtin.file:
+      path: "{{ ansible_env.HOME }}/.config/ripgrep"
+      state: directory
+      mode: "0755"
+  when: effective_platform != "windows"
+
+- name: Deploy ripgrep configuration
+  ansible.builtin.copy:
+      src: "{{ repo_root }}/config/ripgrep/rc"
+      dest: "{{ ansible_env.HOME }}/.config/ripgrep/rc"
       mode: "0644"
       backup: true
   when: effective_platform != "windows"
@@ -93,6 +147,15 @@
       mode: "0644"
   when: effective_platform == "darwin"
 
+- name: Enable zsh-syntax-highlighting in .zshrc
+  ansible.builtin.lineinfile:
+      path: "{{ ansible_env.HOME }}/.zshrc"
+      line: 'source "/opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"'
+      regexp: 'zsh-syntax-highlighting\.zsh'
+      create: true
+      mode: "0644"
+  when: effective_platform == "darwin"
+
 - name: Enable zoxide in .zshrc
   ansible.builtin.lineinfile:
       path: "{{ ansible_env.HOME }}/.zshrc"
@@ -100,6 +163,165 @@
       regexp: "zoxide init zsh"
       create: true
       mode: "0644"
+  when: effective_platform == "darwin"
+
+- name: Source fzf key-bindings in .zshrc
+  ansible.builtin.lineinfile:
+      path: "{{ ansible_env.HOME }}/.zshrc"
+      line: 'source "$(brew --prefix)/opt/fzf/shell/key-bindings.zsh"'
+      regexp: 'fzf/shell/key-bindings\.zsh'
+      create: true
+      mode: "0644"
+  when: effective_platform == "darwin"
+
+- name: Source fzf completion in .zshrc
+  ansible.builtin.lineinfile:
+      path: "{{ ansible_env.HOME }}/.zshrc"
+      line: 'source "$(brew --prefix)/opt/fzf/shell/completion.zsh"'
+      regexp: 'fzf/shell/completion\.zsh'
+      create: true
+      mode: "0644"
+  when: effective_platform == "darwin"
+
+- name: Set FZF_DEFAULT_COMMAND in .zshrc
+  ansible.builtin.lineinfile:
+      path: "{{ ansible_env.HOME }}/.zshrc"
+      line: "export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'"
+      regexp: 'FZF_DEFAULT_COMMAND='
+      create: true
+      mode: "0644"
+  when: effective_platform == "darwin"
+
+- name: Set FZF_CTRL_T_COMMAND in .zshrc
+  ansible.builtin.lineinfile:
+      path: "{{ ansible_env.HOME }}/.zshrc"
+      line: 'export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"'
+      regexp: 'FZF_CTRL_T_COMMAND='
+      create: true
+      mode: "0644"
+  when: effective_platform == "darwin"
+
+- name: Set FZF_ALT_C_COMMAND in .zshrc
+  ansible.builtin.lineinfile:
+      path: "{{ ansible_env.HOME }}/.zshrc"
+      line: "export FZF_ALT_C_COMMAND='fd --type d --hidden --follow --exclude .git'"
+      regexp: 'FZF_ALT_C_COMMAND='
+      create: true
+      mode: "0644"
+  when: effective_platform == "darwin"
+
+- name: Set FZF_DEFAULT_OPTS in .zshrc
+  ansible.builtin.lineinfile:
+      path: "{{ ansible_env.HOME }}/.zshrc"
+      line: "export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'"
+      regexp: 'FZF_DEFAULT_OPTS='
+      create: true
+      mode: "0644"
+  when: effective_platform == "darwin"
+
+- name: Set FZF_CTRL_T_OPTS in .zshrc
+  ansible.builtin.lineinfile:
+      path: "{{ ansible_env.HOME }}/.zshrc"
+      line: "export FZF_CTRL_T_OPTS=\"--preview 'bat --color=always --line-range :50 {}' --bind '?:toggle-preview'\""
+      regexp: 'FZF_CTRL_T_OPTS='
+      create: true
+      mode: "0644"
+  when: effective_platform == "darwin"
+
+- name: Set FZF_ALT_C_OPTS in .zshrc
+  ansible.builtin.lineinfile:
+      path: "{{ ansible_env.HOME }}/.zshrc"
+      line: "export FZF_ALT_C_OPTS=\"--preview 'eza --tree --icons -L 2 {}'\""
+      regexp: 'FZF_ALT_C_OPTS='
+      create: true
+      mode: "0644"
+  when: effective_platform == "darwin"
+
+- name: Set RIPGREP_CONFIG_PATH in .zshrc
+  ansible.builtin.lineinfile:
+      path: "{{ ansible_env.HOME }}/.zshrc"
+      line: 'export RIPGREP_CONFIG_PATH="$HOME/.config/ripgrep/rc"'
+      regexp: 'RIPGREP_CONFIG_PATH='
+      create: true
+      mode: "0644"
+  when: effective_platform == "darwin"
+
+- name: Set ZSH_AUTOSUGGEST_STRATEGY in .zshrc
+  ansible.builtin.lineinfile:
+      path: "{{ ansible_env.HOME }}/.zshrc"
+      line: "export ZSH_AUTOSUGGEST_STRATEGY=(history completion)"
+      regexp: 'ZSH_AUTOSUGGEST_STRATEGY='
+      create: true
+      mode: "0644"
+  when: effective_platform == "darwin"
+
+- name: Enable atuin in .zshrc
+  ansible.builtin.lineinfile:
+      path: "{{ ansible_env.HOME }}/.zshrc"
+      line: 'eval "$(atuin init zsh)"'
+      regexp: 'atuin init zsh'
+      create: true
+      mode: "0644"
+  when: effective_platform == "darwin"
+
+- name: Configure history settings in .zshrc
+  ansible.builtin.blockinfile:
+      path: "{{ ansible_env.HOME }}/.zshrc"
+      marker: "# {mark} ANSIBLE MANAGED BLOCK: history"
+      block: |
+          HISTSIZE=100000
+          SAVEHIST=100000
+          HISTFILE=~/.zsh_history
+          setopt HIST_IGNORE_DUPS
+          setopt HIST_IGNORE_SPACE
+          setopt HIST_VERIFY
+          setopt SHARE_HISTORY
+      create: true
+      mode: "0644"
+  when: effective_platform == "darwin"
+
+- name: Configure shell options in .zshrc
+  ansible.builtin.blockinfile:
+      path: "{{ ansible_env.HOME }}/.zshrc"
+      marker: "# {mark} ANSIBLE MANAGED BLOCK: shell options"
+      block: |
+          setopt AUTO_CD
+          setopt CORRECT
+          setopt NO_BEEP
+      create: true
+      mode: "0644"
+  when: effective_platform == "darwin"
+
+- name: Configure aliases in .zshrc
+  ansible.builtin.blockinfile:
+      path: "{{ ansible_env.HOME }}/.zshrc"
+      marker: "# {mark} ANSIBLE MANAGED BLOCK: aliases"
+      block: |
+          alias ..='cd ..'
+          alias ...='cd ../..'
+          alias ....='cd ../../..'
+          alias cat='bat --pager=never'
+          alias cd='z'
+          alias ll='eza -lah --icons --git'
+          alias ls='eza --icons'
+          alias lt='eza --tree --icons -L 2'
+      create: true
+      mode: "0644"
+  when: effective_platform == "darwin"
+
+- name: Ensure Ghostty config directory exists
+  ansible.builtin.file:
+      path: "{{ ansible_env.HOME }}/Library/Application Support/com.mitchellh.ghostty"
+      state: directory
+      mode: "0755"
+  when: effective_platform == "darwin"
+
+- name: Deploy Ghostty configuration
+  ansible.builtin.copy:
+      src: "{{ repo_root }}/config/ghostty"
+      dest: "{{ ansible_env.HOME }}/Library/Application Support/com.mitchellh.ghostty/config"
+      mode: "0644"
+      backup: true
   when: effective_platform == "darwin"
 
 - name: Install scripts

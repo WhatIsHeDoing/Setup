@@ -4,6 +4,7 @@ homebrew_casks:
     - dbeaver-community
     - drawio
     - firefox
+    - font-jetbrains-mono-nerd-font
     - ghostty
     - obsidian
     - orbstack

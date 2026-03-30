@@ -14,8 +14,8 @@
             name: "git"
           - cmd: "just --version"
             name: "just"
-          - cmd: "mise --version"
-            name: "mise"
+          - cmd: "uv --version"
+            name: "uv"
           - cmd: "fzf --version"
             name: "fzf"
           - cmd: "bat --version"
@@ -28,22 +28,22 @@
             name: "jq"
           - cmd: "starship --version"
             name: "starship"
-          - cmd: "node --version"
-            name: "node"
-          - cmd: "python3 --version"
-            name: "python"
           - cmd: "cargo --version"
             name: "cargo"
           - cmd: "dotnet --version"
             name: "dotnet"
           - cmd: "pnpm --version"
             name: "pnpm"
+          - cmd: "uv python list"
+            name: "uv-python"
           - cmd: "gh --version"
             name: "gh"
           - cmd: "git-lfs --version"
             name: "git-lfs"
           - cmd: "lazygit --version"
             name: "lazygit"
+          - cmd: "mlr --version"
+            name: "miller"
           - cmd: "fd --version"
             name: "fd"
           - cmd: "ffmpeg -version"
@@ -52,12 +52,20 @@
             name: "delta"
           - cmd: "btm --version"
             name: "bottom"
+          - cmd: "yq --version"
+            name: "yq"
           - cmd: "zoxide --version"
             name: "zoxide"
           - cmd: "shellcheck --version"
             name: "shellcheck"
           - cmd: "rga --version"
             name: "ripgrep-all"
+          - cmd: "atuin --version"
+            name: "atuin"
+          - cmd: "dust --version"
+            name: "dust"
+          - cmd: "tldr --version"
+            name: "tlrc"
 
       windows_tools_to_verify:
           - cmd: "git --version"
@@ -96,6 +104,8 @@
             name: "git-lfs"
           - cmd: "lazygit --version"
             name: "lazygit"
+          - cmd: "mlr --version"
+            name: "miller"
           - cmd: "fd --version"
             name: "fd"
           - cmd: "ffmpeg -version"
@@ -104,6 +114,8 @@
             name: "delta"
           - cmd: "btm --version"
             name: "bottom"
+          - cmd: "yq --version"
+            name: "yq"
           - cmd: "zoxide --version"
             name: "zoxide"
           - cmd: "shellcheck --version"
@@ -112,12 +124,20 @@
             name: "ripgrep-all"
 
       dotfiles_to_verify:
-          - path: "{{ ansible_env.HOME }}/.config/starship.toml"
-            name: "starship config"
+          - path: "{{ ansible_env.HOME }}/.config/atuin/config.toml"
+            name: "atuin config"
+          - path: "{{ ansible_env.HOME }}/.config/bat/config"
+            name: "bat config"
           - path: "{{ ansible_env.HOME }}/.config/bottom/bottom.toml"
             name: "bottom config"
+          - path: "{{ ansible_env.HOME }}/Library/Application Support/com.mitchellh.ghostty/config"
+            name: "ghostty config"
           - path: "{{ ansible_env.HOME }}/.gitignore_global"
             name: "global gitignore"
+          - path: "{{ ansible_env.HOME }}/.config/ripgrep/rc"
+            name: "ripgrep config"
+          - path: "{{ ansible_env.HOME }}/.config/starship.toml"
+            name: "starship config"
 
   tasks:
       - name: Verify tool is installed and functional
@@ -128,7 +148,7 @@
         register: verify_results
         changed_when: false
         environment:
-            PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.HOME }}/.local/share/mise/shims:{{ ansible_env.HOME }}/.local/bin:/snap/bin:{{ ansible_env.PATH }}"
+            PATH: "{{ ansible_env.HOME }}/.cargo/bin:/opt/homebrew/bin:{{ ansible_env.HOME }}/.local/bin:/snap/bin:{{ ansible_env.PATH }}"
         when: effective_platform != "windows"
 
       - name: Print verified versions
@@ -137,6 +157,22 @@
         loop: "{{ verify_results.results }}"
         loop_control:
             label: "{{ item.item.name }}"
+        when: effective_platform != "windows"
+
+      - name: Verify Node.js is installed via nvm
+        ansible.builtin.shell: |
+            . /opt/homebrew/opt/nvm/nvm.sh 2>/dev/null || . ~/.nvm/nvm.sh 2>/dev/null
+            node --version
+        args:
+            executable: /bin/bash
+        register: node_version
+        changed_when: false
+        failed_when: node_version.rc != 0
+        when: effective_platform != "windows"
+
+      - name: Print Node.js version
+        ansible.builtin.debug:
+            msg: "OK node: {{ node_version.stdout_lines[0] }}"
         when: effective_platform != "windows"
 
       - name: Verify dotfiles are deployed
