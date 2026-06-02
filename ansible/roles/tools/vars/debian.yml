@@ -43,3 +43,5 @@ apt_tools:
 snap_tools:
     - name: lazygit
       classic: false
+    - name: lefthook
+      classic: true

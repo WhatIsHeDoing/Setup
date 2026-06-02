@@ -1,27 +1,28 @@
 ---
 winget_tools:
-    - sharkdp.bat
+    - ajeetdsouza.zoxide
+    - BurntSushi.ripgrep.MSVC
+    - Casey.Just
     - Clement.bottom
     - dandavison.delta
+    - evilmartians.lefthook
     - eza-community.eza
-    - Gyan.FFmpeg
-    - junegunn.fzf
-    - sharkdp.fd
     - GitHub.cli
     - GitHub.GitLFS
-    - jqlang.jq
-    - Casey.Just
+    - Gyan.FFmpeg
     - JesseDuffield.lazygit
     - jftuga.less
     - johnkerl.miller
-    - Microsoft.NuGet
     - JohnMacFarlane.Pandoc
-    - pnpm.pnpm
-    - PuTTY.PuTTY
-    - BurntSushi.ripgrep.MSVC
+    - jqlang.jq
+    - junegunn.fzf
     - koalaman.shellcheck
-    - Starship.Starship
-    - UPX.UPX
+    - Microsoft.NuGet
     - Microsoft.VisualStudio.2022.BuildTools
     - MikeFarah.yq
-    - ajeetdsouza.zoxide
+    - pnpm.pnpm
+    - PuTTY.PuTTY
+    - sharkdp.bat
+    - sharkdp.fd
+    - Starship.Starship
+    - UPX.UPX

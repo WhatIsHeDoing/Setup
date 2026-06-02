@@ -166,6 +166,7 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 | [jq]                      | all           | `sed` for JSON                                    |
 | [just]                    | all           | Task runner                                       |
 | [lazygit]                 | all           | TUI for git                                       |
+| [lefthook]                | all           | Fast, polyglot git hooks manager                  |
 | [less]                    | all           | Terminal pager                                    |
 | [miller]                  | all           | Swiss Army knife for tabular data (CSV/JSON/TSV)  |
 | [pandoc]                  | all           | Universal markup converter                        |
@@ -313,6 +314,7 @@ just spellcheck
 [gh]: https://cli.github.com/
 [ghostty]: https://ghostty.org/
 [lazygit]: https://github.com/jesseduffield/lazygit
+[lefthook]: https://lefthook.dev/
 [miller]: https://miller.readthedocs.io/
 [yq]: https://github.com/mikefarah/yq
 [zoxide]: https://github.com/ajeetdsouza/zoxide

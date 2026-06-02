@@ -16,6 +16,7 @@ homebrew_tools:
     - jq
     - just
     - lazygit
+    - lefthook
     - less
     - miller
     - nuget
