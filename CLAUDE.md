@@ -78,8 +78,9 @@ Touch **all** of these files — none are optional:
 3. **`README.md` table row** — add a row to the Tools table.
    **Before inserting, check the README Table Alignment rules below.**
 4. **`README.md` link reference** — add `[tool-name]: https://...` in the alphabetically sorted reference block at the bottom.
-5. **`cspell.json`** — add any non-dictionary words (tool names, author handles, WinGet IDs)
-   to the `words` array in alphabetical order.
+5. **`cspell.yaml`** — add any non-dictionary words. Real product/tool names go in `words`;
+   code identifiers, config keys, and handles (e.g. WinGet IDs, author handles) go in `ignoreWords`.
+   Keep both lists sorted case-insensitively.
 6. **`roles/dotfiles/tasks/main.yml`** — if the tool requires shell activation (e.g. sourcing a `.sh` file
    or setting an env var), add `lineinfile` tasks here.
 
@@ -103,7 +104,7 @@ To add a new MCP server:
      command: npx @scope/my-mcp-package
    ```
 
-2. **`cspell.json`** — add any non-dictionary words (package scope, server name).
+2. **`cspell.yaml`** — add any non-dictionary words (package scope → `ignoreWords`, server name per the words/ignoreWords split).
 
 No changes to the dotfiles task or verify playbook are needed.
 
@@ -112,7 +113,7 @@ No changes to the dotfiles task or verify playbook are needed.
 1. **`roles/apps/vars/{darwin,debian,windows}.yml`** — add the package name.
 2. **`README.md` table row** — add a row to the Apps table. **Check column widths first (see README Table Alignment below).**
 3. **`README.md` link reference** — add the link reference in the sorted block at the bottom.
-4. **`cspell.json`** — add any non-dictionary words.
+4. **`cspell.yaml`** — add any non-dictionary words (`words` vs `ignoreWords` per the split).
 
 ## README Table Alignment
 

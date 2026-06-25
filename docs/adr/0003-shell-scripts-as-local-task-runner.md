@@ -20,13 +20,13 @@ present. Scripts in these languages require no additional installation.
 
 ## Options considered
 
-| Option                      | Notes                                                                                                                                                                        |
-| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Shell scripts / aliases** | No additional dependency; available immediately on every target OS; logic lives in the same repo as everything else                                                          |
-| **Just**                    | Clean recipe format; cross-platform; discoverable via `just --list`; but must be installed as a prerequisite, adding a step before setup can run                             |
-| **Make**                    | Universally available on Unix; but designed for build dependency tracking, not task running; tab-sensitivity and implicit behaviour are sources of confusion                 |
-| **Task (go-task)**          | YAML-based; cross-platform; more features than Just; adds a Go runtime dependency                                                                                            |
-| **npm scripts**             | Convenient if Node is already present; ties task running to the Node ecosystem unnecessarily                                                                                 |
+| Option                      | Notes                                                                                                                                                        |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Shell scripts / aliases** | No additional dependency; available immediately on every target OS; logic lives in the same repo as everything else                                          |
+| **Just**                    | Clean recipe format; cross-platform; discoverable via `just --list`; but must be installed as a prerequisite, adding a step before setup can run             |
+| **Make**                    | Universally available on Unix; but designed for build dependency tracking, not task running; tab-sensitivity and implicit behaviour are sources of confusion |
+| **Task (go-task)**          | YAML-based; cross-platform; more features than Just; adds a Go runtime dependency                                                                            |
+| **npm scripts**             | Convenient if Node is already present; ties task running to the Node ecosystem unnecessarily                                                                 |
 
 ## Decision
 
@@ -34,7 +34,7 @@ Use **shell scripts** (bash on macOS/Linux, PowerShell on Windows) as the
 entry points for all common operations.
 
 - `setup_macos.sh`, `setup_ubuntu.sh`, and `setup_windows.ps1` are the
-  single entry points on each platform, invokable immediately after a clean
+  single entry points on each platform, invocable immediately after a clean
   OS install with no prerequisites.
 - Scripts invoke Ansible playbooks rather than implementing logic directly;
   the scripts are the interface, Ansible is the implementation.
