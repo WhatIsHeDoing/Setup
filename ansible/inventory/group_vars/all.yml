@@ -37,7 +37,6 @@ cargo_packages:
     - cargo-update
     - diskonaut
     - ripgrep_all
-    - taplo-cli
     - wasm-pack
 
 # Python tools installed on all platforms via uv tool install

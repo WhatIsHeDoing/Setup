@@ -34,6 +34,7 @@ homebrew_tools:
     - shfmt
     - starship
     - svgo
+    - taplo
     - tlrc
     - upx
     - vale

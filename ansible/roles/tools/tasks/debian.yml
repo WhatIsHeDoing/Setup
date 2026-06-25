@@ -91,3 +91,17 @@
       remote_src: true
       mode: "0755"
   when: gitleaks_check.rc != 0
+
+# taplo ships as a gzipped binary (not a tarball) and has no apt package.
+- name: Check if taplo is installed
+  ansible.builtin.command: which taplo
+  register: taplo_check
+  changed_when: false
+  failed_when: false
+
+- name: Install taplo # noqa: command-instead-of-module risky-shell-pipe
+  ansible.builtin.shell: |
+      curl -fsSL https://github.com/tamasfe/taplo/releases/download/0.10.0/taplo-linux-x86_64.gz | gunzip -c > "{{ ansible_env.HOME }}/.local/bin/taplo"
+      chmod +x "{{ ansible_env.HOME }}/.local/bin/taplo"
+  changed_when: taplo_check.rc != 0
+  when: taplo_check.rc != 0

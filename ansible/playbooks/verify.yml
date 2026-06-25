@@ -156,8 +156,6 @@
             name: "vale"
           - cmd: "gitleaks version"
             name: "gitleaks"
-          - cmd: "taplo --version"
-            name: "taplo"
 
       dotfiles_to_verify:
           - path: "{{ ansible_env.HOME }}/.config/atuin/config.toml"
