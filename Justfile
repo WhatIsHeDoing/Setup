@@ -110,3 +110,9 @@ ansible-lint:
 [group('ci')]
 spell:
     cspell lint --no-progress --dot "**"
+
+# Auto-format shell (shfmt) and TOML (taplo) files
+[group('ci')]
+format:
+    shfmt -w bootstrap scripts
+    taplo fmt

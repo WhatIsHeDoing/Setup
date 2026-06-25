@@ -12,8 +12,8 @@ if ! command -v just &>/dev/null; then
     # Downloads over HTTPS with TLS 1.2 minimum from just.systems (official source).
     # The installer fetches a signed release binary from github.com/casey/just.
     # Review the installer at https://github.com/casey/just before running.
-    curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh \
-        | sudo bash -s -- --to /usr/local/bin
+    curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh |
+        sudo bash -s -- --to /usr/local/bin
 fi
 
 # Install pre-commit
