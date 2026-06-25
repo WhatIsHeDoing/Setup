@@ -67,7 +67,7 @@ Each role is tagged so you can re-run it without running the full playbook:
 | Tag         | Role                                      |
 | ----------- | ----------------------------------------- |
 | `bootstrap` | Package manager setup                     |
-| `runtimes`  | Mise, Node, Python, Rust, global packages |
+| `runtimes`  | Node, Python, Rust, global packages       |
 | `tools`     | CLI tools                                 |
 | `apps`      | GUI applications                          |
 | `dotfiles`  | Config files and scripts                  |
@@ -109,7 +109,7 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 │   ├── requirements.yml         # Ansible Galaxy collections
 │   └── roles/
 │       ├── bootstrap/           # Package manager setup (Homebrew, apt repos, WinGet)
-│       ├── runtimes/            # Node, Python, Rust via Mise
+│       ├── runtimes/            # Node, Python, Rust via nvm, uv, rustup
 │       ├── tools/               # CLI tools
 │       ├── apps/                # GUI applications
 │       ├── dotfiles/            # Config file and script deployment
@@ -128,7 +128,6 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 ├── scripts/
 │   ├── ff                       # Fuzzy-find script (macOS, Ubuntu)
 │   └── ll                       # Colourful directory listing (macOS, Ubuntu)
-├── .mise.toml                   # Runtime version pins (Node, Python, Rust)
 └── Justfile                     # Convenience wrappers around ansible-playbook
 ```
 
@@ -182,7 +181,7 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 | [shfmt]                   | all            | Shell script formatter                            |
 | [Starship]                | all            | Cross-shell prompt                                |
 | [svgo]                    | macOS          | SVG optimizer                                     |
-| [taplo]                   | all            | TOML toolkit (format and lint)                    |
+| [taplo]                   | macOS, Ubuntu  | TOML toolkit (format and lint)                    |
 | [tlrc]                    | macOS          | Community tldr pages client                       |
 | [UPX]                     | all            | Executable packer                                 |
 | [vale]                    | macOS, Windows | Prose linter for docs and Markdown                |
