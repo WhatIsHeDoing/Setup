@@ -5,10 +5,12 @@ winget_tools:
     - Casey.Just
     - Clement.bottom
     - dandavison.delta
+    - errata-ai.Vale
     - evilmartians.lefthook
     - eza-community.eza
     - GitHub.cli
     - GitHub.GitLFS
+    - Graphviz.Graphviz
     - Gyan.FFmpeg
     - JesseDuffield.lazygit
     - jftuga.less
@@ -20,6 +22,8 @@ winget_tools:
     - Microsoft.NuGet
     - Microsoft.VisualStudio.2022.BuildTools
     - MikeFarah.yq
+    - mvdan.shfmt
+    - OliverBetz.ExifTool
     - pnpm.pnpm
     - PuTTY.PuTTY
     - sharkdp.bat

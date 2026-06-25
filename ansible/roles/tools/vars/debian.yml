@@ -4,12 +4,12 @@ apt_tools:
     - bat
     - build-essential
     - containerd.io
-    - dotnet-sdk-10.0
     - docker-buildx-plugin
     - docker-ce
     - docker-ce-cli
     - docker-ce-rootless-extras
     - docker-compose-plugin
+    - dotnet-sdk-10.0
     - eza
     - fd-find
     - ffmpeg
@@ -21,12 +21,14 @@ apt_tools:
     - git-lfs
     - gnome-software-plugin-flatpak
     - gnupg
+    - graphviz
     - jq
     - just
     - less
-    - miller
-    - lld
+    - libimage-exiftool-perl
     - libpq-dev
+    - lld
+    - miller
     - p7zip-full
     - pandoc
     - pkg-config
@@ -36,6 +38,7 @@ apt_tools:
     - python3-pip
     - ripgrep
     - shellcheck
+    - shfmt
     - upx-ucl
     - yq
     - zoxide

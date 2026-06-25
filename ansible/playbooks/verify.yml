@@ -70,6 +70,20 @@
             name: "dust"
           - cmd: "tldr --version"
             name: "tlrc"
+          - cmd: "exiftool -ver"
+            name: "exiftool"
+          - cmd: "dot -V"
+            name: "graphviz"
+          - cmd: "markdownlint-cli2 --version"
+            name: "markdownlint-cli2"
+          - cmd: "pdfinfo -v"
+            name: "poppler"
+          - cmd: "shfmt --version"
+            name: "shfmt"
+          - cmd: "svgo --version"
+            name: "svgo"
+          - cmd: "vale --version"
+            name: "vale"
 
       windows_tools_to_verify:
           - cmd: "git --version"
@@ -128,6 +142,14 @@
             name: "shellcheck"
           - cmd: "rga --version"
             name: "ripgrep-all"
+          - cmd: "exiftool -ver"
+            name: "exiftool"
+          - cmd: "dot -V"
+            name: "graphviz"
+          - cmd: "shfmt --version"
+            name: "shfmt"
+          - cmd: "vale --version"
+            name: "vale"
 
       dotfiles_to_verify:
           - path: "{{ ansible_env.HOME }}/.config/atuin/config.toml"
@@ -159,7 +181,7 @@
 
       - name: Print verified versions
         ansible.builtin.debug:
-            msg: "OK {{ item.item.name }}: {{ item.stdout_lines[0] }}"
+            msg: "OK {{ item.item.name }}: {{ (item.stdout_lines + item.stderr_lines) | first | default('?') }}"
         loop: "{{ verify_results.results }}"
         loop_control:
             label: "{{ item.item.name }}"

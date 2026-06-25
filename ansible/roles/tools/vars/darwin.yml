@@ -6,6 +6,7 @@ homebrew_tools:
     - dotnet
     - dust
     - duti
+    - exiftool
     - eza
     - fd
     - ffmpeg
@@ -13,22 +14,28 @@ homebrew_tools:
     - gh
     - git-delta
     - git-lfs
+    - graphviz
     - jq
     - just
     - lazygit
     - lefthook
     - less
+    - markdownlint-cli2
     - miller
     - nuget
     - osv-scanner
     - pandoc
     - pnpm
+    - poppler
     - ripgrep
     - ripgrep-all
     - shellcheck
+    - shfmt
     - starship
+    - svgo
     - tlrc
     - upx
+    - vale
     - yq
     - zoxide
     - zsh-autocomplete
