@@ -41,6 +41,7 @@ words:
     - flatpak
     - fzf
     - ghostty
+    - gitleaks
     - graphviz
     - gruvbox
     - handoff
@@ -89,6 +90,7 @@ words:
     - starship
     - subshells
     - svgo
+    - taplo
     - timezone
     - tlrc
     - toml

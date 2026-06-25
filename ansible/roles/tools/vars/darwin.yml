@@ -14,6 +14,7 @@ homebrew_tools:
     - gh
     - git-delta
     - git-lfs
+    - gitleaks
     - graphviz
     - jq
     - just

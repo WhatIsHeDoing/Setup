@@ -10,6 +10,7 @@ winget_tools:
     - eza-community.eza
     - GitHub.cli
     - GitHub.GitLFS
+    - Gitleaks.Gitleaks
     - Graphviz.Graphviz
     - Gyan.FFmpeg
     - JesseDuffield.lazygit

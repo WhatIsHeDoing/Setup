@@ -164,6 +164,7 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 | [fzf]                     | all            | Command-line fuzzy finder                         |
 | [gh]                      | all            | GitHub CLI                                        |
 | [Git LFS]                 | all            | Git Large File Storage                            |
+| [gitleaks]                | all            | Secret scanner for git repositories               |
 | [graphviz]                | all            | Graph visualization via the DOT language          |
 | [jq]                      | all            | `sed` for JSON                                    |
 | [just]                    | all            | Task runner                                       |
@@ -181,6 +182,7 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 | [shfmt]                   | all            | Shell script formatter                            |
 | [Starship]                | all            | Cross-shell prompt                                |
 | [svgo]                    | macOS          | SVG optimizer                                     |
+| [taplo]                   | all            | TOML toolkit (format and lint)                    |
 | [tlrc]                    | macOS          | Community tldr pages client                       |
 | [UPX]                     | all            | Executable packer                                 |
 | [vale]                    | macOS, Windows | Prose linter for docs and Markdown                |
@@ -289,6 +291,7 @@ just check
 [Flatpak]: https://flatpak.org/
 [fzf]: https://github.com/junegunn/fzf
 [Git LFS]: https://git-lfs.com/
+[gitleaks]: https://github.com/gitleaks/gitleaks
 [graphviz]: https://graphviz.org/
 [jq]: https://jqlang.github.io/jq/
 [just]: https://just.systems/
@@ -313,6 +316,7 @@ just check
 [Spotify]: https://open.spotify.com/
 [Starship]: https://starship.rs/
 [svgo]: https://github.com/svg/svgo
+[taplo]: https://taplo.tamasfe.dev/
 [Telegram]: https://telegram.org/
 [UPX]: https://upx.github.io/
 [vale]: https://vale.sh/

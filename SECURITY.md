@@ -20,6 +20,7 @@ update within 30 days.
 
 | Layer                         | Tool                                                               | What It Covers                                             |
 | ----------------------------- | ------------------------------------------------------------------ | ---------------------------------------------------------- |
+| Secret detection (local)      | [gitleaks](https://github.com/gitleaks/gitleaks)                   | Scans staged changes for credentials (git hook)            |
 | Secret and misconfig scanning | [Trivy](https://github.com/aquasecurity/trivy)                     | Leaked credentials and misconfigurations in every push/PR  |
 | PowerShell analysis           | [PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer) | Unsafe PowerShell patterns (CI, Windows runner)            |
 | Ansible linting               | [ansible-lint](https://ansible-lint.readthedocs.io/)               | Production-profile rules including unsafe shell patterns   |

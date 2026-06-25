@@ -14,9 +14,14 @@ pre-commit:
             glob: "*.md"
             exclude: "LICENSE.md"
             run: markdownlint-cli2 {staged_files}
+        gitleaks:
+            run: gitleaks git --staged --no-banner --redact
         shellcheck:
             glob: "*.sh"
             run: shellcheck {staged_files}
+        taplo:
+            glob: "*.toml"
+            run: taplo lint {staged_files}
         whitespace:
             run: git diff --check --cached
 commit-msg:

@@ -84,6 +84,10 @@
             name: "svgo"
           - cmd: "vale --version"
             name: "vale"
+          - cmd: "gitleaks version"
+            name: "gitleaks"
+          - cmd: "taplo --version"
+            name: "taplo"
 
       windows_tools_to_verify:
           - cmd: "git --version"
@@ -150,6 +154,10 @@
             name: "shfmt"
           - cmd: "vale --version"
             name: "vale"
+          - cmd: "gitleaks version"
+            name: "gitleaks"
+          - cmd: "taplo --version"
+            name: "taplo"
 
       dotfiles_to_verify:
           - path: "{{ ansible_env.HOME }}/.config/atuin/config.toml"
