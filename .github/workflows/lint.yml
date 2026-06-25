@@ -6,7 +6,7 @@ on:
     pull_request:
 
 jobs:
-    pre-commit:
+    lefthook:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
@@ -15,8 +15,24 @@ jobs:
               with:
                   python-version: "3.12"
 
-            - name: Run pre-commit
-              uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd
+            - name: Install hook tools
+              run: |
+                  npm install -g lefthook cspell markdownlint-cli2
+                  pip install yamllint
+
+            - name: Run lefthook checks
+              run: lefthook run pre-commit --all-files
+
+    actionlint:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+            - name: Run actionlint
+              run: |
+                  curl -sSfL -o actionlint.tar.gz https://github.com/rhysd/actionlint/releases/download/v1.7.7/actionlint_1.7.7_linux_amd64.tar.gz
+                  tar xzf actionlint.tar.gz actionlint
+                  ./actionlint -color
 
     ansible-lint:
         runs-on: ubuntu-latest

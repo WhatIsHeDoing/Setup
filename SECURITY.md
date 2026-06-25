@@ -18,14 +18,13 @@ update within 30 days.
 
 ## Security Measures
 
-| Layer | Tool | What It Covers |
-| --- | --- | --- |
-| Secret detection | [gitleaks](https://github.com/gitleaks/gitleaks) | Scans git history for leaked credentials (pre-commit) |
-| Filesystem scanning | [Trivy](https://github.com/aquasecurity/trivy) | Secrets and misconfigurations in every push/PR |
-| PowerShell analysis | [PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer) | Unsafe PowerShell patterns (CI, Windows runner) |
-| Ansible linting | [ansible-lint](https://ansible-lint.readthedocs.io/) | Production-profile rules including unsafe shell patterns |
-| Shell linting | [shellcheck](https://www.shellcheck.net/) | Shell script bugs and unsafe constructs (pre-commit) |
-| Dependency updates | [Renovate](https://github.com/renovatebot/renovate) | Automated PRs for outdated Actions, hooks, and collections |
+| Layer                         | Tool                                                               | What It Covers                                             |
+| ----------------------------- | ------------------------------------------------------------------ | ---------------------------------------------------------- |
+| Secret and misconfig scanning | [Trivy](https://github.com/aquasecurity/trivy)                     | Leaked credentials and misconfigurations in every push/PR  |
+| PowerShell analysis           | [PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer) | Unsafe PowerShell patterns (CI, Windows runner)            |
+| Ansible linting               | [ansible-lint](https://ansible-lint.readthedocs.io/)               | Production-profile rules including unsafe shell patterns   |
+| Shell linting                 | [shellcheck](https://www.shellcheck.net/)                          | Shell script bugs and unsafe constructs (git hook + CI)    |
+| Dependency updates            | [Renovate](https://github.com/renovatebot/renovate)                | Automated PRs for outdated Actions, hooks, and collections |
 
 ## Bootstrap Trust Model
 
@@ -33,10 +32,10 @@ The bootstrap scripts download installers over HTTPS (TLS 1.2 minimum).
 Users should review the scripts before running them and verify that the
 source URLs match the official project repositories:
 
-| Script | Installer | Source |
-| --- | --- | --- |
-| `bootstrap_macos.sh` | Homebrew | `https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh` |
-| `bootstrap_ubuntu.sh` | just | `https://just.systems/install.sh` |
+| Script                | Installer | Source                                                               |
+| --------------------- | --------- | -------------------------------------------------------------------- |
+| `bootstrap_macos.sh`  | Homebrew  | `https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh` |
+| `bootstrap_ubuntu.sh` | just      | `https://just.systems/install.sh`                                    |
 
 ## WinRM Security Note
 

@@ -52,8 +52,8 @@ dependency: `bootstrap` → `runtimes` → `tools` → `apps` → `dotfiles`
 | Risk                                               | Mitigated by                                                  |
 | -------------------------------------------------- | ------------------------------------------------------------- |
 | Unsafe shell patterns, missing idempotency markers | `ansible-lint` at `production` profile in CI                  |
-| Shell script bugs                                  | `shellcheck` in pre-commit and CI                             |
-| YAML syntax errors                                 | `yamllint` in pre-commit and CI                               |
+| Shell script bugs                                  | `shellcheck` in git hooks and CI                              |
+| YAML syntax errors                                 | `yamllint` in git hooks and CI                                |
 | Broken tool installs                               | `verify.yml` smoke tests every installed binary               |
 | Unexpected changes on re-run                       | Idempotent design; `just dry-run` for preview                 |
 | macOS defaults not applying                        | `community.general.osx_defaults` reports true `changed` state |

@@ -83,23 +83,16 @@ verify:
     ansible-playbook ansible/playbooks/verify.yml \
         -i ansible/inventory/localhost.yml
 
-# Run all local checks: spelling, markdown lint, and Ansible lint
+# Run all local checks: git hooks (lint + spell) and Ansible lint
 [group('ci')]
-validate:
-    cspell lint --no-progress "**"
-    pre-commit run --all-files
+check:
+    lefthook run pre-commit --all-files
     PYTHONPATH=./collections ansible-lint
 
-# Run pre-commit checks
+# Install git hooks managed by lefthook
 [group('ci')]
-pre-commit:
-    pre-commit install
-    pre-commit run --all-files
-
-# Update all pre-commit hooks to their latest versions
-[group('ci')]
-update-hooks:
-    pre-commit autoupdate
+hooks:
+    lefthook install
 
 # Installs Ansible and collections via uv (matches CI; avoids CLI/module version mismatch from brew)
 [group('ci')]
@@ -113,7 +106,7 @@ ansible-setup:
 ansible-lint:
     PYTHONPATH=./collections ansible-lint
 
-# Check spelling across the repo
+# Check spelling across the repo (--dot also covers .github, .vscode, etc.)
 [group('ci')]
-spellcheck:
-    cspell lint --no-progress "**"
+spell:
+    cspell lint --no-progress --dot "**"

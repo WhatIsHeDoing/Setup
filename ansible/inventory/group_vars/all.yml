@@ -44,8 +44,9 @@ pip_packages:
     - ansible-core
     - ansible-lint
     - checkov
+    - commitizen
     - ipykernel
-    - pre-commit
+    - yamllint
 
 # Claude Code MCP servers configured at user scope
 mcp_servers:

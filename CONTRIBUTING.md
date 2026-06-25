@@ -2,10 +2,10 @@
 
 ## Setup
 
-Install pre-commit hooks after cloning:
+Install the git hooks after cloning:
 
 ```sh
-pre-commit install
+just hooks
 ```
 
 ## Making Changes
@@ -36,7 +36,7 @@ ADRs are append-only — supersede rather than edit past decisions.
 Run linting before pushing:
 
 ```sh
-pre-commit run --all-files
+just check
 ```
 
 Test the install playbook locally:

@@ -1,0 +1,25 @@
+---
+# Git hooks managed by lefthook. Install them with `just hooks`.
+# Workflow linting (actionlint) and secret scanning (trivy) run in CI, not here.
+pre-commit:
+    parallel: true
+    commands:
+        cspell:
+            glob: "*"
+            run: cspell lint --no-progress {staged_files}
+        yamllint:
+            glob: "*.{yml,yaml}"
+            run: yamllint {staged_files}
+        markdownlint:
+            glob: "*.md"
+            exclude: "LICENSE.md"
+            run: markdownlint-cli2 {staged_files}
+        shellcheck:
+            glob: "*.sh"
+            run: shellcheck {staged_files}
+        whitespace:
+            run: git diff --check --cached
+commit-msg:
+    commands:
+        commitizen:
+            run: cz check --commit-msg-file {1}
