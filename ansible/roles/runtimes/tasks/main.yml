@@ -14,7 +14,7 @@
 - name: Update Rust toolchain via rustup
   ansible.builtin.command: rustup update
   environment:
-      PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.PATH }}"
+      PATH: "{{ cargo_bin }}:{{ ansible_env.PATH }}"
   changed_when: true
   when: effective_platform != "windows"
 
@@ -32,25 +32,15 @@
       creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
   when: effective_platform == "debian"
 
-- name: Install Node.js LTS via nvm (macOS)
+- name: Install Node.js LTS via nvm
   ansible.builtin.shell: |
-    . /opt/homebrew/opt/nvm/nvm.sh
+    . {{ nvm_sh }}
     nvm install --lts
     nvm alias default lts/*
   args:
       executable: /bin/bash
   changed_when: false
-  when: effective_platform == "darwin"
-
-- name: Install Node.js LTS via nvm (Ubuntu)
-  ansible.builtin.shell: |
-    . ~/.nvm/nvm.sh
-    nvm install --lts
-    nvm alias default lts/*
-  args:
-      executable: /bin/bash
-  changed_when: false
-  when: effective_platform == "debian"
+  when: effective_platform != "windows"
 
 # ── Python (uv) ──────────────────────────────────────────────────────────
 - name: Install uv (macOS via Homebrew)
@@ -69,7 +59,7 @@
 - name: Install latest Python via uv
   ansible.builtin.command: uv python install
   environment:
-      PATH: "/opt/homebrew/bin:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+      PATH: "{{ homebrew_bin }}:{{ local_bin }}:{{ ansible_env.PATH }}"
   changed_when: false
   when: effective_platform != "windows"
 
@@ -82,19 +72,23 @@
   when: effective_platform == "debian"
 
 # ── Global packages ──────────────────────────────────────────────────────
-- name: Install global Cargo packages
-  ansible.builtin.command: "cargo install {{ item }}"
-  loop: "{{ cargo_packages }}"
-  environment:
-      PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.PATH }}"
-  changed_when: false
-  failed_when: false
+# cargo-binstall fetches prebuilt release binaries instead of compiling each
+# crate from source — seconds rather than minutes — and falls back to a source
+# build only when no prebuilt artefact exists. Re-running is idempotent: it
+# skips a crate already at the latest version, which also folds the old
+# `cargo install-update -a` pass into this one loop.
+- name: Install cargo-binstall
+  ansible.builtin.shell: |
+    curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash # noqa: risky-shell-pipe
+  args:
+      creates: "{{ ansible_env.HOME }}/.cargo/bin/cargo-binstall"
   when: effective_platform != "windows"
 
-- name: Update all installed Cargo packages
-  ansible.builtin.command: cargo install-update -a
+- name: Install global Cargo packages via cargo-binstall
+  ansible.builtin.command: "cargo binstall --no-confirm {{ item }}"
+  loop: "{{ cargo_packages + (cargo_packages_non_darwin if effective_platform != 'darwin' else []) }}"
   environment:
-      PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.PATH }}"
+      PATH: "{{ cargo_bin }}:{{ ansible_env.PATH }}"
   changed_when: false
   failed_when: false
   when: effective_platform != "windows"
@@ -102,16 +96,16 @@
 - name: Install global pnpm packages (macOS)
   ansible.builtin.command: "pnpm add -g {{ pnpm_packages | join(' ') }}"
   environment:
-      PATH: "/opt/homebrew/bin:{{ ansible_env.HOME }}/.local/share/pnpm/bin:{{ ansible_env.PATH }}"
-      PNPM_HOME: "{{ ansible_env.HOME }}/.local/share/pnpm"
+      PATH: "{{ homebrew_bin }}:{{ pnpm_bin }}:{{ ansible_env.PATH }}"
+      PNPM_HOME: "{{ pnpm_home }}"
   changed_when: false
   when: effective_platform == "darwin"
 
 - name: Install global pnpm packages (Ubuntu)
   ansible.builtin.command: "pnpm add -g {{ pnpm_packages | join(' ') }}"
   environment:
-      PATH: "{{ ansible_env.HOME }}/.local/share/pnpm/bin:{{ ansible_env.PATH }}"
-      PNPM_HOME: "{{ ansible_env.HOME }}/.local/share/pnpm"
+      PATH: "{{ pnpm_bin }}:{{ ansible_env.PATH }}"
+      PNPM_HOME: "{{ pnpm_home }}"
   changed_when: false
   when: effective_platform == "debian"
 
@@ -119,7 +113,7 @@
   ansible.builtin.command: "uv tool install {{ item }}"
   loop: "{{ pip_packages }}"
   environment:
-      PATH: "/opt/homebrew/bin:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+      PATH: "{{ homebrew_bin }}:{{ local_bin }}:{{ ansible_env.PATH }}"
   changed_when: false
   failed_when: false
   when: effective_platform != "windows"

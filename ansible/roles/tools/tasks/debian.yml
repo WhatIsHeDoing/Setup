@@ -56,12 +56,8 @@
   become: true
   when: cst_check.rc != 0
 
-- name: Install ripgrep-all
-  ansible.builtin.command: cargo install ripgrep_all
-  environment:
-      PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
-  args:
-      creates: "{{ ansible_env.HOME }}/.cargo/bin/rga"
+# ripgrep-all (rga) installs via the shared cargo-binstall loop in the runtimes
+# role (cargo_packages_non_darwin), so no bespoke task is needed here.
 
 - name: Check if pnpm is installed
   ansible.builtin.command: which pnpm

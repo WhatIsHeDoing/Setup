@@ -29,15 +29,39 @@ git_config:
     rerere.enabled: "true"
     tag.sort: "version:refname"
 
-# Cargo packages installed on all platforms
+# ── Shell / PATH fragments ───────────────────────────────────────────────
+# Reused wherever a task invokes a freshly installed tool before a new shell
+# picks it up on PATH. The Homebrew prefix follows the CPU — Apple Silicon
+# under /opt/homebrew, Intel Macs under /usr/local — matching the dual check
+# in roles/bootstrap/tasks/darwin.yml. Vars are evaluated lazily, so the
+# Linux-irrelevant Homebrew paths never resolve on Debian/Windows.
+homebrew_prefix: "{{ '/opt/homebrew' if ansible_architecture == 'arm64' else '/usr/local' }}"
+homebrew_bin: "{{ homebrew_prefix }}/bin"
+cargo_bin: "{{ ansible_env.HOME }}/.cargo/bin"
+local_bin: "{{ ansible_env.HOME }}/.local/bin"
+pnpm_home: "{{ ansible_env.HOME }}/.local/share/pnpm"
+pnpm_bin: "{{ pnpm_home }}/bin"
+
+# Location of nvm.sh to source — a Homebrew keg on macOS, ~/.nvm on Linux.
+# Keyed on ansible_os_family so it resolves in both install and upgrade plays
+# (the upgrade play does not set effective_platform).
+nvm_sh: "{{ (homebrew_prefix ~ '/opt/nvm/nvm.sh') if ansible_os_family == 'Darwin' else (ansible_env.HOME ~ '/.nvm/nvm.sh') }}"
+
+# Cargo packages installed on all platforms (via cargo-binstall — prebuilt
+# binaries where available, falling back to a source build otherwise).
 cargo_packages:
     - bottom
     - cargo-modules
     - cargo-outdated
     - cargo-update
     - diskonaut
-    - ripgrep_all
     - wasm-pack
+
+# macOS installs ripgrep-all from Homebrew (roles/tools/vars/darwin.yml), so
+# building it from cargo there would be a redundant second copy. Debian and
+# Windows have no apt/winget source for it, so they build it from cargo here.
+cargo_packages_non_darwin:
+    - ripgrep_all
 
 # Python tools installed on all platforms via uv tool install
 pip_packages:

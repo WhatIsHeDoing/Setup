@@ -22,6 +22,7 @@ words:
     - anthropic
     - asciinema
     - atuin
+    - binstall
     - bootstrapper
     - cask
     - checkov

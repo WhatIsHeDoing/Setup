@@ -9,7 +9,7 @@
         failed_when: false
         changed_when: false
         environment:
-            PATH: "/opt/homebrew/bin:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+            PATH: "{{ homebrew_bin }}:{{ local_bin }}:{{ ansible_env.PATH }}"
 
   tasks:
       - name: Upgrade Homebrew packages and casks
@@ -27,34 +27,23 @@
         become: true
         when: ansible_os_family == "Debian"
 
-      - name: Install latest Node.js LTS via nvm (macOS)
+      - name: Install latest Node.js LTS via nvm
         ansible.builtin.shell: |
-            . /opt/homebrew/opt/nvm/nvm.sh
+            . {{ nvm_sh }}
             nvm install --lts
             nvm alias default lts/*
         args:
             executable: /bin/bash
         changed_when: true
         failed_when: false
-        when: ansible_os_family == "Darwin"
-
-      - name: Install latest Node.js LTS via nvm (Ubuntu)
-        ansible.builtin.shell: |
-            . ~/.nvm/nvm.sh
-            nvm install --lts
-            nvm alias default lts/*
-        args:
-            executable: /bin/bash
-        changed_when: true
-        failed_when: false
-        when: ansible_os_family == "Debian"
+        when: ansible_os_family in ["Darwin", "Debian"]
 
       - name: Upgrade Python tools via uv
         ansible.builtin.command: uv tool upgrade --all
         changed_when: true
         failed_when: false
         environment:
-            PATH: "/opt/homebrew/bin:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+            PATH: "{{ homebrew_bin }}:{{ local_bin }}:{{ ansible_env.PATH }}"
         when: uv_available.rc == 0
 
       - name: Update Rust toolchain via rustup
@@ -62,19 +51,19 @@
         changed_when: true
         failed_when: false
         environment:
-            PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+            PATH: "{{ cargo_bin }}:{{ local_bin }}:{{ ansible_env.PATH }}"
 
       - name: Update all installed Cargo packages
         ansible.builtin.command: cargo install-update -a
         changed_when: false
         failed_when: false
         environment:
-            PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.PATH }}"
+            PATH: "{{ cargo_bin }}:{{ ansible_env.PATH }}"
 
       - name: Upgrade global pnpm packages
         ansible.builtin.command: pnpm update -g
         changed_when: false
         failed_when: false
         environment:
-            PATH: "/opt/homebrew/bin:{{ ansible_env.HOME }}/.local/share/pnpm:{{ ansible_env.PATH }}"
-            PNPM_HOME: "{{ ansible_env.HOME }}/.local/share/pnpm"
+            PATH: "{{ homebrew_bin }}:{{ pnpm_home }}:{{ ansible_env.PATH }}"
+            PNPM_HOME: "{{ pnpm_home }}"

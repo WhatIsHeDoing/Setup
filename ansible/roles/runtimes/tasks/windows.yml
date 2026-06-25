@@ -41,7 +41,7 @@
 
 - name: Install global Cargo packages
   ansible.builtin.command: "cargo.exe install {{ item }}"
-  loop: "{{ cargo_packages }}"
+  loop: "{{ cargo_packages + cargo_packages_non_darwin }}"
   changed_when: false
   failed_when: false
 

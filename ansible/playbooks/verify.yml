@@ -182,7 +182,7 @@
         register: verify_results
         changed_when: false
         environment:
-            PATH: "{{ ansible_env.HOME }}/.cargo/bin:/opt/homebrew/bin:{{ ansible_env.HOME }}/.local/bin:/snap/bin:{{ ansible_env.PATH }}"
+            PATH: "{{ cargo_bin }}:{{ homebrew_bin }}:{{ local_bin }}:/snap/bin:{{ ansible_env.PATH }}"
         when: effective_platform != "windows"
 
       - name: Print verified versions
