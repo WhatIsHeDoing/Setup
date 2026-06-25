@@ -21,13 +21,6 @@ jobs:
                   restore-keys: |
                       ${{ runner.os }}-ansible-
 
-            - uses: actions/cache@v6.0.0
-              with:
-                  path: ~/.local/share/mise
-                  key: ${{ runner.os }}-mise-${{ hashFiles('.mise.toml') }}
-                  restore-keys: |
-                      ${{ runner.os }}-mise-
-
             - name: Install Ansible
               run: pip install ansible-core
 
@@ -56,13 +49,6 @@ jobs:
                   key: ${{ runner.os }}-ansible-${{ hashFiles('ansible/requirements.yml') }}
                   restore-keys: |
                       ${{ runner.os }}-ansible-
-
-            - uses: actions/cache@v6.0.0
-              with:
-                  path: ~/.local/share/mise
-                  key: ${{ runner.os }}-mise-${{ hashFiles('.mise.toml') }}
-                  restore-keys: |
-                      ${{ runner.os }}-mise-
 
             - name: Install Ansible
               run: pip install ansible-core
