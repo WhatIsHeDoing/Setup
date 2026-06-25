@@ -11,14 +11,14 @@ jobs:
         steps:
             - uses: actions/checkout@v7.0.0
 
-            # yamllint + shellcheck come from apt; cspell, markdownlint-cli2,
-            # lefthook and taplo are npm-native (no apt package). npm and node
-            # are preinstalled on the runner. gitleaks is skipped here — the
-            # trivy job already scans for secrets in CI.
+            # shellcheck, shfmt + yamllint come from apt; cspell,
+            # markdownlint-cli2, lefthook and taplo are npm-native (no apt
+            # package). npm and node are preinstalled on the runner. gitleaks
+            # is skipped here — the trivy job already scans for secrets in CI.
             - name: Install hook tools
               run: |
                   sudo apt-get update
-                  sudo apt-get install -y shellcheck yamllint
+                  sudo apt-get install -y shellcheck shfmt yamllint
                   npm install -g lefthook cspell markdownlint-cli2 @taplo/cli
 
             - name: Run lefthook checks
