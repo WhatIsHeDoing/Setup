@@ -9,24 +9,27 @@ jobs:
     lefthook:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+            - uses: actions/checkout@v7.0.0
 
-            - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
-              with:
-                  python-version: "3.12"
-
+            # yamllint + shellcheck come from apt; cspell, markdownlint-cli2,
+            # lefthook and taplo are npm-native (no apt package). npm and node
+            # are preinstalled on the runner. gitleaks is skipped here — the
+            # trivy job already scans for secrets in CI.
             - name: Install hook tools
               run: |
-                  npm install -g lefthook cspell markdownlint-cli2
-                  pip install yamllint
+                  sudo apt-get update
+                  sudo apt-get install -y shellcheck yamllint
+                  npm install -g lefthook cspell markdownlint-cli2 @taplo/cli
 
             - name: Run lefthook checks
+              env:
+                  LEFTHOOK_EXCLUDE: gitleaks
               run: lefthook run pre-commit --all-files
 
     actionlint:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+            - uses: actions/checkout@v7.0.0
 
             - name: Run actionlint
               run: |
@@ -37,9 +40,9 @@ jobs:
     ansible-lint:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+            - uses: actions/checkout@v7.0.0
 
-            - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
+            - uses: actions/setup-python@v6.3.0
               with:
                   python-version: "3.12"
 
@@ -55,7 +58,7 @@ jobs:
     powershell-lint:
         runs-on: windows-latest
         steps:
-            - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+            - uses: actions/checkout@v7.0.0
 
             - name: Install PSScriptAnalyzer
               shell: pwsh
@@ -71,9 +74,9 @@ jobs:
     trivy:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+            - uses: actions/checkout@v7.0.0
 
-            - uses: aquasecurity/trivy-action@6c175e9c4083a92bbca2f9724c8a5e33bc2d97a5
+            - uses: aquasecurity/trivy-action@v0.36.0
               with:
                   scan-type: fs
                   scanners: secret,misconfig

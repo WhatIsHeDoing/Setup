@@ -8,20 +8,20 @@ jobs:
     macos:
         runs-on: macos-latest
         steps:
-            - uses: actions/checkout@v6.0.2
+            - uses: actions/checkout@v7.0.0
 
-            - uses: actions/setup-python@v6.2.0
+            - uses: actions/setup-python@v6.3.0
               with:
                   python-version: "3.12"
 
-            - uses: actions/cache@v5.0.3
+            - uses: actions/cache@v6.0.0
               with:
                   path: ~/.ansible/collections
                   key: ${{ runner.os }}-ansible-${{ hashFiles('ansible/requirements.yml') }}
                   restore-keys: |
                       ${{ runner.os }}-ansible-
 
-            - uses: actions/cache@v5.0.3
+            - uses: actions/cache@v6.0.0
               with:
                   path: ~/.local/share/mise
                   key: ${{ runner.os }}-mise-${{ hashFiles('.mise.toml') }}
@@ -44,20 +44,20 @@ jobs:
     ubuntu:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v6.0.2
+            - uses: actions/checkout@v7.0.0
 
-            - uses: actions/setup-python@v6.2.0
+            - uses: actions/setup-python@v6.3.0
               with:
                   python-version: "3.12"
 
-            - uses: actions/cache@v5.0.3
+            - uses: actions/cache@v6.0.0
               with:
                   path: ~/.ansible/collections
                   key: ${{ runner.os }}-ansible-${{ hashFiles('ansible/requirements.yml') }}
                   restore-keys: |
                       ${{ runner.os }}-ansible-
 
-            - uses: actions/cache@v5.0.3
+            - uses: actions/cache@v6.0.0
               with:
                   path: ~/.local/share/mise
                   key: ${{ runner.os }}-mise-${{ hashFiles('.mise.toml') }}
