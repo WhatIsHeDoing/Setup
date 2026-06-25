@@ -149,76 +149,83 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 
 ### Tools
 
-| Tool                      | Platforms     | Description                                       |
-| ------------------------- | ------------- | ------------------------------------------------- |
-| [asciinema]               | macOS, Ubuntu | Record and share terminal sessions                |
-| [atuin]                   | macOS         | Shell history with sync and interactive search    |
-| [bat]                     | all           | `cat` clone with syntax highlighting              |
-| [bottom]                  | all           | Terminal system monitor                           |
-| [delta]                   | all           | Syntax-highlighted diffs; configured as git pager |
-| [dust]                    | macOS         | Intuitive disk usage viewer                       |
-| [duti]                    | macOS         | Set default file-type handler associations        |
-| [eza]                     | all           | Modern `ls` replacement                           |
-| [fd]                      | all           | Fast and user-friendly `find` alternative         |
-| [fzf]                     | all           | Command-line fuzzy finder                         |
-| [gh]                      | all           | GitHub CLI                                        |
-| [Git LFS]                 | all           | Git Large File Storage                            |
-| [jq]                      | all           | `sed` for JSON                                    |
-| [just]                    | all           | Task runner                                       |
-| [lazygit]                 | all           | TUI for git                                       |
-| [lefthook]                | all           | Fast, polyglot git hooks manager                  |
-| [less]                    | all           | Terminal pager                                    |
-| [miller]                  | all           | Swiss Army knife for tabular data (CSV/JSON/TSV)  |
-| [pandoc]                  | all           | Universal markup converter                        |
-| [pnpm]                    | all           | Fast JavaScript package manager                   |
-| [ripgrep]                 | all           | Fast regex search                                 |
-| [ripgrep-all]             | all           | ripgrep across PDFs, Office docs, etc.            |
-| [shellcheck]              | all           | Shell script linter                               |
-| [Starship]                | all           | Cross-shell prompt                                |
-| [tlrc]                    | macOS         | Community tldr pages client                       |
-| [UPX]                     | all           | Executable packer                                 |
-| [yq]                      | all           | YAML/JSON/XML processor (jq for YAML)             |
-| [zoxide]                  | all           | Smarter `cd` that learns your habits              |
-| [zsh-autocomplete]        | macOS         | Real-time tab completion for Zsh                  |
-| [zsh-autosuggestions]     | macOS         | Fish-style history suggestions for Zsh            |
-| [zsh-syntax-highlighting] | macOS         | Fish-style syntax highlighting for Zsh            |
-| [NuGet]                   | all           | .NET package manager                              |
-| [PuTTY]                   | Windows       | SSH client                                        |
-| [VS Build Tools]          | Windows       | MSVC compiler toolchain                           |
-| [Docker] (apt)            | Ubuntu        | Container runtime                                 |
-| [Flatpak]                 | Ubuntu        | Application distribution                          |
-| [ffmpeg]                  | all           | Media processing                                  |
+| Tool                      | Platforms      | Description                                       |
+| ------------------------- | -------------- | ------------------------------------------------- |
+| [asciinema]               | macOS, Ubuntu  | Record and share terminal sessions                |
+| [atuin]                   | macOS          | Shell history with sync and interactive search    |
+| [bat]                     | all            | `cat` clone with syntax highlighting              |
+| [bottom]                  | all            | Terminal system monitor                           |
+| [delta]                   | all            | Syntax-highlighted diffs; configured as git pager |
+| [dust]                    | macOS          | Intuitive disk usage viewer                       |
+| [duti]                    | macOS          | Set default file-type handler associations        |
+| [exiftool]                | all            | Read and write image and media metadata           |
+| [eza]                     | all            | Modern `ls` replacement                           |
+| [fd]                      | all            | Fast and user-friendly `find` alternative         |
+| [fzf]                     | all            | Command-line fuzzy finder                         |
+| [gh]                      | all            | GitHub CLI                                        |
+| [Git LFS]                 | all            | Git Large File Storage                            |
+| [graphviz]                | all            | Graph visualization via the DOT language          |
+| [jq]                      | all            | `sed` for JSON                                    |
+| [just]                    | all            | Task runner                                       |
+| [lazygit]                 | all            | TUI for git                                       |
+| [lefthook]                | all            | Fast, polyglot git hooks manager                  |
+| [less]                    | all            | Terminal pager                                    |
+| [markdownlint-cli2]       | macOS          | Markdown linter and formatter                     |
+| [miller]                  | all            | Swiss Army knife for tabular data (CSV/JSON/TSV)  |
+| [pandoc]                  | all            | Universal markup converter                        |
+| [pnpm]                    | all            | Fast JavaScript package manager                   |
+| [poppler]                 | macOS, Ubuntu  | PDF rendering library and CLI utilities           |
+| [ripgrep]                 | all            | Fast regex search                                 |
+| [ripgrep-all]             | all            | ripgrep across PDFs, Office docs, etc.            |
+| [shellcheck]              | all            | Shell script linter                               |
+| [shfmt]                   | all            | Shell script formatter                            |
+| [Starship]                | all            | Cross-shell prompt                                |
+| [svgo]                    | macOS          | SVG optimizer                                     |
+| [tlrc]                    | macOS          | Community tldr pages client                       |
+| [UPX]                     | all            | Executable packer                                 |
+| [vale]                    | macOS, Windows | Prose linter for docs and Markdown                |
+| [yq]                      | all            | YAML/JSON/XML processor (jq for YAML)             |
+| [zoxide]                  | all            | Smarter `cd` that learns your habits              |
+| [zsh-autocomplete]        | macOS          | Real-time tab completion for Zsh                  |
+| [zsh-autosuggestions]     | macOS          | Fish-style history suggestions for Zsh            |
+| [zsh-syntax-highlighting] | macOS          | Fish-style syntax highlighting for Zsh            |
+| [NuGet]                   | all            | .NET package manager                              |
+| [PuTTY]                   | Windows        | SSH client                                        |
+| [VS Build Tools]          | Windows        | MSVC compiler toolchain                           |
+| [Docker] (apt)            | Ubuntu         | Container runtime                                 |
+| [Flatpak]                 | Ubuntu         | Application distribution                          |
+| [ffmpeg]                  | all            | Media processing                                  |
 
 ### Apps
 
-| App                         | Platforms       | Description                                           |
-| --------------------------- | --------------- | ----------------------------------------------------- |
-| [Claude Code]               | all             | AI coding assistant CLI and desktop app               |
-| [VS Code]                   | all             | Code editor                                           |
-| [draw.io]                   | all             | Diagramming                                           |
-| [Obsidian]                  | all             | Note-taking                                           |
-| [Spotify]                   | all             | Music                                                 |
-| [Telegram]                  | all             | Messaging                                             |
-| [ghostty]                   | macOS, Ubuntu   | Fast, native terminal emulator                        |
-| [JetBrains Mono Nerd Font]  | macOS           | Nerd Font for terminal icons (Starship, eza, etc.)    |
-| [OrbStack]                  | macOS           | Container and VM runtime (Docker Desktop replacement) |
-| [Raindrop.io]               | macOS, Windows  | Bookmark manager                                      |
-| [7-Zip]                     | Windows         | File archiver                                         |
-| [Caesium]                   | Ubuntu, Windows | Image compressor                                      |
-| [DBeaver]                   | all             | Universal database tool                               |
-| [Amberol]                   | Ubuntu          | Music player                                          |
-| [Firefox]                   | all             | Web browser                                           |
+| App                        | Platforms       | Description                                           |
+| -------------------------- | --------------- | ----------------------------------------------------- |
+| [Claude Code]              | all             | AI coding assistant CLI and desktop app               |
+| [VS Code]                  | all             | Code editor                                           |
+| [draw.io]                  | all             | Diagramming                                           |
+| [Obsidian]                 | all             | Note-taking                                           |
+| [Spotify]                  | all             | Music                                                 |
+| [Telegram]                 | all             | Messaging                                             |
+| [ghostty]                  | macOS, Ubuntu   | Fast, native terminal emulator                        |
+| [JetBrains Mono Nerd Font] | macOS           | Nerd Font for terminal icons (Starship, eza, etc.)    |
+| [OrbStack]                 | macOS           | Container and VM runtime (Docker Desktop replacement) |
+| [Raindrop.io]              | macOS, Windows  | Bookmark manager                                      |
+| [7-Zip]                    | Windows         | File archiver                                         |
+| [Caesium]                  | Ubuntu, Windows | Image compressor                                      |
+| [DBeaver]                  | all             | Universal database tool                               |
+| [Amberol]                  | Ubuntu          | Music player                                          |
+| [Firefox]                  | all             | Web browser                                           |
 
 ### Cross-Platform Packages
 
 Installed on all platforms via their respective package managers:
 
-| Type    | Packages                                                                           |
-| ------- | ---------------------------------------------------------------------------------- |
-| Cargo   | `cargo-modules`, `cargo-outdated`, `cargo-update`, `diskonaut`, `wasm-pack`        |
-| pip     | `ansible-core`, `ansible-lint`, `checkov`, `ipykernel`, `pre-commit`, `setuptools` |
-| pnpm    | `cspell`                                                                           |
-| VS Code | GitLens, EditorConfig, Markdownlint, Night Owl theme, VS Code Icons                |
+| Type    | Packages                                                                         |
+| ------- | -------------------------------------------------------------------------------- |
+| Cargo   | `cargo-modules`, `cargo-outdated`, `cargo-update`, `diskonaut`, `wasm-pack`      |
+| pip     | `ansible-core`, `ansible-lint`, `checkov`, `commitizen`, `ipykernel`, `yamllint` |
+| pnpm    | `cspell`                                                                         |
+| VS Code | GitLens, EditorConfig, Markdownlint, Night Owl theme, VS Code Icons              |
 
 ### Scripts
 
@@ -254,12 +261,11 @@ The `.example` file documents the available options.
 
 ## Testing
 
-Test the code in this repo with:
+Install the git hooks once, then run the full check gate:
 
 ```sh
-just pre-commit
-just ansible-lint
-just spellcheck
+just hooks
+just check
 ```
 
 [Ansible]: https://www.ansible.com/
@@ -277,20 +283,24 @@ just spellcheck
 [DBeaver]: https://dbeaver.io/
 [Docker]: https://www.docker.com/
 [draw.io]: https://www.drawio.com/
+[exiftool]: https://exiftool.org/
 [eza]: https://github.com/eza-community/eza
 [ffmpeg]: https://ffmpeg.org/
 [Flatpak]: https://flatpak.org/
 [fzf]: https://github.com/junegunn/fzf
 [Git LFS]: https://git-lfs.com/
+[graphviz]: https://graphviz.org/
 [jq]: https://jqlang.github.io/jq/
 [just]: https://just.systems/
 [less]: https://www.greenwoodsoftware.com/less/
+[markdownlint-cli2]: https://github.com/DavidAnson/markdownlint-cli2
 [Node.js]: https://nodejs.org/
 [NuGet]: https://www.nuget.org/
 [Obsidian]: https://obsidian.md/
 [OrbStack]: https://orbstack.dev/
 [pandoc]: https://pandoc.org/
 [pnpm]: https://pnpm.io/
+[poppler]: https://poppler.freedesktop.org/
 [PowerShell]: https://github.com/PowerShell/PowerShell
 [PuTTY]: https://putty.org/
 [Python]: https://www.python.org/
@@ -299,10 +309,13 @@ just spellcheck
 [ripgrep-all]: https://github.com/phiresky/ripgrep-all
 [Rust]: https://www.rust-lang.org/
 [shellcheck]: https://www.shellcheck.net/
+[shfmt]: https://github.com/mvdan/sh
 [Spotify]: https://open.spotify.com/
 [Starship]: https://starship.rs/
+[svgo]: https://github.com/svg/svgo
 [Telegram]: https://telegram.org/
 [UPX]: https://upx.github.io/
+[vale]: https://vale.sh/
 [VS Build Tools]: https://visualstudio.microsoft.com/visual-cpp-build-tools/
 [VS Code]: https://code.visualstudio.com/
 [asciinema]: https://asciinema.org/
