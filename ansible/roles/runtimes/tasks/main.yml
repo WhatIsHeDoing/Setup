@@ -102,7 +102,7 @@
 - name: Install global pnpm packages (macOS)
   ansible.builtin.command: "pnpm add -g {{ pnpm_packages | join(' ') }}"
   environment:
-      PATH: "/opt/homebrew/bin:{{ ansible_env.HOME }}/.local/share/pnpm:{{ ansible_env.PATH }}"
+      PATH: "/opt/homebrew/bin:{{ ansible_env.HOME }}/.local/share/pnpm/bin:{{ ansible_env.PATH }}"
       PNPM_HOME: "{{ ansible_env.HOME }}/.local/share/pnpm"
   changed_when: false
   when: effective_platform == "darwin"
@@ -110,7 +110,7 @@
 - name: Install global pnpm packages (Ubuntu)
   ansible.builtin.command: "pnpm add -g {{ pnpm_packages | join(' ') }}"
   environment:
-      PATH: "{{ ansible_env.HOME }}/.local/share/pnpm:{{ ansible_env.PATH }}"
+      PATH: "{{ ansible_env.HOME }}/.local/share/pnpm/bin:{{ ansible_env.PATH }}"
       PNPM_HOME: "{{ ansible_env.HOME }}/.local/share/pnpm"
   changed_when: false
   when: effective_platform == "debian"
