@@ -202,10 +202,13 @@ ignoreWords:
     - SAVEHIST
     - screencapture
     - sdras
+    - setglobalstate
     - setopt
+    - setstealthmode
     - sharkdp
     - shellenv
     - signingkey
+    - socketfilterfw
     - tamasfe
     - timonwong
     - tlsv

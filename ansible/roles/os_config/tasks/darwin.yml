@@ -143,3 +143,127 @@
       key: DSDontWriteUSBStores
       type: bool
       value: true
+
+# Security
+- name: Enable Touch ID for sudo (via sudo_local so it survives macOS updates)
+  become: true
+  ansible.builtin.copy:
+      dest: /etc/pam.d/sudo_local
+      mode: "0444"
+      content: |
+          # Managed by Setup — enables Touch ID for sudo in the terminal.
+          # /etc/pam.d/sudo includes sudo_local, which survives system updates.
+          auth       sufficient     pam_tid.so
+
+- name: Enable the application firewall
+  become: true
+  ansible.builtin.command: /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on
+  register: firewall_global
+  changed_when: "'already' not in firewall_global.stdout"
+
+- name: Enable firewall stealth mode (drop unsolicited probes such as pings)
+  become: true
+  ansible.builtin.command: /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on
+  register: firewall_stealth
+  changed_when: "'already' not in firewall_stealth.stdout"
+
+# macOS 14+ may manage the lock-screen delay via System Settings → Lock Screen;
+# verify there if the value below does not take effect.
+- name: Require a password after sleep or screen saver begins
+  community.general.osx_defaults:
+      domain: com.apple.screensaver
+      key: askForPassword
+      type: int
+      value: 1
+
+- name: Set the screen-lock password delay to immediate
+  community.general.osx_defaults:
+      domain: com.apple.screensaver
+      key: askForPasswordDelay
+      type: int
+      value: 0
+
+# Privacy
+- name: Check Homebrew analytics state
+  ansible.builtin.command: brew analytics state
+  changed_when: false
+  register: brew_analytics_state
+
+- name: Disable Homebrew analytics
+  ansible.builtin.command: brew analytics off
+  changed_when: true
+  when: "'disabled' not in brew_analytics_state.stdout | lower"
+
+# Screenshots
+- name: Create a dedicated Screenshots folder
+  ansible.builtin.file:
+      path: "{{ ansible_env.HOME }}/Pictures/Screenshots"
+      state: directory
+      mode: "0755"
+
+- name: Save screenshots to ~/Pictures/Screenshots instead of the Desktop
+  community.general.osx_defaults:
+      domain: com.apple.screencapture
+      key: location
+      type: string
+      value: "{{ ansible_env.HOME }}/Pictures/Screenshots"
+  notify: Restart SystemUIServer
+
+# Finder
+- name: Search the current folder by default instead of the whole Mac
+  community.general.osx_defaults:
+      domain: com.apple.finder
+      key: FXDefaultSearchScope
+      type: string
+      value: SCcf
+  notify: Restart Finder
+
+# Dock
+- name: Remove the Dock auto-hide show delay
+  community.general.osx_defaults:
+      domain: com.apple.dock
+      key: autohide-delay
+      type: float
+      value: 0
+  notify: Restart Dock
+
+- name: Speed up the Dock auto-hide animation
+  community.general.osx_defaults:
+      domain: com.apple.dock
+      key: autohide-time-modifier
+      type: float
+      value: 0.4
+  notify: Restart Dock
+
+# Keyboard
+- name: Disable press-and-hold so holding a key repeats it
+  community.general.osx_defaults:
+      domain: NSGlobalDomain
+      key: ApplePressAndHoldEnabled
+      type: bool
+      value: false
+
+# Trackpad
+- name: Enable tap-to-click on the trackpad driver
+  community.general.osx_defaults:
+      domain: com.apple.driver.AppleBluetoothMultitouch.trackpad
+      key: Clicking
+      type: bool
+      value: true
+  notify: Restart SystemUIServer
+
+- name: Enable tap-to-click on the built-in trackpad
+  community.general.osx_defaults:
+      domain: com.apple.AppleMultitouchTrackpad
+      key: Clicking
+      type: bool
+      value: true
+  notify: Restart SystemUIServer
+
+# Interface
+- name: Disable automatic window open and close animations
+  community.general.osx_defaults:
+      domain: NSGlobalDomain
+      key: NSAutomaticWindowAnimationsEnabled
+      type: bool
+      value: false
