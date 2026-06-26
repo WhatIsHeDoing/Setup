@@ -240,6 +240,27 @@ Deployed to `~/.local/bin` on macOS and Ubuntu:
 | `ff <term>` | Fuzzy find files matching a search term, previewed with bat  |
 | `ll [path]` | List files with eza (long format, git-aware, human-readable) |
 
+## Post-Install (macOS)
+
+Most settings are applied automatically by the `os_config` role, but a few can
+only be changed through the GUI.
+
+### Use Raycast instead of Spotlight
+
+[Raycast] is installed as a cask, but macOS keeps ⌘ Space bound to Spotlight, so
+the shortcut must be reassigned by hand:
+
+1. **Free the shortcut from Spotlight** — open **System Settings → Keyboard →
+   Keyboard Shortcuts… → Spotlight** and turn off **Show Spotlight search**
+   (and, if you like, **Show Finder search window**).
+2. **Launch Raycast** once from Applications and finish its first-run setup.
+3. **Bind the shortcut to Raycast** — in **Raycast → Settings → General →
+   Raycast Hotkey**, click the field and press ⌘ Space.
+
+Raycast now opens on ⌘ Space, putting search, app launching, clipboard history,
+and window management in one place. Spotlight still works from its menu-bar icon
+if you ever need it.
+
 ## Customisation
 
 Machine-specific settings that should not be committed live in a gitignored file:
