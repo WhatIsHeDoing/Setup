@@ -12,11 +12,50 @@
             PATH: "{{ homebrew_bin }}:{{ local_bin }}:{{ ansible_env.PATH }}"
 
   tasks:
-      - name: Upgrade Homebrew packages and casks
+      - name: Upgrade Homebrew formulae
         community.general.homebrew:
             update_homebrew: true
             upgrade_all: true
+            upgrade_options: formula
         when: ansible_os_family == "Darwin"
+
+      # The homebrew module's bare `brew upgrade` also touches casks, and
+      # .pkg/installer casks (e.g. microsoft-teams) shell out to sudo with no
+      # TTY — hanging the run. Restrict the module to formulae above, then
+      # upgrade only the sudo-free casks here. pkg/installer casks are detected
+      # structurally from `brew info --json` (never a hardcoded list) and left
+      # for a manual `brew upgrade --cask <name>`.
+      - name: Upgrade sudo-free Homebrew casks, skipping pkg/installer casks
+        ansible.builtin.shell: |
+            set -euo pipefail
+            sudo_free=""
+            skipped=""
+            for cask in $(brew outdated --cask --quiet); do
+                if brew info --cask --json=v2 "$cask" \
+                    | jq -e '.casks[0].artifacts[] | (.pkg? // .installer?) | select(.)' >/dev/null 2>&1; then
+                    skipped="$skipped $cask"
+                else
+                    sudo_free="$sudo_free $cask"
+                fi
+            done
+            [ -n "$sudo_free" ] && brew upgrade --cask $sudo_free
+            [ -n "$skipped" ] && echo "SKIPPED (need sudo, upgrade manually):$skipped"
+            exit 0
+        args:
+            executable: /bin/bash
+        environment:
+            PATH: "{{ homebrew_bin }}:{{ ansible_env.PATH }}"
+        register: cask_upgrade
+        changed_when: "'Upgrading' in cask_upgrade.stdout"
+        when: ansible_os_family == "Darwin"
+
+      - name: Report casks skipped because they require sudo
+        ansible.builtin.debug:
+            msg: "{{ cask_upgrade.stdout_lines | select('match', '^SKIPPED') | list }}"
+        when:
+            - ansible_os_family == "Darwin"
+            - cask_upgrade.stdout is defined
+            - "'SKIPPED' in cask_upgrade.stdout"
 
       - name: Upgrade apt packages
         ansible.builtin.apt:
