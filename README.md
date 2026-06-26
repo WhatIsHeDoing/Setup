@@ -216,6 +216,9 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 | [DBeaver]                  | all             | Universal database tool                               |
 | [Amberol]                  | Ubuntu          | Music player                                          |
 | [Firefox]                  | all             | Web browser                                           |
+| [Raycast]                  | macOS           | Launcher, window manager, clipboard history           |
+| [AlDente]                  | macOS           | Battery charge limiter                                |
+| [Ice]                      | macOS           | Menu bar manager                                      |
 
 ### Cross-Platform Packages
 
@@ -269,35 +272,47 @@ just hooks
 just check
 ```
 
-[Ansible]: https://www.ansible.com/
-[nvm]: https://github.com/nvm-sh/nvm
-[rustup]: https://rustup.rs/
-[uv]: https://docs.astral.sh/uv/
 [.NET]: https://dotnet.microsoft.com/
 [7-Zip]: https://7-zip.org/
+[AlDente]: https://apphousekitchen.com/
 [Amberol]: https://gitlab.gnome.org/World/amberol
+[Ansible]: https://www.ansible.com/
+[asciinema]: https://asciinema.org/
+[atuin]: https://atuin.sh/
 [bat]: https://github.com/sharkdp/bat
-[Claude Code]: https://claude.ai/code
 [bottom]: https://clementtsang.github.io/bottom/
-[Firefox]: https://www.mozilla.org/firefox/
 [Caesium]: https://saerasoft.com/caesium
+[Claude Code]: https://claude.ai/code
 [DBeaver]: https://dbeaver.io/
+[delta]: https://dandavison.github.io/delta/
 [Docker]: https://www.docker.com/
 [draw.io]: https://www.drawio.com/
+[dust]: https://github.com/bootandy/dust
+[duti]: https://github.com/moretension/duti
 [exiftool]: https://exiftool.org/
 [eza]: https://github.com/eza-community/eza
+[fd]: https://github.com/sharkdp/fd
 [ffmpeg]: https://ffmpeg.org/
+[Firefox]: https://www.mozilla.org/firefox/
 [Flatpak]: https://flatpak.org/
 [fzf]: https://github.com/junegunn/fzf
+[ghostty]: https://ghostty.org/
+[gh]: https://cli.github.com/
 [Git LFS]: https://git-lfs.com/
 [gitleaks]: https://github.com/gitleaks/gitleaks
 [graphviz]: https://graphviz.org/
+[Ice]: https://github.com/jordanbaird/Ice
+[JetBrains Mono Nerd Font]: https://www.nerdfonts.com/
 [jq]: https://jqlang.github.io/jq/
 [just]: https://just.systems/
+[lazygit]: https://github.com/jesseduffield/lazygit
+[lefthook]: https://lefthook.dev/
 [less]: https://www.greenwoodsoftware.com/less/
 [markdownlint-cli2]: https://github.com/DavidAnson/markdownlint-cli2
+[miller]: https://miller.readthedocs.io/
 [Node.js]: https://nodejs.org/
 [NuGet]: https://www.nuget.org/
+[nvm]: https://github.com/nvm-sh/nvm
 [Obsidian]: https://obsidian.md/
 [OrbStack]: https://orbstack.dev/
 [pandoc]: https://pandoc.org/
@@ -307,8 +322,10 @@ just check
 [PuTTY]: https://putty.org/
 [Python]: https://www.python.org/
 [Raindrop.io]: https://raindrop.io/
-[ripgrep]: https://github.com/BurntSushi/ripgrep
+[Raycast]: https://www.raycast.com/
 [ripgrep-all]: https://github.com/phiresky/ripgrep-all
+[ripgrep]: https://github.com/BurntSushi/ripgrep
+[rustup]: https://rustup.rs/
 [Rust]: https://www.rust-lang.org/
 [shellcheck]: https://www.shellcheck.net/
 [shfmt]: https://github.com/mvdan/sh
@@ -317,25 +334,14 @@ just check
 [svgo]: https://github.com/svg/svgo
 [taplo]: https://taplo.tamasfe.dev/
 [Telegram]: https://telegram.org/
+[tlrc]: https://github.com/tldr-pages/tlrc
 [UPX]: https://upx.github.io/
+[uv]: https://docs.astral.sh/uv/
 [vale]: https://vale.sh/
 [VS Build Tools]: https://visualstudio.microsoft.com/visual-cpp-build-tools/
 [VS Code]: https://code.visualstudio.com/
-[asciinema]: https://asciinema.org/
-[atuin]: https://atuin.sh/
-[delta]: https://dandavison.github.io/delta/
-[dust]: https://github.com/bootandy/dust
-[duti]: https://github.com/moretension/duti
-[fd]: https://github.com/sharkdp/fd
-[gh]: https://cli.github.com/
-[ghostty]: https://ghostty.org/
-[lazygit]: https://github.com/jesseduffield/lazygit
-[lefthook]: https://lefthook.dev/
-[miller]: https://miller.readthedocs.io/
 [yq]: https://github.com/mikefarah/yq
 [zoxide]: https://github.com/ajeetdsouza/zoxide
 [zsh-autocomplete]: https://github.com/marlonrichert/zsh-autocomplete
 [zsh-autosuggestions]: https://github.com/zsh-users/zsh-autosuggestions
-[JetBrains Mono Nerd Font]: https://www.nerdfonts.com/
-[tlrc]: https://github.com/tldr-pages/tlrc
 [zsh-syntax-highlighting]: https://github.com/zsh-users/zsh-syntax-highlighting
