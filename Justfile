@@ -18,10 +18,22 @@ bootstrap:
         *)      echo "On Windows, run: bootstrap\bootstrap_windows.ps1 in PowerShell" ;;
     esac
 
-# Install and configure everything on this machine (macOS / Ubuntu / WSL2)
+# Install and configure everything on this machine (macOS)
+[group('ansible')]
+[macos]
+install:
+    # The os_config role has privileged tasks (Touch ID for sudo, firewall).
+    # --ask-become-pass prompts once and feeds the password to sudo over
+    # stdin; a cached `sudo -v` credential does not reach Ansible's tty-less
+    # become, so the prompt is required.
+    ansible-playbook ansible/playbooks/install.yml \
+        -i ansible/inventory/localhost.yml \
+        -e "repo_root=$(pwd)" \
+        --ask-become-pass
+
+# Install and configure everything on this machine (Ubuntu / WSL2)
 [group('ansible')]
 [linux]
-[macos]
 install:
     ansible-playbook ansible/playbooks/install.yml \
         -i ansible/inventory/localhost.yml \
