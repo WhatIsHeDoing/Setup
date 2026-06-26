@@ -8,3 +8,8 @@
   ansible.builtin.command: killall Dock
   changed_when: false
   failed_when: false
+
+- name: Restart SystemUIServer
+  ansible.builtin.command: killall SystemUIServer
+  changed_when: false
+  failed_when: false
