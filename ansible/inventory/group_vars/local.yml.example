@@ -3,3 +3,9 @@
 # Copy this file to local.yml (gitignored) and fill in your details.
 git_user_name: "Your Name"
 git_user_email: "you@example.com"
+
+# SSH public key used to sign commits and tags (enables "Verified" badges).
+# Works with the Bitwarden SSH agent already wired up in .zshrc. Get the key
+# from Bitwarden, or run: cat ~/.ssh/id_ed25519.pub
+# Leave this commented out to skip commit signing entirely.
+# git_signing_key: "ssh-ed25519 AAAA... you@example.com"

@@ -35,11 +35,26 @@
         value: "{{ git_user_email }}"
   when: git_user_name is defined and git_user_email is defined
 
+- name: Configure SSH commit and tag signing
+  community.general.git_config:
+      name: "{{ item.key }}"
+      value: "{{ item.value }}"
+      scope: global
+  loop:
+      - key: "gpg.format"
+        value: "ssh"
+      - key: "user.signingkey"
+        value: "{{ git_signing_key }}"
+      - key: "commit.gpgsign"
+        value: "true"
+      - key: "tag.gpgsign"
+        value: "true"
+  when: git_signing_key is defined
+
 - name: Reminder about git signing
   ansible.builtin.debug:
       msg: |
-          Git signing is not managed automatically. See principle 12.
-          To enable SSH signing:
-            git config --global gpg.format ssh
-            git config --global user.signingkey ~/.ssh/<key>.pub
-            git config --global commit.gpgsign true
+          Git signing is not enabled. Set git_signing_key in
+          ansible/inventory/group_vars/local.yml to your SSH public key
+          (e.g. from Bitwarden) to sign commits and tags automatically.
+  when: git_signing_key is not defined
