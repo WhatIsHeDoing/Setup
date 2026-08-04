@@ -170,6 +170,7 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 | [lazygit]                 | all            | TUI for git                                       |
 | [lefthook]                | all            | Fast, polyglot git hooks manager                  |
 | [less]                    | all            | Terminal pager                                    |
+| [lychee]                  | macOS, Windows | Fast link checker for Markdown, HTML, and code    |
 | [markdownlint-cli2]       | macOS          | Markdown linter and formatter                     |
 | [miller]                  | all            | Swiss Army knife for tabular data (CSV/JSON/TSV)  |
 | [pandoc]                  | all            | Universal markup converter                        |
@@ -308,6 +309,7 @@ just check
 [lazygit]: https://github.com/jesseduffield/lazygit
 [lefthook]: https://lefthook.dev/
 [less]: https://www.greenwoodsoftware.com/less/
+[lychee]: https://lychee.cli.rs/
 [markdownlint-cli2]: https://github.com/DavidAnson/markdownlint-cli2
 [miller]: https://miller.readthedocs.io/
 [Node.js]: https://nodejs.org/

@@ -170,6 +170,7 @@ ignoreWords:
     - libpq
     - lineinfile
     - localport
+    - lycheeverse
     - mcp
     - misconfig
     - mitchellh

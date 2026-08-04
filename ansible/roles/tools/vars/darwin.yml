@@ -21,6 +21,7 @@ homebrew_tools:
     - lazygit
     - lefthook
     - less
+    - lychee
     - markdownlint-cli2
     - miller
     - nuget

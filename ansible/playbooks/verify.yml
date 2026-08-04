@@ -88,6 +88,8 @@
             name: "gitleaks"
           - cmd: "taplo --version"
             name: "taplo"
+          - cmd: "lychee --version"
+            name: "lychee"
 
       windows_tools_to_verify:
           - cmd: "git --version"
@@ -156,6 +158,8 @@
             name: "vale"
           - cmd: "gitleaks version"
             name: "gitleaks"
+          - cmd: "lychee --version"
+            name: "lychee"
 
       dotfiles_to_verify:
           - path: "{{ ansible_env.HOME }}/.config/atuin/config.toml"

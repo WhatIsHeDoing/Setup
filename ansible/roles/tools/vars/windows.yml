@@ -20,6 +20,7 @@ winget_tools:
     - jqlang.jq
     - junegunn.fzf
     - koalaman.shellcheck
+    - lycheeverse.lychee
     - Microsoft.NuGet
     - Microsoft.VisualStudio.2022.BuildTools
     - MikeFarah.yq
