@@ -56,7 +56,11 @@ maintenance cost for no benefit on personal machines.
 
 **In practice:** Run upgrade steps as part of the standard setup invocation,
 not as a separate optional step. Treat a machine that is significantly behind
-as misconfigured.
+as misconfigured. Where the OS bundles a tool it no longer tracks upstream —
+a frozen fork, a substituted implementation, or a release years behind — this
+principle overrides principle 3's preference for the vendor manager: install
+the authoritative upstream copy and make PATH resolve to it. See
+[ADR-0007](adr/0007-prefer-faster-updating-tool-sources.md).
 
 ## 5. Setup must be idempotent
 

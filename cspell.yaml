@@ -31,8 +31,11 @@ words:
     - chezmoi
     - cloudflare
     - commitizen
+    - coreutils
     - cspell
     - dbeaver
+    - dedupe
+    - diffutils
     - diskonaut
     - dotfile
     - dotfiles
@@ -40,9 +43,11 @@ words:
     - Exif
     - exiftool
     - eza
+    - findutils
     - flathub
     - flatpak
     - fzf
+    - gawk
     - ghostty
     - gitleaks
     - graphviz
@@ -68,6 +73,7 @@ words:
     - nord
     - orbstack
     - pandoc
+    - PCRE
     - pipx
     - playbook
     - playbooks
@@ -142,6 +148,7 @@ ignoreWords:
     - ehthumbs
     - endfor
     - ensurepath
+    - equalto
     - errorlens
     - esac
     - evilmartians
@@ -152,8 +159,18 @@ ignoreWords:
     - flatpakrepo
     - foxundermoon
     - gierens
+    - gawk
+    - gcp
+    - gdate
+    - gfind
+    - ggrep
+    - gls
+    - gmake
+    - gnubin
     - gpg
     - gpgsign
+    - gsed
+    - gxargs
     - HISTFILE
     - HISTSIZE
     - ipykernel
@@ -171,6 +188,7 @@ ignoreWords:
     - lineinfile
     - localport
     - lycheeverse
+    - mapfile
     - mcp
     - misconfig
     - mitchellh
@@ -188,6 +206,7 @@ ignoreWords:
     - ntlm
     - nvm
     - nvme
+    - openrsync
     - Pathbar
     - pdfinfo
     - pipefail
@@ -196,14 +215,17 @@ ignoreWords:
     - pycache
     - PYTHONPATH
     - raindropio
+    - readlink
     - renovatebot
     - rerere
     - reshim
     - resolv
     - Rustlang
+    - samba
     - SAVEHIST
     - screencapture
     - sdras
+    - selectattr
     - setglobalstate
     - setopt
     - setstealthmode
@@ -214,6 +236,7 @@ ignoreWords:
     - tamasfe
     - timonwong
     - tlsv
+    - typeset
     - usernamehw
     - USERPROFILE
     - userprofile
@@ -225,6 +248,9 @@ ignoreWords:
     - wslpath
     - yzhang
     - zdiff
+    - zprofile
+    - zshenv
+    - zshrc
 # American spellings to reject in prose, with the British suggestion.
 flagWords:
     - behavior->behaviour

@@ -1,8 +1,18 @@
 ---
+# Several entries here override a copy macOS already ships. Apple's are either
+# frozen forks (jq), years behind (bash 3.2 from 2007, make 3.81 from 2006),
+# or a different implementation entirely (openrsync in place of rsync). The
+# GNU replacements install under `g`-prefixed names — `gsed`, `ggrep`, `gfind`,
+# `gmake`, `gawk` and the coreutils set — and their `libexec/gnubin` dirs stay
+# off PATH deliberately, so BSD semantics remain the default for any script
+# that does not ask for GNU. See ADR-0007.
 homebrew_tools:
     - asciinema
     - atuin
+    - bash
     - bat
+    - coreutils
+    - diffutils
     - dotnet
     - dust
     - duti
@@ -10,18 +20,24 @@ homebrew_tools:
     - eza
     - fd
     - ffmpeg
+    - findutils
     - fzf
+    - gawk
     - gh
+    - git
     - git-delta
     - git-lfs
     - gitleaks
+    - gnu-sed
     - graphviz
+    - grep
     - jq
     - just
     - lazygit
     - lefthook
     - less
     - lychee
+    - make
     - markdownlint-cli2
     - miller
     - nuget
@@ -31,6 +47,7 @@ homebrew_tools:
     - poppler
     - ripgrep
     - ripgrep-all
+    - rsync
     - shellcheck
     - shfmt
     - starship

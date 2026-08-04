@@ -33,14 +33,75 @@
       backup: true
   when: effective_platform != "windows"
 
-- name: Initialise Homebrew environment in .zshrc
-  ansible.builtin.lineinfile:
-      path: "{{ ansible_env.HOME }}/.zshrc"
-      line: 'eval "$(/opt/homebrew/bin/brew shellenv)"'
-      regexp: "brew shellenv"
+# ── PATH ordering ────────────────────────────────────────────────────────
+# /etc/zprofile runs `path_helper`, which rebuilds PATH from /etc/paths then
+# /etc/paths.d — placing /opt/homebrew/bin *after* /usr/bin and demoting
+# anything set in ~/.zshenv to the tail. Apple's older jq, less, and BSD
+# coreutils would therefore win. ~/.zprofile is sourced after /etc/zprofile,
+# so this block is the first opportunity to re-establish the intended order.
+# See ADR-0007.
+- name: Manage PATH ordering in .zprofile
+  ansible.builtin.blockinfile:
+      path: "{{ ansible_env.HOME }}/.zprofile"
+      marker: "# {mark} ANSIBLE MANAGED BLOCK: path"
+      block: |
+          eval "$({{ homebrew_bin }}/brew shellenv)"
+          # Dedupe PATH, keeping the first occurrence of each entry.
+          typeset -U path PATH
+          path=(
+              "$HOME/.local/bin"
+              "$HOME/.cargo/bin"
+              "$HOME/Library/pnpm"
+              "$HOME/.dotnet/tools"
+              {{ homebrew_bin }}
+              {{ homebrew_prefix }}/sbin
+              $path
+          )
+          export PATH
       create: true
       mode: "0644"
+      backup: true
   when: effective_platform == "darwin"
+
+# PATH lines the managed block supersedes. Left in place they are harmless
+# (`typeset -U` drops the duplicates), but they hardcode an absolute home
+# directory and so do not reproduce on a fresh machine. The `brew shellenv`
+# line in .zshrc is a correctness fix, not just tidying: .zshrc runs for
+# interactive shells only, so Homebrew never reached the PATH of scripts,
+# LaunchAgents, or `ssh host cmd`.
+- name: Check which shell startup files exist
+  ansible.builtin.stat:
+      path: "{{ ansible_env.HOME }}/{{ item }}"
+  register: zsh_startup_files
+  loop:
+      - .zshenv
+      - .zprofile
+      - .zshrc
+  when: effective_platform == "darwin"
+
+- name: Remove PATH lines superseded by the managed block
+  ansible.builtin.lineinfile:
+      path: "{{ ansible_env.HOME }}/{{ item.file }}"
+      regexp: "{{ item.regexp }}"
+      state: absent
+      mode: "0644"
+  loop:
+      - file: .zshenv
+        regexp: '^export PATH=.*\.local/bin:\$PATH'
+      - file: .zprofile
+        regexp: '^export PATH="\$HOME/\.cargo/bin:\$PATH"'
+      - file: .zprofile
+        regexp: '^export PATH="\$PATH:.*\.dotnet/tools"'
+      - file: .zshrc
+        regexp: "brew shellenv"
+  loop_control:
+      label: "{{ item.file }}: {{ item.regexp }}"
+  when:
+      - effective_platform == "darwin"
+      - zsh_startup_files.results
+        | selectattr("item", "equalto", item.file)
+        | map(attribute="stat.exists")
+        | first
 
 - name: Set NVM_DIR in .zshrc
   ansible.builtin.lineinfile:

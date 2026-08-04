@@ -4,9 +4,11 @@
   gather_facts: true
 
   pre_tasks:
+      # `always` so tag-filtered runs still set the fact every task depends on.
       - name: Set effective platform
         ansible.builtin.set_fact:
             effective_platform: "{{ 'windows' if (ansible_env.WSL_DISTRO_NAME is defined or 'microsoft' in ansible_kernel | lower) else ansible_os_family | lower }}"
+        tags: [always]
 
   vars:
       tools_to_verify:
@@ -90,6 +92,42 @@
             name: "taplo"
           - cmd: "lychee --version"
             name: "lychee"
+
+      # Formulae that override a copy macOS ships (ADR-0007). The GNU set
+      # installs under `g`-prefixed names because `libexec/gnubin` stays off
+      # PATH; diffutils is the exception and takes the plain `diff`/`cmp`.
+      darwin_tools_to_verify:
+          - cmd: "bash --version"
+            name: "bash"
+          - cmd: "gcp --version"
+            name: "coreutils"
+          - cmd: "diff --version"
+            name: "diffutils"
+          - cmd: "gfind --version"
+            name: "findutils"
+          - cmd: "gawk --version"
+            name: "gawk"
+          - cmd: "gsed --version"
+            name: "gnu-sed"
+          - cmd: "ggrep --version"
+            name: "grep"
+          - cmd: "less --version"
+            name: "less"
+          - cmd: "gmake --version"
+            name: "make"
+          - cmd: "rsync --version"
+            name: "rsync"
+
+      # Overrides that take the plain name, so a PATH-ordering regression
+      # would silently hand these back to Apple's copy. Checked in a login
+      # shell, which is what ~/.zprofile configures.
+      darwin_path_precedence:
+          - bash
+          - diff
+          - git
+          - jq
+          - less
+          - rsync
 
       windows_tools_to_verify:
           - cmd: "git --version"
@@ -196,6 +234,46 @@
         loop_control:
             label: "{{ item.item.name }}"
         when: effective_platform != "windows"
+
+      - name: Verify macOS override tool is installed and functional
+        ansible.builtin.command: "{{ item.cmd }}"
+        loop: "{{ darwin_tools_to_verify }}"
+        loop_control:
+            label: "{{ item.name }}"
+        register: darwin_verify_results
+        changed_when: false
+        environment:
+            PATH: "{{ homebrew_bin }}:{{ ansible_env.PATH }}"
+        when: effective_platform == "darwin"
+
+      - name: Print verified macOS override versions
+        ansible.builtin.debug:
+            msg: "OK {{ item.item.name }}: {{ (item.stdout_lines + item.stderr_lines) | first | default('?') }}"
+        loop: "{{ darwin_verify_results.results }}"
+        loop_control:
+            label: "{{ item.item.name }}"
+        when: effective_platform == "darwin"
+
+      - name: Resolve override tools in a login shell
+        ansible.builtin.command: "zsh -l -c 'command -v {{ item }}'"
+        loop: "{{ darwin_path_precedence }}"
+        loop_control:
+            label: "{{ item }}"
+        register: darwin_precedence_results
+        changed_when: false
+        when: effective_platform == "darwin"
+
+      - name: Assert Homebrew wins over the macOS copy
+        ansible.builtin.assert:
+            that: (item.stdout | trim | dirname) == homebrew_bin
+            fail_msg: >-
+                {{ item.item }} resolves to {{ item.stdout | trim }}, not {{ homebrew_bin }}.
+                PATH ordering has regressed — check the managed block in ~/.zprofile.
+            success_msg: "OK {{ item.item }}: {{ item.stdout | trim }}"
+        loop: "{{ darwin_precedence_results.results }}"
+        loop_control:
+            label: "{{ item.item }}"
+        when: effective_platform == "darwin"
 
       - name: Verify Node.js is installed via nvm
         ansible.builtin.shell: |

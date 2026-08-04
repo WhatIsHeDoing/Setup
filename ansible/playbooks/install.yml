@@ -3,9 +3,12 @@
   hosts: localhost
   gather_facts: true
   pre_tasks:
+      # `always` so tag-filtered runs (`just dry-run-tags dotfiles`) still set
+      # the fact every role conditional depends on.
       - name: Set effective platform
         ansible.builtin.set_fact:
             effective_platform: "{{ 'windows' if (ansible_env.WSL_DISTRO_NAME is defined or 'microsoft' in ansible_kernel | lower) else ansible_os_family | lower }}"
+        tags: [always]
   roles:
       - role: bootstrap
         tags: [bootstrap]

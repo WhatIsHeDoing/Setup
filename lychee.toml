@@ -1,0 +1,14 @@
+# Link-checker config. See the lychee skill.
+#
+# The README references eight gnu.org pages (the GNU tool overrides from
+# ADR-0007). Checked concurrently they trip gnu.org's rate limiter and come
+# back 429, which reads as a broken link but is not one. Serialise requests to
+# that host and space them out.
+
+max_concurrency = 8
+max_retries = 3
+retry_wait_time = 4
+
+[hosts."www.gnu.org"]
+concurrency = 1
+request_interval = "2s"

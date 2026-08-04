@@ -152,25 +152,34 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 | ------------------------- | -------------- | ------------------------------------------------- |
 | [asciinema]               | macOS, Ubuntu  | Record and share terminal sessions                |
 | [atuin]                   | macOS          | Shell history with sync and interactive search    |
+| [bash]                    | macOS          | GNU Bash 5.x, replacing the bundled Bash 3.2      |
 | [bat]                     | all            | `cat` clone with syntax highlighting              |
 | [bottom]                  | all            | Terminal system monitor                           |
+| [coreutils]               | macOS          | GNU file and text utilities, `g`-prefixed         |
 | [delta]                   | all            | Syntax-highlighted diffs; configured as git pager |
+| [diffutils]               | macOS          | GNU `diff`, `cmp`, `diff3` — take the plain names |
 | [dust]                    | macOS          | Intuitive disk usage viewer                       |
 | [duti]                    | macOS          | Set default file-type handler associations        |
 | [exiftool]                | all            | Read and write image and media metadata           |
 | [eza]                     | all            | Modern `ls` replacement                           |
 | [fd]                      | all            | Fast and user-friendly `find` alternative         |
+| [findutils]               | macOS          | GNU `find` and `xargs` as `gfind` and `gxargs`    |
 | [fzf]                     | all            | Command-line fuzzy finder                         |
+| [gawk]                    | macOS          | GNU Awk, installed as `gawk`                      |
 | [gh]                      | all            | GitHub CLI                                        |
+| [git]                     | macOS          | Version control, newer than the Apple build       |
 | [Git LFS]                 | all            | Git Large File Storage                            |
 | [gitleaks]                | all            | Secret scanner for git repositories               |
+| [gnu-sed]                 | macOS          | GNU sed, installed as `gsed`                      |
 | [graphviz]                | all            | Graph visualization via the DOT language          |
+| [grep]                    | macOS          | GNU grep, installed as `ggrep`                    |
 | [jq]                      | all            | `sed` for JSON                                    |
 | [just]                    | all            | Task runner                                       |
 | [lazygit]                 | all            | TUI for git                                       |
 | [lefthook]                | all            | Fast, polyglot git hooks manager                  |
 | [less]                    | all            | Terminal pager                                    |
 | [lychee]                  | macOS, Windows | Fast link checker for Markdown, HTML, and code    |
+| [make]                    | macOS          | GNU Make 4.x, installed as `gmake`                |
 | [markdownlint-cli2]       | macOS          | Markdown linter and formatter                     |
 | [miller]                  | all            | Swiss Army knife for tabular data (CSV/JSON/TSV)  |
 | [pandoc]                  | all            | Universal markup converter                        |
@@ -178,6 +187,7 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 | [poppler]                 | macOS, Ubuntu  | PDF rendering library and CLI utilities           |
 | [ripgrep]                 | all            | Fast regex search                                 |
 | [ripgrep-all]             | all            | ripgrep across PDFs, Office docs, etc.            |
+| [rsync]                   | macOS          | GNU rsync, replacing the bundled openrsync        |
 | [shellcheck]              | all            | Shell script linter                               |
 | [shfmt]                   | all            | Shell script formatter                            |
 | [Starship]                | all            | Cross-shell prompt                                |
@@ -241,6 +251,36 @@ Deployed to `~/.local/bin` on macOS and Ubuntu:
 | `ff <term>` | Fuzzy find files matching a search term, previewed with bat  |
 | `ll [path]` | List files with eza (long format, git-aware, human-readable) |
 
+## PATH on macOS
+
+The `dotfiles` role writes a managed block to `~/.zprofile` that fixes the search
+order. Without it, Homebrew loses to Apple's copies of `jq`, `less`, `bash` and
+the rest — see [ADR-0007](docs/adr/0007-prefer-faster-updating-tool-sources.md)
+for why, and do not hand-edit the block.
+
+The resulting order is:
+
+| Position | Entry                       | Holds                                    |
+| -------- | --------------------------- | ---------------------------------------- |
+| 1        | `~/.local/bin`              | uv-installed Python tools, `ff` and `ll` |
+| 2        | `~/.cargo/bin`              | cargo-installed binaries                 |
+| 3        | `~/Library/pnpm`            | pnpm global packages                     |
+| 4        | `~/.dotnet/tools`           | .NET global tools                        |
+| 5–6      | Homebrew `bin` and `sbin`   | everything in the Tools and Apps tables  |
+| 7+       | `/usr/bin`, `/bin`, `/sbin` | what macOS ships                         |
+
+GNU replacements install under `g`-prefixed names — `gsed`, `ggrep`, `gfind`,
+`gmake`, `gawk`, and the coreutils set (`gdate`, `gcp`, `gls`, …). Their
+`libexec/gnubin` directories stay **off** PATH on purpose, so a plain `sed` or
+`find` keeps BSD semantics and no existing script changes behaviour. Reach for
+the `g`-prefixed name when you specifically want GNU.
+
+Three formulae are the exception and take the plain name, replacing Apple's
+copy outright: `bash`, `rsync`, and `diffutils` (`diff`, `cmp`, `diff3`).
+
+`ansible/playbooks/verify.yml` asserts the ordering by resolving each override
+in a login shell, so a regression fails the run rather than going unnoticed.
+
 ## Customisation
 
 Machine-specific settings that should not be committed live in a gitignored file:
@@ -280,12 +320,15 @@ just check
 [Ansible]: https://www.ansible.com/
 [asciinema]: https://asciinema.org/
 [atuin]: https://atuin.sh/
+[bash]: https://www.gnu.org/software/bash/
 [bat]: https://github.com/sharkdp/bat
 [bottom]: https://clementtsang.github.io/bottom/
 [Caesium]: https://saerasoft.com/caesium
 [Claude Code]: https://claude.ai/code
+[coreutils]: https://www.gnu.org/software/coreutils/
 [DBeaver]: https://dbeaver.io/
 [delta]: https://dandavison.github.io/delta/
+[diffutils]: https://www.gnu.org/software/diffutils/
 [Docker]: https://www.docker.com/
 [draw.io]: https://www.drawio.com/
 [dust]: https://github.com/bootandy/dust
@@ -294,14 +337,19 @@ just check
 [eza]: https://github.com/eza-community/eza
 [fd]: https://github.com/sharkdp/fd
 [ffmpeg]: https://ffmpeg.org/
+[findutils]: https://www.gnu.org/software/findutils/
 [Firefox]: https://www.mozilla.org/firefox/
 [Flatpak]: https://flatpak.org/
 [fzf]: https://github.com/junegunn/fzf
+[gawk]: https://www.gnu.org/software/gawk/
 [ghostty]: https://ghostty.org/
 [gh]: https://cli.github.com/
 [Git LFS]: https://git-lfs.com/
+[git]: https://git-scm.com/
 [gitleaks]: https://github.com/gitleaks/gitleaks
+[gnu-sed]: https://www.gnu.org/software/sed/
 [graphviz]: https://graphviz.org/
+[grep]: https://www.gnu.org/software/grep/
 [Ice]: https://github.com/jordanbaird/Ice
 [JetBrains Mono Nerd Font]: https://www.nerdfonts.com/
 [jq]: https://jqlang.github.io/jq/
@@ -310,6 +358,7 @@ just check
 [lefthook]: https://lefthook.dev/
 [less]: https://www.greenwoodsoftware.com/less/
 [lychee]: https://lychee.cli.rs/
+[make]: https://www.gnu.org/software/make/
 [markdownlint-cli2]: https://github.com/DavidAnson/markdownlint-cli2
 [miller]: https://miller.readthedocs.io/
 [Node.js]: https://nodejs.org/
@@ -327,6 +376,7 @@ just check
 [Raycast]: https://www.raycast.com/
 [ripgrep-all]: https://github.com/phiresky/ripgrep-all
 [ripgrep]: https://github.com/BurntSushi/ripgrep
+[rsync]: https://rsync.samba.org/
 [rustup]: https://rustup.rs/
 [Rust]: https://www.rust-lang.org/
 [shellcheck]: https://www.shellcheck.net/
