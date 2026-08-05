@@ -128,6 +128,9 @@ special case rather than adding one.
   old managed patterns, which is exactly the fragile matching this ADR argues
   against. It is bounded, it only matches the role's own past output, and it
   is deleted once machines have converged — but it exists in the meantime.
+  **Resolved 2026-08-05:** every machine has converged, so the three pattern
+  lists and the six tasks that consumed them are gone. `vars/main.yml` now
+  holds only the fragment glob and the local-override path.
 - Sourcing eight files costs marginally more than sourcing one. Unmeasurable
   next to the `eval "$(starship init zsh)"` subshells already there.
 - The pattern is macOS-only for now. Ubuntu still has no managed shell config;

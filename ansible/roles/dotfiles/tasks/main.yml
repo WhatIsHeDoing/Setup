@@ -182,52 +182,6 @@
       mode: "0755"
   when: effective_platform != "windows"
 
-# ── Migration from the pre-ADR-0008 layout ───────────────────────────────
-# Removes the lines and blocks earlier versions of this role wrote directly
-# into ~/.zshrc and ~/.zprofile. See roles/dotfiles/vars/main.yml — the whole
-# section is transitional and can be deleted once machines have converged.
-- name: Check whether the legacy startup files exist
-  ansible.builtin.stat:
-      path: "{{ ansible_env.HOME }}/{{ item }}"
-  register: legacy_startup_files
-  loop:
-      - .zprofile
-      - .zshrc
-  when: effective_platform == "darwin"
-
-- name: Remove legacy managed lines from .zshrc
-  ansible.builtin.lineinfile:
-      path: "{{ ansible_env.HOME }}/.zshrc"
-      regexp: "{{ item }}"
-      state: absent
-  loop: "{{ legacy_zshrc_patterns }}"
-  when:
-      - effective_platform == "darwin"
-      - legacy_startup_files.results | selectattr("item", "equalto", ".zshrc")
-        | map(attribute="stat.exists") | first
-
-- name: Remove legacy managed blocks from .zshrc
-  ansible.builtin.blockinfile:
-      path: "{{ ansible_env.HOME }}/.zshrc"
-      marker: "# {mark} ANSIBLE MANAGED BLOCK: {{ item }}"
-      state: absent
-  loop: "{{ legacy_zshrc_markers }}"
-  when:
-      - effective_platform == "darwin"
-      - legacy_startup_files.results | selectattr("item", "equalto", ".zshrc")
-        | map(attribute="stat.exists") | first
-
-- name: Remove legacy managed blocks from .zprofile
-  ansible.builtin.blockinfile:
-      path: "{{ ansible_env.HOME }}/.zprofile"
-      marker: "# {mark} ANSIBLE MANAGED BLOCK: {{ item }}"
-      state: absent
-  loop: "{{ legacy_zprofile_markers }}"
-  when:
-      - effective_platform == "darwin"
-      - legacy_startup_files.results | selectattr("item", "equalto", ".zprofile")
-        | map(attribute="stat.exists") | first
-
 - name: Ensure Ghostty config directory exists
   ansible.builtin.file:
       path: "{{ ansible_env.HOME }}/Library/Application Support/com.mitchellh.ghostty"
