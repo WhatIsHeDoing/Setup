@@ -2,6 +2,27 @@
 
 **Status:** Accepted
 **Date:** 2026-08-05
+**Amended:** 2026-08-05 — see the note on rule 1 below
+
+> **Amendment.** Rule 1's ordering was right about zsh-syntax-highlighting and
+> about atuin following fzf, and incomplete about zsh-autocomplete. That plugin
+> does not merely bind widgets, it runs `bindkey -A emacs main`, pointing the
+> `main` keymap at a fresh `emacs` one and discarding every binding already
+> applied there. Loading it at 90, after `50-tools.zsh`, therefore threw away
+> atuin's Ctrl-R — the exact binding this ADR called "the point of installing
+> it". fzf's Ctrl-T and Alt-C survived only by accident, because fzf binds
+> `-M emacs` rather than `main`.
+>
+> The plugin's own README states the requirement: load it before the key
+> bindings you want to keep. It now lives in `config/zsh/45-autocomplete.zsh`,
+> ahead of the tools, while `90-plugins.zsh` keeps the two plugins that
+> genuinely must come last. `verify.yml` asserts all three bindings.
+>
+> The failure went unnoticed for the same reason the two bugs in the Context
+> section did — nothing checked. It also hid from the first check written for
+> it: zsh-autocomplete installs its bindings only when terminfo describes a
+> usable terminal, so a probe that inherited Ansible's unset `TERM` saw the
+> correct binding and passed. The probe now pins `TERM`.
 
 ## Context
 

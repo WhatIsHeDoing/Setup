@@ -62,6 +62,7 @@ words:
     - jinja
     - jq
     - justfile
+    - keymap
     - keyring
     - keyrings
     - kubectl
@@ -102,6 +103,7 @@ words:
     - subshells
     - svgo
     - taplo
+    - terminfo
     - timezone
     - tlrc
     - toml

@@ -283,19 +283,29 @@
 
       # ADR-0008 argued that the assembled shell is the thing worth testing,
       # not the tasks that write it. This is that test, and it reads the same
-      # on macOS and Ubuntu because the fragments do (ADR-0009). Each probe
-      # fails only for a reason worth a red run: Ctrl-R reaching atuin proves
-      # 00-path.zsh put the tools on PATH and 50-tools.zsh initialised fzf
-      # before atuin, and the three plugin markers prove 90-plugins.zsh found
-      # each one under whichever share prefix this machine happens to use.
+      # on macOS and Ubuntu because the fragments do (ADR-0009).
       #
-      # `-i` without a terminal makes zsh complain that it cannot set the zle
-      # option; the plugins still load and the bindings still register, so the
-      # noise goes to stderr and only stdout is asserted on.
+      # The keymap probes are the load-bearing ones, because the ordering rules
+      # in ADR-0008 exist to make exactly these three bindings survive: atuin
+      # takes Ctrl-R from fzf, and neither survives zsh-autocomplete unless it
+      # loads first (45-autocomplete.zsh). A wrong answer here means the shell
+      # silently lost a keybinding, which is precisely the failure a human does
+      # not notice until they reach for it.
+      #
+      # TERM is pinned rather than inherited. zsh-autocomplete only installs
+      # its key bindings when terminfo describes a usable terminal, so under a
+      # bare Ansible run — no TTY, TERM often unset — it would skip the reset
+      # this probe is here to catch, and the check would pass by not running.
+      #
+      # `-i` without a terminal still makes zsh complain that it cannot set the
+      # zle option. The plugins load and the bindings register regardless, so
+      # that noise goes to stderr and only stdout is asserted on.
       - name: Probe the assembled zsh configuration
         ansible.builtin.shell: |
-            zsh -i -l -c '
-                bindkey "^R"
+            TERM=xterm-256color zsh -i -l -c '
+                print "ctrl_r=$(bindkey "^R")"
+                print "ctrl_t=$(bindkey "^T")"
+                print "alt_c=$(bindkey "\ec")"
                 print "autosuggest=${+functions[_zsh_autosuggest_start]}"
                 print "highlight=${ZSH_HIGHLIGHT_HIGHLIGHTERS:-none}"
                 print "autocomplete=${+_autocomplete__funcfiletrace}"
@@ -309,16 +319,21 @@
       - name: Assert the zsh configuration assembled correctly
         ansible.builtin.assert:
             that:
-                - "'atuin-search' in zsh_probe.stdout"
+                - "'ctrl_r=\"^R\" atuin-search' in zsh_probe.stdout"
+                - "'ctrl_t=\"^T\" fzf-file-widget' in zsh_probe.stdout"
+                - "'alt_c=\"^[c\" fzf-cd-widget' in zsh_probe.stdout"
                 - "'autosuggest=1' in zsh_probe.stdout"
                 - "'highlight=none' not in zsh_probe.stdout"
                 - "'autocomplete=1' in zsh_probe.stdout"
             fail_msg: >-
                 The assembled zsh config is wrong. Probe returned:
                 {{ zsh_probe.stdout | trim | default('nothing', true) }}.
-                Check that ~/.zshrc still sources ~/.config/zsh, and that every
-                plugin resolved under a prefix 90-plugins.zsh searches.
-            success_msg: "OK zsh config: plugins loaded, Ctrl-R bound to atuin"
+                A missing plugin means it resolved under no prefix
+                45-autocomplete.zsh searches; a default keybinding
+                (history-incremental-search-backward, transpose-chars) means a
+                plugin reset the keymap after the tool bound it, so check the
+                fragment load order.
+            success_msg: "OK zsh config: plugins loaded, fzf and atuin keybindings intact"
         when: effective_platform != "windows"
 
       - name: Verify Node.js is installed via nvm

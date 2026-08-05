@@ -270,20 +270,27 @@ can check it. See
 already runs zsh; on Ubuntu the `os_config` role sets it as the login shell,
 which takes effect at the next login.
 
-| Fragment         | Holds                                                   |
-| ---------------- | ------------------------------------------------------- |
-| `00-path.zsh`    | Homebrew prefix detection and PATH ordering             |
-| `10-history.zsh` | History size, file, and `HIST_*` options                |
-| `20-options.zsh` | `AUTO_CD`, `CORRECT`, `NO_BEEP`                         |
-| `30-env.zsh`     | `NVM_DIR`, `FZF_*`, `RIPGREP_CONFIG_PATH`               |
-| `40-aliases.zsh` | Aliases                                                 |
-| `50-tools.zsh`   | nvm, starship, zoxide, fzf, atuin initialisation        |
-| `90-plugins.zsh` | zsh-autocomplete, autosuggestions, syntax-highlighting  |
-| `99-local.zsh`   | Machine-specific overrides — seeded once, never touched |
+| Fragment              | Holds                                                     |
+| --------------------- | --------------------------------------------------------- |
+| `00-path.zsh`         | Homebrew prefix detection and PATH ordering               |
+| `10-history.zsh`      | History size, file, and `HIST_*` options                  |
+| `20-options.zsh`      | `AUTO_CD`, `CORRECT`, `NO_BEEP`                           |
+| `30-env.zsh`          | `NVM_DIR`, `FZF_*`, `RIPGREP_CONFIG_PATH`                 |
+| `40-aliases.zsh`      | Aliases                                                   |
+| `45-autocomplete.zsh` | zsh-autocomplete — must precede anything that binds a key |
+| `50-tools.zsh`        | nvm, starship, zoxide, fzf, atuin initialisation          |
+| `90-plugins.zsh`      | zsh-autosuggestions, zsh-syntax-highlighting              |
+| `99-local.zsh`        | Machine-specific overrides — seeded once, never touched   |
 
-The numeric prefixes set load order, and two orderings are load-bearing: the
-plugins sort last so zsh-syntax-highlighting wraps every widget bound before
-it, and fzf initialises before atuin so atuin wins the Ctrl-R binding.
+The numeric prefixes set load order, and three orderings are load-bearing.
+zsh-autocomplete loads at 45, ahead of the tools: its initialisation points the
+`main` keymap at a fresh `emacs` one, discarding any binding already applied
+there, so loading it later costs atuin its Ctrl-R. fzf then initialises before
+atuin, so atuin wins that binding rather than fzf. zsh-syntax-highlighting
+sorts last, because it has to wrap every widget bound before it.
+
+`verify.yml` asserts all three bindings after assembling the shell, so losing
+one fails the run instead of going unnoticed until you next reach for it.
 
 Put anything personal to one machine — agent sockets, credentials, per-host
 paths — in `~/.config/zsh/99-local.zsh`. The role seeds it from
