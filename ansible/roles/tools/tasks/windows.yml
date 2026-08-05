@@ -9,3 +9,18 @@
   loop: "{{ winget_tools }}"
   changed_when: false
   failed_when: false
+
+# Windows installed bottom twice before ADR-0010 — Clement.bottom from WinGet
+# above, and the bottom crate from cargo_packages. WinGet now owns it, so drop
+# the crate on machines that still carry it. A no-op on a machine built since.
+- name: List crates cargo still has installed
+  ansible.builtin.command: cargo.exe install --list
+  register: cargo_installed_crates
+  changed_when: false
+  failed_when: false
+
+- name: Remove cargo copies of tools now installed from WinGet
+  ansible.builtin.command: "cargo.exe uninstall {{ item }}"
+  loop: "{{ cargo_packages_superseded.windows }}"
+  changed_when: true
+  when: cargo_installed_crates.stdout | default('') is search('(?m)^' ~ item ~ ' v')

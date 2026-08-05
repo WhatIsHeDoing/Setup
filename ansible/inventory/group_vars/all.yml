@@ -47,29 +47,55 @@ pnpm_bin: "{{ pnpm_home }}/bin"
 # (the upgrade play does not set effective_platform).
 nvm_sh: "{{ (homebrew_prefix ~ '/opt/nvm/nvm.sh') if ansible_os_family == 'Darwin' else (ansible_env.HOME ~ '/.nvm/nvm.sh') }}"
 
-# Cargo packages installed on all platforms (via cargo-binstall — prebuilt
-# binaries where available, falling back to a source build otherwise).
+# Cargo, uv and pnpm are the fallback for packages no OS manager carries, or
+# carries well enough — see ADR-0010. Everything Homebrew, apt or WinGet ships
+# at upstream parity lives in the per-platform tools vars instead, which is why
+# these lists are mostly platform-suffixed: the same package often comes from
+# Homebrew on macOS and cargo on Debian.
+
+# No OS manager anywhere ships these, so every platform builds them from cargo
+# (via cargo-binstall — prebuilt binaries where available, falling back to a
+# source build otherwise).
 cargo_packages:
-    - bottom
     - cargo-modules
+
+# Homebrew carries these at upstream parity, so macOS takes them from
+# roles/tools/vars/darwin.yml. Neither apt nor WinGet has them at all.
+cargo_packages_non_darwin:
     - cargo-outdated
     - cargo-update
     - diskonaut
+    - ripgrep_all
     - wasm-pack
 
-# macOS installs ripgrep-all from Homebrew (roles/tools/vars/darwin.yml), so
-# building it from cargo there would be a redundant second copy. Debian and
-# Windows have no apt/winget source for it, so they build it from cargo here.
-cargo_packages_non_darwin:
-    - ripgrep_all
-
-# atuin has no apt package, and no reason to exist on Windows — nothing there
-# runs the zsh config that binds Ctrl-R to it. macOS installs it from Homebrew
-# (roles/tools/vars/darwin.yml), so this list covers only the remaining gap.
+# Debian is the only gap for these: macOS takes them from Homebrew and Windows
+# from WinGet, both at parity. atuin also has no reason to exist on Windows —
+# nothing there runs the zsh config that binds Ctrl-R to it.
 cargo_packages_debian:
     - atuin
+    - bottom
 
-# Python tools installed on all platforms via uv tool install
+# Crates that moved to Homebrew or WinGet under ADR-0010. ~/.cargo/bin precedes
+# the Homebrew prefix in config/zsh/00-path.zsh, so a cargo copy left behind on
+# an already-provisioned machine would shadow the new one and never be upgraded
+# again. The runtimes role uninstalls these, guarded on what cargo reports as
+# installed. Safe to delete once no machine predates that change.
+cargo_packages_superseded:
+    darwin:
+        - bottom
+        - cargo-outdated
+        - cargo-update
+        - diskonaut
+        - wasm-pack
+    windows:
+        - bottom
+
+# Python tools installed on all platforms via uv tool install. Homebrew is at
+# parity for ansible-lint, commitizen and yamllint, but every one of those
+# formulae depends on python@3.14 — a second Python on a machine where ADR-0006
+# made uv authoritative. checkov shipped 43 releases in 180 days and Homebrew
+# trails by nine; ansible-core and ipykernel have no formula at all. So all six
+# stay here on all three platforms. See ADR-0010.
 pip_packages:
     - ansible-core
     - ansible-lint
@@ -89,7 +115,9 @@ mcp_servers:
     - name: playwright
       command: npx @playwright/mcp@latest
 
-# pnpm packages installed globally on all platforms
+# pnpm packages installed globally on all platforms. Homebrew has cspell at
+# parity, but the formula depends on `node`, which would sit alongside the nvm
+# Node that ADR-0006 made authoritative. Neither apt nor WinGet packages it.
 pnpm_packages:
     - cspell
 

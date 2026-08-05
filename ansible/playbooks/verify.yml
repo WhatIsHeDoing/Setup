@@ -66,6 +66,17 @@
             name: "ripgrep-all"
           - cmd: "atuin --version"
             name: "atuin"
+          # Homebrew on macOS, cargo on Ubuntu (ADR-0010). Verified because the
+          # macOS move uninstalls the cargo copy: a Homebrew install that failed
+          # quietly would otherwise leave the machine with neither.
+          - cmd: "cargo outdated --version"
+            name: "cargo-outdated"
+          - cmd: "cargo install-update --version"
+            name: "cargo-update"
+          - cmd: "diskonaut --version"
+            name: "diskonaut"
+          - cmd: "wasm-pack --version"
+            name: "wasm-pack"
           - cmd: "claude --version"
             name: "claude-code"
           - cmd: "dust --version"

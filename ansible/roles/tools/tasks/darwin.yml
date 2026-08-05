@@ -3,3 +3,25 @@
   community.general.homebrew:
       name: "{{ homebrew_tools }}"
       state: present
+
+# ADR-0010 moved these crates from cargo to Homebrew. ~/.cargo/bin precedes the
+# Homebrew prefix in config/zsh/00-path.zsh, so a cargo copy left on a machine
+# provisioned before the move keeps winning the PATH lookup while nothing
+# upgrades it — cargo_packages no longer lists it, so `cargo install-update -a`
+# skips it too. Removing it here, after the formula lands, leaves no window
+# where the tool is absent. Both tasks are no-ops on a machine built since.
+- name: List crates cargo still has installed
+  ansible.builtin.command: cargo install --list
+  register: cargo_installed_crates
+  changed_when: false
+  failed_when: false
+  environment:
+      PATH: "{{ cargo_bin }}:{{ ansible_env.PATH }}"
+
+- name: Remove cargo copies of tools now installed from Homebrew
+  ansible.builtin.command: "cargo uninstall {{ item }}"
+  loop: "{{ cargo_packages_superseded.darwin }}"
+  environment:
+      PATH: "{{ cargo_bin }}:{{ ansible_env.PATH }}"
+  changed_when: true
+  when: cargo_installed_crates.stdout | default('') is search('(?m)^' ~ item ~ ' v')

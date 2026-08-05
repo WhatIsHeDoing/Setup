@@ -92,12 +92,15 @@
         environment:
             PATH: "{{ cargo_bin }}:{{ local_bin }}:{{ ansible_env.PATH }}"
 
+      # cargo-update itself comes from Homebrew on macOS under ADR-0010, so the
+      # Homebrew prefix has to be on PATH for `cargo install-update` to resolve
+      # at all. It stays behind cargo_bin, matching config/zsh/00-path.zsh.
       - name: Update all installed Cargo packages
         ansible.builtin.command: cargo install-update -a
         changed_when: false
         failed_when: false
         environment:
-            PATH: "{{ cargo_bin }}:{{ ansible_env.PATH }}"
+            PATH: "{{ cargo_bin }}:{{ homebrew_bin }}:{{ ansible_env.PATH }}"
 
       - name: Upgrade global pnpm packages
         ansible.builtin.command: pnpm update -g

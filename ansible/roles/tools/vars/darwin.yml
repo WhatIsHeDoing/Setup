@@ -6,13 +6,22 @@
 # `gmake`, `gawk` and the coreutils set — and their `libexec/gnubin` dirs stay
 # off PATH deliberately, so BSD semantics remain the default for any script
 # that does not ask for GNU. See ADR-0007.
+#
+# bottom, cargo-outdated, cargo-update, diskonaut and wasm-pack come from here
+# rather than from cargo: Homebrew ships all five at upstream parity, and a
+# bottle needs no compiler. See ADR-0010 for the three conditions that send a
+# package back to cargo, uv or pnpm instead.
 homebrew_tools:
     - asciinema
     - atuin
     - bash
     - bat
+    - bottom
+    - cargo-outdated
+    - cargo-update
     - coreutils
     - diffutils
+    - diskonaut
     - dotnet
     - dust
     - duti
@@ -56,6 +65,7 @@ homebrew_tools:
     - tlrc
     - upx
     - vale
+    - wasm-pack
     - yq
     - zoxide
     - zsh-autocomplete

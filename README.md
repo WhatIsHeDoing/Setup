@@ -235,14 +235,19 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 
 ### Cross-Platform Packages
 
-Installed on all platforms via their respective package managers:
+Installed on all platforms, though not always from the same manager. An OS
+package manager wins wherever it carries the package at upstream parity, so
+`bottom` and the four crates below come from Homebrew on macOS, and `bottom`
+from WinGet on Windows — see
+[ADR-0010](docs/adr/0010-os-package-managers-before-runtime-ones.md).
 
-| Type    | Packages                                                                         |
-| ------- | -------------------------------------------------------------------------------- |
-| Cargo   | `cargo-modules`, `cargo-outdated`, `cargo-update`, `diskonaut`, `wasm-pack`      |
-| pip     | `ansible-core`, `ansible-lint`, `checkov`, `commitizen`, `ipykernel`, `yamllint` |
-| pnpm    | `cspell`                                                                         |
-| VS Code | GitLens, EditorConfig, Markdownlint, Night Owl theme, VS Code Icons              |
+| Type                    | Packages                                                                         |
+| ----------------------- | -------------------------------------------------------------------------------- |
+| Cargo (all)             | `cargo-modules`                                                                  |
+| Cargo (Ubuntu, Windows) | `cargo-outdated`, `cargo-update`, `diskonaut`, `wasm-pack`                       |
+| pip                     | `ansible-core`, `ansible-lint`, `checkov`, `commitizen`, `ipykernel`, `yamllint` |
+| pnpm                    | `cspell`                                                                         |
+| VS Code                 | GitLens, EditorConfig, Markdownlint, Night Owl theme, VS Code Icons              |
 
 ### Scripts
 

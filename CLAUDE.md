@@ -67,6 +67,21 @@ Always use this variable, not raw `ansible_os_family`, in role conditionals.
 ansible-galaxy collection install -r ansible/requirements.yml
 ```
 
+## Choosing a Package Source
+
+Reach for the OS package manager first — Homebrew, apt or WinGet — and fall back
+to cargo, uv or pnpm only when one of three conditions holds on that platform:
+no OS package exists, the OS copy trails upstream materially, or the OS copy
+would pull in a second Node or Python alongside the nvm and uv ones. Decide this
+per platform: `bottom` comes from Homebrew, WinGet and cargo depending on the
+machine. See [ADR-0010](docs/adr/0010-os-package-managers-before-runtime-ones.md)
+for the measured versions behind each call.
+
+When a package moves from cargo to an OS manager, add it to
+`cargo_packages_superseded` in `group_vars/all.yml` as well. `~/.cargo/bin`
+precedes the Homebrew prefix on PATH, so a leftover crate would shadow the new
+copy and never be upgraded again.
+
 ## Adding a New Tool
 
 Touch **all** of these files — none are optional:

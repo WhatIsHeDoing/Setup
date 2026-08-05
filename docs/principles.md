@@ -42,7 +42,11 @@ patching, and enterprise policy. Community managers fill gaps but should not
 be the default.
 
 **In practice:** Check winget and apt before reaching for Scoop or a manual
-install. Document why a non-vendor manager was chosen when it is.
+install. Document why a non-vendor manager was chosen when it is. This ordering
+also settles the OS manager against a language runtime manager: prefer Homebrew,
+apt or WinGet over cargo, uv or pnpm, unless the OS copy trails upstream or
+would drag in a second Node or Python. See
+[ADR-0010](adr/0010-os-package-managers-before-runtime-ones.md).
 
 ## 4. Always track the latest
 
