@@ -2,6 +2,15 @@
 
 **Status:** Accepted
 **Date:** 2026-08-04
+**Amended by:** [ADR-0008](0008-shell-config-as-repo-owned-fragments.md)
+
+> **Amendment.** ADR-0008 keeps this decision intact but changes how points 2
+> and 3 below are delivered. The PATH logic moved from a literal block in
+> `~/.zprofile` into `config/zsh/00-path.zsh`, which `~/.zprofile` sources in
+> one line. Point 3's removal of third-party installer exports was dropped
+> entirely: those installers re-add their lines on the next update, so the rule
+> would have fought them on every run. `00-path.zsh` prepends and `typeset -U`
+> dedupes, which makes those exports inert without deleting anything.
 
 ## Context
 

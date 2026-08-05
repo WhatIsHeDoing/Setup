@@ -35,6 +35,7 @@ words:
     - cspell
     - dbeaver
     - dedupe
+    - diffable
     - diffutils
     - diskonaut
     - dotfile
@@ -156,6 +157,7 @@ ignoreWords:
     - Farah
     - Farlane
     - fdfind
+    - fileglob
     - flatpakrepo
     - foxundermoon
     - gierens
@@ -173,6 +175,7 @@ ignoreWords:
     - gxargs
     - HISTFILE
     - HISTSIZE
+    - INFOPATH
     - ipykernel
     - jftuga
     - johnkerl

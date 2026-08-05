@@ -120,6 +120,7 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 │   ├── bootstrap_ubuntu.sh      # Installs pipx, Ansible
 │   └── bootstrap_windows.ps1   # Installs Git, configures WinRM, sets up WSL2
 ├── config/
+│   ├── zsh/                     # Zsh fragments, sourced from ~/.config/zsh
 │   ├── starship.toml            # Starship prompt config
 │   └── bottom.toml              # bottom system monitor config
 ├── docs/
@@ -251,12 +252,39 @@ Deployed to `~/.local/bin` on macOS and Ubuntu:
 | `ff <term>` | Fuzzy find files matching a search term, previewed with bat  |
 | `ll [path]` | List files with eza (long format, git-aware, human-readable) |
 
-## PATH on macOS
+## Shell configuration (macOS)
 
-The `dotfiles` role writes a managed block to `~/.zprofile` that fixes the search
-order. Without it, Homebrew loses to Apple's copies of `jq`, `less`, `bash` and
-the rest — see [ADR-0007](docs/adr/0007-prefer-faster-updating-tool-sources.md)
-for why, and do not hand-edit the block.
+Zsh config lives in [config/zsh/](config/zsh/) as ordinary `.zsh` files. The
+`dotfiles` role deploys them to `~/.config/zsh/` and adds a single source hook
+to `~/.zprofile` and `~/.zshrc` — see
+[ADR-0008](docs/adr/0008-shell-config-as-repo-owned-fragments.md). Edit the
+files in the repo; the deployed copies are overwritten on every run.
+
+| Fragment         | Holds                                                   |
+| ---------------- | ------------------------------------------------------- |
+| `00-path.zsh`    | Homebrew prefix detection and PATH ordering             |
+| `10-history.zsh` | History size, file, and `HIST_*` options                |
+| `20-options.zsh` | `AUTO_CD`, `CORRECT`, `NO_BEEP`                         |
+| `30-env.zsh`     | `NVM_DIR`, `FZF_*`, `RIPGREP_CONFIG_PATH`               |
+| `40-aliases.zsh` | Aliases                                                 |
+| `50-tools.zsh`   | nvm, starship, zoxide, fzf, atuin initialisation        |
+| `90-plugins.zsh` | zsh-autocomplete, autosuggestions, syntax-highlighting  |
+| `99-local.zsh`   | Machine-specific overrides — seeded once, never touched |
+
+The numeric prefixes set load order, and two orderings are load-bearing: the
+plugins sort last so zsh-syntax-highlighting wraps every widget bound before
+it, and fzf initialises before atuin so atuin wins the Ctrl-R binding.
+
+Put anything personal to one machine — agent sockets, credentials, per-host
+paths — in `~/.config/zsh/99-local.zsh`. The role seeds it from
+`config/zsh/99-local.zsh.example` once and never overwrites it, and it sorts
+last so it can override any repo-managed fragment.
+
+### PATH ordering
+
+`00-path.zsh` fixes the search order. Without it, Homebrew loses to Apple's
+copies of `jq`, `less`, `bash` and the rest — see
+[ADR-0007](docs/adr/0007-prefer-faster-updating-tool-sources.md) for why.
 
 The resulting order is:
 

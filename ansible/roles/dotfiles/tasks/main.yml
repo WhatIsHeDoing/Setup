@@ -33,101 +33,93 @@
       backup: true
   when: effective_platform != "windows"
 
-# ── PATH ordering ────────────────────────────────────────────────────────
-# /etc/zprofile runs `path_helper`, which rebuilds PATH from /etc/paths then
-# /etc/paths.d — placing /opt/homebrew/bin *after* /usr/bin and demoting
-# anything set in ~/.zshenv to the tail. Apple's older jq, less, and BSD
-# coreutils would therefore win. ~/.zprofile is sourced after /etc/zprofile,
-# so this block is the first opportunity to re-establish the intended order.
-# See ADR-0007.
-- name: Manage PATH ordering in .zprofile
+# ── Zsh configuration ────────────────────────────────────────────────────
+# Shell config lives in config/zsh/*.zsh as real, readable, syntax-checkable
+# files rather than as shell code embedded in YAML strings. The role deploys
+# them and adds one source hook to each startup file. See ADR-0008.
+#
+# The numeric filename prefixes set load order: PATH first, because everything
+# else depends on it, and plugins last, because zsh-syntax-highlighting has to
+# wrap the finished set of line-editor widgets.
+- name: Ensure ~/.config/zsh directory exists
+  ansible.builtin.file:
+      path: "{{ ansible_env.HOME }}/.config/zsh"
+      state: directory
+      mode: "0755"
+  when: effective_platform == "darwin"
+
+# No `backup:` — the repo is the source of truth for these files, and a
+# backup written alongside them would land in the directory ~/.zshrc globs.
+- name: Deploy zsh configuration fragments
+  ansible.builtin.copy:
+      src: "{{ item }}"
+      dest: "{{ ansible_env.HOME }}/.config/zsh/{{ item | basename }}"
+      mode: "0644"
+  loop: "{{ zsh_fragments }}"
+  loop_control:
+      label: "{{ item | basename }}"
+  when: effective_platform == "darwin"
+
+# Escape hatch for settings that are personal to one machine — agent sockets,
+# credentials, per-host paths. Seeded once and never overwritten, so it is the
+# one file here the repo does not own. It sorts last and can override anything.
+- name: Seed the local zsh override file
+  ansible.builtin.copy:
+      src: "{{ repo_root }}/config/zsh/99-local.zsh.example"
+      dest: "{{ zsh_local_fragment }}"
+      mode: "0644"
+      force: false
+  when: effective_platform == "darwin"
+
+# ~/.zshrc sources whatever matches the glob, so a fragment renamed or dropped
+# in the repo would go on being loaded from a previous run until removed here.
+- name: Find deployed zsh fragments
+  ansible.builtin.find:
+      paths: "{{ ansible_env.HOME }}/.config/zsh"
+      patterns: "*.zsh"
+  register: deployed_zsh_fragments
+  when: effective_platform == "darwin"
+
+- name: Remove orphaned zsh fragments
+  ansible.builtin.file:
+      path: "{{ item.path }}"
+      state: absent
+  loop: "{{ deployed_zsh_fragments.files | default([]) }}"
+  loop_control:
+      label: "{{ item.path | basename }}"
+  when:
+      - effective_platform == "darwin"
+      - item.path != zsh_local_fragment
+      - item.path | basename not in (zsh_fragments | map('basename') | list)
+
+# Login shells need PATH corrected before ~/.zshrc runs, and ~/.zprofile is
+# the first file zsh sources after /etc/zprofile's path_helper. 00-path.zsh
+# guards against the double-source that ~/.zshrc's glob would otherwise cause.
+- name: Source the PATH fragment from .zprofile
   ansible.builtin.blockinfile:
       path: "{{ ansible_env.HOME }}/.zprofile"
-      marker: "# {mark} ANSIBLE MANAGED BLOCK: path"
+      marker: "# {mark} ANSIBLE MANAGED BLOCK: zsh config"
       block: |
-          eval "$({{ homebrew_bin }}/brew shellenv)"
-          # Dedupe PATH, keeping the first occurrence of each entry.
-          typeset -U path PATH
-          path=(
-              "$HOME/.local/bin"
-              "$HOME/.cargo/bin"
-              "$HOME/Library/pnpm"
-              "$HOME/.dotnet/tools"
-              {{ homebrew_bin }}
-              {{ homebrew_prefix }}/sbin
-              $path
-          )
-          export PATH
+          [ -r "$HOME/.config/zsh/00-path.zsh" ] && source "$HOME/.config/zsh/00-path.zsh"
       create: true
       mode: "0644"
       backup: true
   when: effective_platform == "darwin"
 
-# PATH lines the managed block supersedes. Left in place they are harmless
-# (`typeset -U` drops the duplicates), but they hardcode an absolute home
-# directory and so do not reproduce on a fresh machine. The `brew shellenv`
-# line in .zshrc is a correctness fix, not just tidying: .zshrc runs for
-# interactive shells only, so Homebrew never reached the PATH of scripts,
-# LaunchAgents, or `ssh host cmd`.
-- name: Check which shell startup files exist
-  ansible.builtin.stat:
-      path: "{{ ansible_env.HOME }}/{{ item }}"
-  register: zsh_startup_files
-  loop:
-      - .zshenv
-      - .zprofile
-      - .zshrc
-  when: effective_platform == "darwin"
-
-- name: Remove PATH lines superseded by the managed block
-  ansible.builtin.lineinfile:
-      path: "{{ ansible_env.HOME }}/{{ item.file }}"
-      regexp: "{{ item.regexp }}"
-      state: absent
-      mode: "0644"
-  loop:
-      - file: .zshenv
-        regexp: '^export PATH=.*\.local/bin:\$PATH'
-      - file: .zprofile
-        regexp: '^export PATH="\$HOME/\.cargo/bin:\$PATH"'
-      - file: .zprofile
-        regexp: '^export PATH="\$PATH:.*\.dotnet/tools"'
-      - file: .zshrc
-        regexp: "brew shellenv"
-  loop_control:
-      label: "{{ item.file }}: {{ item.regexp }}"
-  when:
-      - effective_platform == "darwin"
-      - zsh_startup_files.results
-        | selectattr("item", "equalto", item.file)
-        | map(attribute="stat.exists")
-        | first
-
-- name: Set NVM_DIR in .zshrc
-  ansible.builtin.lineinfile:
+# The (N) glob qualifier makes an empty directory expand to nothing rather
+# than erroring, so a half-applied run still leaves a usable shell.
+- name: Source the zsh fragments from .zshrc
+  ansible.builtin.blockinfile:
       path: "{{ ansible_env.HOME }}/.zshrc"
-      line: 'export NVM_DIR="$HOME/.nvm"'
-      regexp: "export NVM_DIR="
+      marker: "# {mark} ANSIBLE MANAGED BLOCK: zsh config"
+      block: |
+          for _zsh_fragment in "$HOME"/.config/zsh/*.zsh(N); do
+              source "$_zsh_fragment"
+          done
+          unset _zsh_fragment
       create: true
       mode: "0644"
-  when: effective_platform == "darwin"
-
-- name: Source nvm.sh in .zshrc
-  ansible.builtin.lineinfile:
-      path: "{{ ansible_env.HOME }}/.zshrc"
-      line: '[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"'
-      regexp: 'opt/homebrew/opt/nvm/nvm\.sh'
-      create: true
-      mode: "0644"
-  when: effective_platform == "darwin"
-
-- name: Enable Starship in .zshrc
-  ansible.builtin.lineinfile:
-      path: "{{ ansible_env.HOME }}/.zshrc"
-      line: 'eval "$(starship init zsh)"'
-      regexp: "starship init zsh"
-      create: true
-      mode: "0644"
+      backup: true
   when: effective_platform == "darwin"
 
 - name: Ensure bottom config directory exists
@@ -190,185 +182,51 @@
       mode: "0755"
   when: effective_platform != "windows"
 
-- name: Enable zsh-autocomplete in .zshrc
-  ansible.builtin.lineinfile:
-      path: "{{ ansible_env.HOME }}/.zshrc"
-      line: 'source "/opt/homebrew/share/zsh-autocomplete/zsh-autocomplete.plugin.zsh"'
-      regexp: 'zsh-autocomplete\.plugin\.zsh'
-      create: true
-      mode: "0644"
+# ── Migration from the pre-ADR-0008 layout ───────────────────────────────
+# Removes the lines and blocks earlier versions of this role wrote directly
+# into ~/.zshrc and ~/.zprofile. See roles/dotfiles/vars/main.yml — the whole
+# section is transitional and can be deleted once machines have converged.
+- name: Check whether the legacy startup files exist
+  ansible.builtin.stat:
+      path: "{{ ansible_env.HOME }}/{{ item }}"
+  register: legacy_startup_files
+  loop:
+      - .zprofile
+      - .zshrc
   when: effective_platform == "darwin"
 
-- name: Enable zsh-autosuggestions in .zshrc
+- name: Remove legacy managed lines from .zshrc
   ansible.builtin.lineinfile:
       path: "{{ ansible_env.HOME }}/.zshrc"
-      line: 'source "/opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh"'
-      regexp: 'zsh-autosuggestions\.zsh'
-      create: true
-      mode: "0644"
-  when: effective_platform == "darwin"
+      regexp: "{{ item }}"
+      state: absent
+  loop: "{{ legacy_zshrc_patterns }}"
+  when:
+      - effective_platform == "darwin"
+      - legacy_startup_files.results | selectattr("item", "equalto", ".zshrc")
+        | map(attribute="stat.exists") | first
 
-- name: Enable zsh-syntax-highlighting in .zshrc
-  ansible.builtin.lineinfile:
-      path: "{{ ansible_env.HOME }}/.zshrc"
-      line: 'source "/opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"'
-      regexp: 'zsh-syntax-highlighting\.zsh'
-      create: true
-      mode: "0644"
-  when: effective_platform == "darwin"
-
-- name: Enable zoxide in .zshrc
-  ansible.builtin.lineinfile:
-      path: "{{ ansible_env.HOME }}/.zshrc"
-      line: 'eval "$(zoxide init zsh)"'
-      regexp: "zoxide init zsh"
-      create: true
-      mode: "0644"
-  when: effective_platform == "darwin"
-
-- name: Source fzf key-bindings in .zshrc
-  ansible.builtin.lineinfile:
-      path: "{{ ansible_env.HOME }}/.zshrc"
-      line: 'source "$(brew --prefix)/opt/fzf/shell/key-bindings.zsh"'
-      regexp: 'fzf/shell/key-bindings\.zsh'
-      create: true
-      mode: "0644"
-  when: effective_platform == "darwin"
-
-- name: Source fzf completion in .zshrc
-  ansible.builtin.lineinfile:
-      path: "{{ ansible_env.HOME }}/.zshrc"
-      line: 'source "$(brew --prefix)/opt/fzf/shell/completion.zsh"'
-      regexp: 'fzf/shell/completion\.zsh'
-      create: true
-      mode: "0644"
-  when: effective_platform == "darwin"
-
-- name: Set FZF_DEFAULT_COMMAND in .zshrc
-  ansible.builtin.lineinfile:
-      path: "{{ ansible_env.HOME }}/.zshrc"
-      line: "export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'"
-      regexp: 'FZF_DEFAULT_COMMAND='
-      create: true
-      mode: "0644"
-  when: effective_platform == "darwin"
-
-- name: Set FZF_CTRL_T_COMMAND in .zshrc
-  ansible.builtin.lineinfile:
-      path: "{{ ansible_env.HOME }}/.zshrc"
-      line: 'export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"'
-      regexp: 'FZF_CTRL_T_COMMAND='
-      create: true
-      mode: "0644"
-  when: effective_platform == "darwin"
-
-- name: Set FZF_ALT_C_COMMAND in .zshrc
-  ansible.builtin.lineinfile:
-      path: "{{ ansible_env.HOME }}/.zshrc"
-      line: "export FZF_ALT_C_COMMAND='fd --type d --hidden --follow --exclude .git'"
-      regexp: 'FZF_ALT_C_COMMAND='
-      create: true
-      mode: "0644"
-  when: effective_platform == "darwin"
-
-- name: Set FZF_DEFAULT_OPTS in .zshrc
-  ansible.builtin.lineinfile:
-      path: "{{ ansible_env.HOME }}/.zshrc"
-      line: "export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'"
-      regexp: 'FZF_DEFAULT_OPTS='
-      create: true
-      mode: "0644"
-  when: effective_platform == "darwin"
-
-- name: Set FZF_CTRL_T_OPTS in .zshrc
-  ansible.builtin.lineinfile:
-      path: "{{ ansible_env.HOME }}/.zshrc"
-      line: "export FZF_CTRL_T_OPTS=\"--preview 'bat --color=always --line-range :50 {}' --bind '?:toggle-preview'\""
-      regexp: 'FZF_CTRL_T_OPTS='
-      create: true
-      mode: "0644"
-  when: effective_platform == "darwin"
-
-- name: Set FZF_ALT_C_OPTS in .zshrc
-  ansible.builtin.lineinfile:
-      path: "{{ ansible_env.HOME }}/.zshrc"
-      line: "export FZF_ALT_C_OPTS=\"--preview 'eza --tree --icons -L 2 {}'\""
-      regexp: 'FZF_ALT_C_OPTS='
-      create: true
-      mode: "0644"
-  when: effective_platform == "darwin"
-
-- name: Set RIPGREP_CONFIG_PATH in .zshrc
-  ansible.builtin.lineinfile:
-      path: "{{ ansible_env.HOME }}/.zshrc"
-      line: 'export RIPGREP_CONFIG_PATH="$HOME/.config/ripgrep/rc"'
-      regexp: 'RIPGREP_CONFIG_PATH='
-      create: true
-      mode: "0644"
-  when: effective_platform == "darwin"
-
-- name: Set ZSH_AUTOSUGGEST_STRATEGY in .zshrc
-  ansible.builtin.lineinfile:
-      path: "{{ ansible_env.HOME }}/.zshrc"
-      line: "export ZSH_AUTOSUGGEST_STRATEGY=(history completion)"
-      regexp: 'ZSH_AUTOSUGGEST_STRATEGY='
-      create: true
-      mode: "0644"
-  when: effective_platform == "darwin"
-
-- name: Enable atuin in .zshrc
-  ansible.builtin.lineinfile:
-      path: "{{ ansible_env.HOME }}/.zshrc"
-      line: 'eval "$(atuin init zsh)"'
-      regexp: 'atuin init zsh'
-      create: true
-      mode: "0644"
-  when: effective_platform == "darwin"
-
-- name: Configure history settings in .zshrc
+- name: Remove legacy managed blocks from .zshrc
   ansible.builtin.blockinfile:
       path: "{{ ansible_env.HOME }}/.zshrc"
-      marker: "# {mark} ANSIBLE MANAGED BLOCK: history"
-      block: |
-          HISTSIZE=100000
-          SAVEHIST=100000
-          HISTFILE=~/.zsh_history
-          setopt HIST_IGNORE_DUPS
-          setopt HIST_IGNORE_SPACE
-          setopt HIST_VERIFY
-          setopt SHARE_HISTORY
-      create: true
-      mode: "0644"
-  when: effective_platform == "darwin"
+      marker: "# {mark} ANSIBLE MANAGED BLOCK: {{ item }}"
+      state: absent
+  loop: "{{ legacy_zshrc_markers }}"
+  when:
+      - effective_platform == "darwin"
+      - legacy_startup_files.results | selectattr("item", "equalto", ".zshrc")
+        | map(attribute="stat.exists") | first
 
-- name: Configure shell options in .zshrc
+- name: Remove legacy managed blocks from .zprofile
   ansible.builtin.blockinfile:
-      path: "{{ ansible_env.HOME }}/.zshrc"
-      marker: "# {mark} ANSIBLE MANAGED BLOCK: shell options"
-      block: |
-          setopt AUTO_CD
-          setopt CORRECT
-          setopt NO_BEEP
-      create: true
-      mode: "0644"
-  when: effective_platform == "darwin"
-
-- name: Configure aliases in .zshrc
-  ansible.builtin.blockinfile:
-      path: "{{ ansible_env.HOME }}/.zshrc"
-      marker: "# {mark} ANSIBLE MANAGED BLOCK: aliases"
-      block: |
-          alias ..='cd ..'
-          alias ...='cd ../..'
-          alias ....='cd ../../..'
-          alias cat='bat --pager=never'
-          alias cd='z'
-          alias ll='eza -lah --icons --git'
-          alias ls='eza --icons'
-          alias lt='eza --tree --icons -L 2'
-      create: true
-      mode: "0644"
-  when: effective_platform == "darwin"
+      path: "{{ ansible_env.HOME }}/.zprofile"
+      marker: "# {mark} ANSIBLE MANAGED BLOCK: {{ item }}"
+      state: absent
+  loop: "{{ legacy_zprofile_markers }}"
+  when:
+      - effective_platform == "darwin"
+      - legacy_startup_files.results | selectattr("item", "equalto", ".zprofile")
+        | map(attribute="stat.exists") | first
 
 - name: Ensure Ghostty config directory exists
   ansible.builtin.file:
