@@ -129,6 +129,7 @@ ignoreWords:
     - autostash
     - batcat
     - Betz
+    - bindkey
     - blockinfile
     - buildx
     - chdir
@@ -160,6 +161,7 @@ ignoreWords:
     - fileglob
     - flatpakrepo
     - foxundermoon
+    - funcfiletrace
     - gierens
     - gawk
     - gcp
@@ -241,6 +243,7 @@ ignoreWords:
     - tlsv
     - typeset
     - usernamehw
+    - usermod
     - USERPROFILE
     - userprofile
     - vars

@@ -1,4 +1,14 @@
 ---
+# macOS already defaults to zsh, so this is the step that makes Ubuntu's shell
+# match it (principle 9 — configure the OS, not just the applications). The
+# apt package always lands at /usr/bin/zsh and registers itself in /etc/shells,
+# which `usermod` requires. Takes effect on the next login, not this run.
+- name: Set zsh as the login shell
+  ansible.builtin.user:
+      name: "{{ ansible_user_id }}"
+      shell: /usr/bin/zsh
+  become: true
+
 - name: Add user to docker group
   ansible.builtin.user:
       name: "{{ ansible_user_id }}"

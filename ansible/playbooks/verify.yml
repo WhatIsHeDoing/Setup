@@ -92,6 +92,8 @@
             name: "taplo"
           - cmd: "lychee --version"
             name: "lychee"
+          - cmd: "zsh --version"
+            name: "zsh"
 
       # Formulae that override a copy macOS ships (ADR-0007). The GNU set
       # installs under `g`-prefixed names because `libexec/gnubin` stays off
@@ -214,6 +216,10 @@
             name: "ripgrep config"
           - path: "{{ ansible_env.HOME }}/.config/starship.toml"
             name: "starship config"
+          - path: "{{ ansible_env.HOME }}/.config/zsh/00-path.zsh"
+            name: "zsh PATH fragment"
+          - path: "{{ ansible_env.HOME }}/.config/zsh/99-local.zsh"
+            name: "zsh local override"
 
   tasks:
       - name: Verify tool is installed and functional
@@ -274,6 +280,46 @@
         loop_control:
             label: "{{ item.item }}"
         when: effective_platform == "darwin"
+
+      # ADR-0008 argued that the assembled shell is the thing worth testing,
+      # not the tasks that write it. This is that test, and it reads the same
+      # on macOS and Ubuntu because the fragments do (ADR-0009). Each probe
+      # fails only for a reason worth a red run: Ctrl-R reaching atuin proves
+      # 00-path.zsh put the tools on PATH and 50-tools.zsh initialised fzf
+      # before atuin, and the three plugin markers prove 90-plugins.zsh found
+      # each one under whichever share prefix this machine happens to use.
+      #
+      # `-i` without a terminal makes zsh complain that it cannot set the zle
+      # option; the plugins still load and the bindings still register, so the
+      # noise goes to stderr and only stdout is asserted on.
+      - name: Probe the assembled zsh configuration
+        ansible.builtin.shell: |
+            zsh -i -l -c '
+                bindkey "^R"
+                print "autosuggest=${+functions[_zsh_autosuggest_start]}"
+                print "highlight=${ZSH_HIGHLIGHT_HIGHLIGHTERS:-none}"
+                print "autocomplete=${+_autocomplete__funcfiletrace}"
+            ' 2>/dev/null
+        args:
+            executable: /bin/bash
+        register: zsh_probe
+        changed_when: false
+        when: effective_platform != "windows"
+
+      - name: Assert the zsh configuration assembled correctly
+        ansible.builtin.assert:
+            that:
+                - "'atuin-search' in zsh_probe.stdout"
+                - "'autosuggest=1' in zsh_probe.stdout"
+                - "'highlight=none' not in zsh_probe.stdout"
+                - "'autocomplete=1' in zsh_probe.stdout"
+            fail_msg: >-
+                The assembled zsh config is wrong. Probe returned:
+                {{ zsh_probe.stdout | trim | default('nothing', true) }}.
+                Check that ~/.zshrc still sources ~/.config/zsh, and that every
+                plugin resolved under a prefix 90-plugins.zsh searches.
+            success_msg: "OK zsh config: plugins loaded, Ctrl-R bound to atuin"
+        when: effective_platform != "windows"
 
       - name: Verify Node.js is installed via nvm
         ansible.builtin.shell: |

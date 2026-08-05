@@ -138,9 +138,12 @@ special case rather than adding one.
 
 ## Revisit if
 
-- Ubuntu gains managed shell configuration, at which point the fragments need a
-  platform dimension and the Homebrew assumptions in `00-path.zsh` and
-  `90-plugins.zsh` need splitting out.
+- ~~Ubuntu gains managed shell configuration, at which point the fragments need
+  a platform dimension and the Homebrew assumptions in `00-path.zsh` and
+  `90-plugins.zsh` need splitting out.~~ **Closed by
+  [ADR-0009](0009-shell-fragments-detect-rather-than-branch.md):** Ubuntu now
+  runs these fragments, and no platform dimension was needed — each one detects
+  what the machine has instead of branching on which OS it is.
 - Shell startup time becomes a complaint, making a compiled `.zwc` or a single
   concatenated file worth the loss in readability.
 - A fragment grows past the point where one file is the right unit, which is

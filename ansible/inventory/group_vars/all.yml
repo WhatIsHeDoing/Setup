@@ -63,6 +63,12 @@ cargo_packages:
 cargo_packages_non_darwin:
     - ripgrep_all
 
+# atuin has no apt package, and no reason to exist on Windows — nothing there
+# runs the zsh config that binds Ctrl-R to it. macOS installs it from Homebrew
+# (roles/tools/vars/darwin.yml), so this list covers only the remaining gap.
+cargo_packages_debian:
+    - atuin
+
 # Python tools installed on all platforms via uv tool install
 pip_packages:
     - ansible-core

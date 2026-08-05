@@ -42,6 +42,9 @@ apt_tools:
     - upx-ucl
     - yq
     - zoxide
+    - zsh
+    - zsh-autosuggestions
+    - zsh-syntax-highlighting
 
 snap_tools:
     - name: lazygit

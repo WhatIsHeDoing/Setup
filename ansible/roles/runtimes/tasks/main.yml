@@ -86,7 +86,10 @@
 
 - name: Install global Cargo packages via cargo-binstall
   ansible.builtin.command: "cargo binstall --no-confirm {{ item }}"
-  loop: "{{ cargo_packages + (cargo_packages_non_darwin if effective_platform != 'darwin' else []) }}"
+  loop: >-
+      {{ cargo_packages
+         + (cargo_packages_non_darwin if effective_platform != 'darwin' else [])
+         + (cargo_packages_debian if effective_platform == 'debian' else []) }}
   environment:
       PATH: "{{ cargo_bin }}:{{ ansible_env.PATH }}"
   changed_when: false

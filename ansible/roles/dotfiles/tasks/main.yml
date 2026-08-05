@@ -41,12 +41,17 @@
 # The numeric filename prefixes set load order: PATH first, because everything
 # else depends on it, and plugins last, because zsh-syntax-highlighting has to
 # wrap the finished set of line-editor widgets.
+#
+# macOS and Ubuntu deploy the same fragments. Each one detects what the machine
+# actually has rather than assuming Homebrew, so the platform difference stays
+# inside the shell code and never reaches these tasks (ADR-0009). Windows is
+# excluded because it runs no zsh.
 - name: Ensure ~/.config/zsh directory exists
   ansible.builtin.file:
       path: "{{ ansible_env.HOME }}/.config/zsh"
       state: directory
       mode: "0755"
-  when: effective_platform == "darwin"
+  when: effective_platform != "windows"
 
 # No `backup:` — the repo is the source of truth for these files, and a
 # backup written alongside them would land in the directory ~/.zshrc globs.
@@ -58,7 +63,7 @@
   loop: "{{ zsh_fragments }}"
   loop_control:
       label: "{{ item | basename }}"
-  when: effective_platform == "darwin"
+  when: effective_platform != "windows"
 
 # Escape hatch for settings that are personal to one machine — agent sockets,
 # credentials, per-host paths. Seeded once and never overwritten, so it is the
@@ -69,7 +74,7 @@
       dest: "{{ zsh_local_fragment }}"
       mode: "0644"
       force: false
-  when: effective_platform == "darwin"
+  when: effective_platform != "windows"
 
 # ~/.zshrc sources whatever matches the glob, so a fragment renamed or dropped
 # in the repo would go on being loaded from a previous run until removed here.
@@ -78,7 +83,7 @@
       paths: "{{ ansible_env.HOME }}/.config/zsh"
       patterns: "*.zsh"
   register: deployed_zsh_fragments
-  when: effective_platform == "darwin"
+  when: effective_platform != "windows"
 
 - name: Remove orphaned zsh fragments
   ansible.builtin.file:
@@ -88,13 +93,15 @@
   loop_control:
       label: "{{ item.path | basename }}"
   when:
-      - effective_platform == "darwin"
+      - effective_platform != "windows"
       - item.path != zsh_local_fragment
       - item.path | basename not in (zsh_fragments | map('basename') | list)
 
-# Login shells need PATH corrected before ~/.zshrc runs, and ~/.zprofile is
-# the first file zsh sources after /etc/zprofile's path_helper. 00-path.zsh
-# guards against the double-source that ~/.zshrc's glob would otherwise cause.
+# Login shells need PATH set before ~/.zshrc runs, and on macOS ~/.zprofile is
+# also the first file zsh sources after /etc/zprofile's path_helper — the only
+# point at which that reordering can be undone. Ubuntu has no path_helper, but
+# a login shell there still wants PATH before ~/.zshrc, so the hook is the same
+# on both. 00-path.zsh guards against the double-source ~/.zshrc's glob causes.
 - name: Source the PATH fragment from .zprofile
   ansible.builtin.blockinfile:
       path: "{{ ansible_env.HOME }}/.zprofile"
@@ -104,7 +111,7 @@
       create: true
       mode: "0644"
       backup: true
-  when: effective_platform == "darwin"
+  when: effective_platform != "windows"
 
 # The (N) glob qualifier makes an empty directory expand to nothing rather
 # than erroring, so a half-applied run still leaves a usable shell.
@@ -120,7 +127,7 @@
       create: true
       mode: "0644"
       backup: true
-  when: effective_platform == "darwin"
+  when: effective_platform != "windows"
 
 - name: Ensure bottom config directory exists
   ansible.builtin.file:

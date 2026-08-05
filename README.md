@@ -152,7 +152,7 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 | Tool                      | Platforms      | Description                                       |
 | ------------------------- | -------------- | ------------------------------------------------- |
 | [asciinema]               | macOS, Ubuntu  | Record and share terminal sessions                |
-| [atuin]                   | macOS          | Shell history with sync and interactive search    |
+| [atuin]                   | macOS, Ubuntu  | Shell history with sync and interactive search    |
 | [bash]                    | macOS          | GNU Bash 5.x, replacing the bundled Bash 3.2      |
 | [bat]                     | all            | `cat` clone with syntax highlighting              |
 | [bottom]                  | all            | Terminal system monitor                           |
@@ -199,9 +199,10 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 | [vale]                    | macOS, Windows | Prose linter for docs and Markdown                |
 | [yq]                      | all            | YAML/JSON/XML processor (jq for YAML)             |
 | [zoxide]                  | all            | Smarter `cd` that learns your habits              |
-| [zsh-autocomplete]        | macOS          | Real-time tab completion for Zsh                  |
-| [zsh-autosuggestions]     | macOS          | Fish-style history suggestions for Zsh            |
-| [zsh-syntax-highlighting] | macOS          | Fish-style syntax highlighting for Zsh            |
+| [Zsh]                     | Ubuntu         | Shell — macOS already ships it, apt installs it   |
+| [zsh-autocomplete]        | macOS, Ubuntu  | Real-time tab completion for Zsh                  |
+| [zsh-autosuggestions]     | macOS, Ubuntu  | Fish-style history suggestions for Zsh            |
+| [zsh-syntax-highlighting] | macOS, Ubuntu  | Fish-style syntax highlighting for Zsh            |
 | [NuGet]                   | all            | .NET package manager                              |
 | [PuTTY]                   | Windows        | SSH client                                        |
 | [VS Build Tools]          | Windows        | MSVC compiler toolchain                           |
@@ -252,13 +253,22 @@ Deployed to `~/.local/bin` on macOS and Ubuntu:
 | `ff <term>` | Fuzzy find files matching a search term, previewed with bat  |
 | `ll [path]` | List files with eza (long format, git-aware, human-readable) |
 
-## Shell configuration (macOS)
+## Shell configuration (macOS and Ubuntu)
 
 Zsh config lives in [config/zsh/](config/zsh/) as ordinary `.zsh` files. The
 `dotfiles` role deploys them to `~/.config/zsh/` and adds a single source hook
 to `~/.zprofile` and `~/.zshrc` — see
 [ADR-0008](docs/adr/0008-shell-config-as-repo-owned-fragments.md). Edit the
 files in the repo; the deployed copies are overwritten on every run.
+
+Both platforms get the same eight files. Nothing is templated or split per
+platform: each fragment detects what the machine actually has — a Homebrew
+prefix or not, plugins under `/usr/share` or `~/.local/share` — so the
+difference between macOS and Ubuntu stays inside the shell code, where `zsh -n`
+can check it. See
+[ADR-0009](docs/adr/0009-shell-fragments-detect-rather-than-branch.md). macOS
+already runs zsh; on Ubuntu the `os_config` role sets it as the login shell,
+which takes effect at the next login.
 
 | Fragment         | Holds                                                   |
 | ---------------- | ------------------------------------------------------- |
@@ -284,18 +294,20 @@ last so it can override any repo-managed fragment.
 
 `00-path.zsh` fixes the search order. Without it, Homebrew loses to Apple's
 copies of `jq`, `less`, `bash` and the rest — see
-[ADR-0007](docs/adr/0007-prefer-faster-updating-tool-sources.md) for why.
+[ADR-0007](docs/adr/0007-prefer-faster-updating-tool-sources.md) for why. Ubuntu
+has nothing to correct, and the same file runs there to put user installs ahead
+of what apt puts in `/usr/bin`.
 
-The resulting order is:
+The resulting order on macOS is:
 
-| Position | Entry                       | Holds                                    |
-| -------- | --------------------------- | ---------------------------------------- |
-| 1        | `~/.local/bin`              | uv-installed Python tools, `ff` and `ll` |
-| 2        | `~/.cargo/bin`              | cargo-installed binaries                 |
-| 3        | `~/Library/pnpm`            | pnpm global packages                     |
-| 4        | `~/.dotnet/tools`           | .NET global tools                        |
-| 5–6      | Homebrew `bin` and `sbin`   | everything in the Tools and Apps tables  |
-| 7+       | `/usr/bin`, `/bin`, `/sbin` | what macOS ships                         |
+| Position | Entry                       | Holds                                                     |
+| -------- | --------------------------- | --------------------------------------------------------- |
+| 1        | `~/.local/bin`              | uv-installed Python tools, `ff` and `ll`                  |
+| 2        | `~/.cargo/bin`              | cargo-installed binaries                                  |
+| 3–4      | pnpm's global bin           | `~/Library/pnpm` on macOS, `~/.local/share/pnpm` on Linux |
+| 5        | `~/.dotnet/tools`           | .NET global tools                                         |
+| 6–7      | Homebrew `bin` and `sbin`   | everything in the Tools and Apps tables — macOS only      |
+| 8+       | `/usr/bin`, `/bin`, `/sbin` | what the OS ships                                         |
 
 GNU replacements install under `g`-prefixed names — `gsed`, `ggrep`, `gfind`,
 `gmake`, `gawk`, and the coreutils set (`gdate`, `gcp`, `gls`, …). Their
@@ -304,7 +316,8 @@ GNU replacements install under `g`-prefixed names — `gsed`, `ggrep`, `gfind`,
 the `g`-prefixed name when you specifically want GNU.
 
 Three formulae are the exception and take the plain name, replacing Apple's
-copy outright: `bash`, `rsync`, and `diffutils` (`diff`, `cmp`, `diff3`).
+copy outright: `bash`, `rsync`, and `diffutils` (`diff`, `cmp`, `diff3`). None
+of this applies to Ubuntu, where apt already ships the GNU originals unprefixed.
 
 `ansible/playbooks/verify.yml` asserts the ordering by resolving each override
 in a login shell, so a regression fails the run rather than going unnoticed.
@@ -443,6 +456,7 @@ just check
 [VS Code]: https://code.visualstudio.com/
 [yq]: https://github.com/mikefarah/yq
 [zoxide]: https://github.com/ajeetdsouza/zoxide
+[Zsh]: https://www.zsh.org/
 [zsh-autocomplete]: https://github.com/marlonrichert/zsh-autocomplete
 [zsh-autosuggestions]: https://github.com/zsh-users/zsh-autosuggestions
 [zsh-syntax-highlighting]: https://github.com/zsh-users/zsh-syntax-highlighting

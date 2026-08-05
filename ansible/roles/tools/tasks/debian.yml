@@ -101,3 +101,14 @@
       chmod +x "{{ ansible_env.HOME }}/.local/bin/taplo"
   changed_when: taplo_check.rc != 0
   when: taplo_check.rc != 0
+
+# The other two zsh plugins come from apt. zsh-autocomplete is packaged by
+# neither apt nor snap, so clone it — pinned to the tag Homebrew ships on
+# macOS, so both platforms run the same plugin (principle 2). ~/.local/share
+# is one of the three prefixes config/zsh/90-plugins.zsh searches, so the
+# clone needs no matching change there. See ADR-0009.
+- name: Install zsh-autocomplete
+  ansible.builtin.git:
+      repo: https://github.com/marlonrichert/zsh-autocomplete.git
+      dest: "{{ ansible_env.HOME }}/.local/share/zsh-autocomplete"
+      version: 26.08.04
