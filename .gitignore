@@ -38,3 +38,6 @@ id_ed25519
 
 # Claude local settings.
 .claude/
+
+# Throwaway artefacts: scratch scripts, generated reports, downloaded samples.
+tmp/
