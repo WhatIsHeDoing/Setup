@@ -57,10 +57,12 @@ upgrade:
 # Run install for specific roles only: just install-tags dotfiles git
 [group('ansible')]
 install-tags +tags:
+    # `+tags` arrives space-separated but --tags wants commas, so "dotfiles git"
+    # would reach Ansible as one tag of that name and silently match nothing.
     ansible-playbook ansible/playbooks/install.yml \
         -i ansible/inventory/localhost.yml \
         -e "repo_root=$(pwd)" \
-        --tags "{{ tags }}" \
+        --tags "{{ replace(tags, ' ', ',') }}" \
         --skip-tags verify
 
 # Preview what install would change without making any changes
@@ -75,11 +77,12 @@ dry-run:
 # Preview changes for specific roles only: just dry-run-tags dotfiles git
 [group('ansible')]
 dry-run-tags +tags:
+    # Comma-joined for the same reason as install-tags above.
     ansible-playbook ansible/playbooks/install.yml \
         -i ansible/inventory/localhost.yml \
         -e "repo_root=$(pwd)" \
         --check --diff \
-        --tags "{{ tags }}" \
+        --tags "{{ replace(tags, ' ', ',') }}" \
         --skip-tags verify
 
 # Diff declared vs installed Homebrew packages (macOS only)
