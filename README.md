@@ -286,6 +286,42 @@ alone even where the variable name says `non_darwin`.
 | pnpm    | Ubuntu    | `cspell`, `promptfoo`, `stylelint`                                                                       |
 | VS Code | all       | GitLens, EditorConfig, Markdownlint, Night Owl theme, VS Code Icons                                      |
 
+### Omitted Tools
+
+Tools considered and left out, recorded so the decision does not get made twice.
+Several are installed by hand on one machine — `just diff` goes on reporting
+those, which is the intent: undeclared is a prompt to review, not a fault.
+
+**[carapace]** — a multi-shell completer covering some 650 commands. Rejected on
+three counts. Its `aws` completer only wraps `aws_completer`, the binary the AWS
+CLI already ships, so it does not solve the problem it was considered for. It
+registers a single `compdef` across every command it knows, which on this
+machine would replace 26 completions that ship with the tool they complete and
+track its version — `git`, `gh`, `brew`, `kubectl` and `just` among them — as
+well as zsh's own for `ls`, `cp`, `grep` and `ssh`. And its generated init
+prepends its own directory to `PATH`, landing ahead of every entry
+[`00-path.zsh`](config/zsh/00-path.zsh) places deliberately — the user-installs
+-first ordering [ADR-0007] relies on. It is also absent from apt, so Ubuntu would need a bespoke
+download. Startup cost was not the problem: it measured ~10 ms against an 800 ms
+shell start. AWS completion instead comes from `aws_completer`, wired in
+[`50-tools.zsh`](config/zsh/50-tools.zsh).
+
+**[bun]** — a second JavaScript runtime beside the nvm-managed Node that
+[ADR-0006] makes authoritative. Installed by hand; declaring it would put two
+runtimes on every machine to serve one.
+
+**Kubernetes tooling** ([k9s], [kubernetes-cli], [tilt]) — used on one machine
+for one project rather than across the fleet, so it does not earn a place in a
+cross-platform baseline.
+
+**Swift and Xcode tooling** ([SwiftLint], [swift-format], [XcodeGen],
+[xcbeautify], [Periphery]) — macOS-only by nature, and tied to specific projects
+rather than the machine.
+
+**Occasional utilities** ([Turso], [figlet], [caesiumclt], [vorbis-tools],
+[cpanminus]) — installed for a single task each. A rebuild does not need them,
+and the ones that matter are quicker to reinstall than to maintain here.
+
 ### Scripts
 
 Deployed to `~/.local/bin` on macOS and Ubuntu:
@@ -427,6 +463,8 @@ just check
 [.NET]: https://dotnet.microsoft.com/
 [7-Zip]: https://7-zip.org/
 [actionlint]: https://rhysd.github.io/actionlint/
+[ADR-0006]: docs/adr/0006-tech-specific-runtime-managers.md
+[ADR-0007]: docs/adr/0007-prefer-faster-updating-tool-sources.md
 [AlDente]: https://apphousekitchen.com/
 [Amberol]: https://gitlab.gnome.org/World/amberol
 [Ansible]: https://www.ansible.com/
@@ -439,11 +477,15 @@ just check
 [bats-core]: https://github.com/bats-core/bats-core
 [bats-support]: https://github.com/bats-core/bats-support
 [bottom]: https://clementtsang.github.io/bottom/
+[bun]: https://bun.sh/
 [Caesium]: https://saerasoft.com/caesium
+[caesiumclt]: https://github.com/Lymphatus/caesium-clt
+[carapace]: https://carapace.sh/
 [clang-format]: https://clang.llvm.org/docs/ClangFormat.html
 [Claude]: https://claude.com/download
 [Claude Code]: https://claude.ai/code
 [coreutils]: https://www.gnu.org/software/coreutils/
+[cpanminus]: https://github.com/miyagawa/cpanminus
 [cppcheck]: https://cppcheck.sourceforge.io/
 [cspell]: https://cspell.org/
 [DBeaver]: https://dbeaver.io/
@@ -457,6 +499,7 @@ just check
 [eza]: https://github.com/eza-community/eza
 [fd]: https://github.com/sharkdp/fd
 [ffmpeg]: https://ffmpeg.org/
+[figlet]: http://www.figlet.org/
 [findutils]: https://www.gnu.org/software/findutils/
 [Firefox]: https://www.mozilla.org/firefox/
 [Flatpak]: https://flatpak.org/
@@ -480,6 +523,8 @@ just check
 [jq]: https://jqlang.github.io/jq/
 [JupyterLab]: https://jupyter.org/
 [just]: https://just.systems/
+[k9s]: https://k9scli.io/
+[kubernetes-cli]: https://kubernetes.io/docs/reference/kubectl/
 [lazygit]: https://github.com/jesseduffield/lazygit
 [lefthook]: https://lefthook.dev/
 [less]: https://www.greenwoodsoftware.com/less/
@@ -499,6 +544,7 @@ just check
 [ollama]: https://ollama.com/
 [OrbStack]: https://orbstack.dev/
 [pandoc]: https://pandoc.org/
+[Periphery]: https://github.com/peripheryapp/periphery
 [pinact]: https://github.com/suzuki-shunsuke/pinact
 [pnpm]: https://pnpm.io/
 [poppler]: https://poppler.freedesktop.org/
@@ -522,18 +568,25 @@ just check
 [stylelint]: https://stylelint.io/
 [Surfshark]: https://surfshark.com/
 [svgo]: https://github.com/svg/svgo
+[swift-format]: https://github.com/swiftlang/swift-format
+[SwiftLint]: https://github.com/realm/SwiftLint
 [taplo]: https://taplo.tamasfe.dev/
 [Telegram]: https://telegram.org/
+[tilt]: https://tilt.dev/
 [tlrc]: https://github.com/tldr-pages/tlrc
 [tokei]: https://github.com/XAMPPRocky/tokei
+[Turso]: https://turso.tech/
 [UPX]: https://upx.github.io/
 [uv]: https://docs.astral.sh/uv/
 [vale]: https://vale.sh/
+[vorbis-tools]: https://github.com/xiph/vorbis-tools
 [VS Build Tools]: https://visualstudio.microsoft.com/visual-cpp-build-tools/
 [VS Code]: https://code.visualstudio.com/
 [wabt]: https://github.com/WebAssembly/wabt
 [websocat]: https://github.com/vi/websocat
 [WhatsApp]: https://www.whatsapp.com/
+[xcbeautify]: https://github.com/cpisciotta/xcbeautify
+[XcodeGen]: https://github.com/yonaskolb/XcodeGen
 [yamllint]: https://yamllint.readthedocs.io/
 [yq]: https://github.com/mikefarah/yq
 [zizmor]: https://docs.zizmor.sh/

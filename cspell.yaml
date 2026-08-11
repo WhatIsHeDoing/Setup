@@ -28,12 +28,14 @@ words:
     - binstall
     - Bitwarden
     - bootstrapper
+    - caesiumclt
     - cask
     - checkov
     - chezmoi
     - cloudflare
     - commitizen
     - coreutils
+    - cpanminus
     - cppcheck
     - cspell
     - dbeaver
@@ -118,6 +120,7 @@ words:
     - tlrc
     - tokei
     - toml
+    - turso
     - upstash
     - upx
     - uv
@@ -127,6 +130,7 @@ words:
     - wasm
     - websocat
     - winget
+    - xcbeautify
     - yamllint
     - yq
     - Zed
@@ -144,6 +148,7 @@ ignoreWords:
     - autosetup
     - autosquash
     - autostash
+    - awscli
     - batcat
     - Betz
     - bindkey
@@ -152,6 +157,7 @@ ignoreWords:
     - chdir
     - clmv
     - committerdate
+    - compdef
     - conflictstyle
     - CoreyButler
     - cpus
@@ -179,6 +185,7 @@ ignoreWords:
     - findall
     - flatpakrepo
     - foxundermoon
+    - fpath
     - funcfiletrace
     - gawk
     - gcp

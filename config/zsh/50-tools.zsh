@@ -43,3 +43,20 @@ if (( $+commands[fzf] )); then
 fi
 
 (( $+commands[atuin] )) && eval "$(atuin init zsh)"
+
+# AWS CLI completion, for the installs that do not bring their own.
+#
+# Homebrew's awscli formula writes an `_aws` function into its site-functions
+# directory, which is already on $fpath, so macOS is complete before this runs
+# and the `_comps` check below skips it. The official v2 installer and apt ship
+# only `aws_completer` — a bash-style completer that zsh drives through
+# bashcompinit — so those need the two lines.
+#
+# Guarded three ways: the completer has to exist, compinit has to have run
+# (compdef is the function it defines, and bashcompinit calls it), and nothing
+# may have claimed `aws` already. That last guard is what keeps this from
+# overriding a better completion rather than filling a gap.
+if (( $+commands[aws_completer] && $+functions[compdef] )) && (( ! $+_comps[aws] )); then
+    autoload -Uz bashcompinit && bashcompinit
+    complete -C aws_completer aws
+fi
