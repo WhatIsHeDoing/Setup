@@ -40,14 +40,22 @@ typeset -U path PATH
 # ships. The `${VAR:+...}` guards drop the Homebrew entries entirely on a
 # machine with no brew rather than expanding to a bare "/bin".
 #
-# pnpm chooses its own global bin directory per platform and both are listed
-# unconditionally; the one this machine lacks costs a failed stat on a PATH
-# miss, which is cheaper than the branch needed to tell them apart.
+# Point pnpm at the same global store the runtimes role installs into, so an
+# interactive `pnpm add -g` and a `just install` agree on where globals live.
+# Left unset, pnpm picks its own per-platform default — ~/Library/pnpm on macOS
+# — and the two stores diverge without either side reporting anything.
+export PNPM_HOME="$HOME/.local/share/pnpm"
+
+# The global bin directory is `$PNPM_HOME/bin`, not `$PNPM_HOME` as older
+# `pnpm setup` blocks wrote it; `pnpm bin -g` is the authority if that ever
+# needs rechecking. The Library path stays listed for machines provisioned
+# before this file exported PNPM_HOME, whose globals still live there — one
+# failed stat on a PATH miss, against a silently missing command.
 path=(
     "$HOME/.local/bin"                                  # uv tools, ff, ll
     "$HOME/.cargo/bin"                                  # cargo install
-    "$HOME/Library/pnpm"                                # pnpm global, macOS
-    "$HOME/.local/share/pnpm"                           # pnpm global, Linux
+    "$PNPM_HOME/bin"                                    # pnpm global
+    "$HOME/Library/pnpm/bin"                            # pnpm global, pre-PNPM_HOME machines
     "$HOME/.dotnet/tools"                               # dotnet tool install
     ${HOMEBREW_PREFIX:+"$HOMEBREW_PREFIX/bin"}
     ${HOMEBREW_PREFIX:+"$HOMEBREW_PREFIX/sbin"}
