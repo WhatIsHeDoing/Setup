@@ -85,9 +85,13 @@ dry-run-tags +tags:
         --tags "{{ replace(tags, ' ', ',') }}" \
         --skip-tags verify
 
-# Diff declared vs installed Homebrew packages (macOS only)
+# Diff what this repo declares against what is installed, for every manager
 [group('ansible')]
 diff:
+    # ansible.posix.debug prints a multi-line `msg` as text. The default
+    # callback renders it as one JSON string with the newlines escaped, which
+    # turns the report into an unreadable single line.
+    ANSIBLE_STDOUT_CALLBACK=ansible.posix.debug \
     ansible-playbook ansible/playbooks/diff.yml \
         -i ansible/inventory/localhost.yml \
         -e "repo_root=$(pwd)"

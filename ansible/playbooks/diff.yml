@@ -1,101 +1,362 @@
 ---
-# Compares what is declared in this repo against what is actually installed.
-# Useful for discovering tools installed outside this repo that may be worth adding.
-# macOS only (Homebrew).
-- name: Diff declared vs installed Homebrew packages
+# Reports the gap between what this repo declares and what this machine has
+# actually installed, for every package manager the repo uses on this platform.
+#
+# It reads in both directions. Packages installed but undeclared are candidates
+# for the vars files — the drift that accumulates when you `brew install`
+# something and never write it down. Packages declared but not installed are
+# what the next `just install` would put on, which is the cheaper half to
+# ignore but the useful half after editing a vars file.
+#
+# Run it with `just diff`, which sets the stdout callback that renders the
+# report as text rather than as one escaped JSON string.
+- name: Diff declared packages against installed ones
   hosts: localhost
   gather_facts: true
 
+  vars:
+      # Installed deliberately but absent from the vars files on purpose. Every
+      # entry here would otherwise reappear on every run, and a report with
+      # known noise in it is a report that stops being read.
+      diff_ignored:
+          darwin:
+              # The runtimes role installs both from Homebrew, so they are
+              # declared — just in roles/runtimes/tasks/main.yml rather than in
+              # homebrew_tools. See ADR-0006.
+              homebrew_formulae:
+                  - nvm
+                  - uv
+              # microsoft-auto-update arrives as a dependency of Edge and Teams
+              # rather than on its own. linear-linear is a superseded token that
+              # Homebrew now resolves to `linear`, so declaring it would install
+              # the same app twice under two names.
+              homebrew_casks:
+                  - linear-linear
+                  - microsoft-auto-update
+          debian:
+              # Installed by the runtimes role via the upstream installer
+              # scripts, not from apt.
+              apt: []
+              snap: []
+              flatpak: []
+          windows:
+              winget: []
+          # cargo-binstall installs itself; the runtimes role fetches it from
+          # the upstream script so no cargo_packages entry names it.
+          cargo:
+              - cargo-binstall
+          uv: []
+          pnpm: []
+          vscode: []
+
   tasks:
-      - name: Abort on non-macOS
-        ansible.builtin.fail:
-            msg: "This playbook is macOS only (requires Homebrew)."
-        when: ansible_os_family != "Darwin"
-
-      - name: Load tool vars
-        ansible.builtin.include_vars:
-            file: "{{ repo_root }}/ansible/roles/tools/vars/darwin.yml"
-
-      - name: Load app vars
-        ansible.builtin.include_vars:
-            file: "{{ repo_root }}/ansible/roles/apps/vars/darwin.yml"
-
-      - name: List installed Homebrew formulae
-        ansible.builtin.command: brew list --formula
-        changed_when: false
-        register: brew_formulae_raw
-
-      - name: List installed Homebrew casks
-        ansible.builtin.command: brew list --cask
-        changed_when: false
-        register: brew_casks_raw
-
-      - name: Compute formula diff
+      - name: Set effective platform
         ansible.builtin.set_fact:
-            installed_formulae: "{{ brew_formulae_raw.stdout_lines }}"
-            undeclared_formulae: "{{ brew_formulae_raw.stdout_lines | difference(homebrew_tools) | sort }}"
-            uninstalled_formulae: "{{ homebrew_tools | difference(brew_formulae_raw.stdout_lines) | sort }}"
-            installed_casks: "{{ brew_casks_raw.stdout_lines }}"
-            undeclared_casks: "{{ brew_casks_raw.stdout_lines | difference(homebrew_casks) | sort }}"
-            uninstalled_casks: "{{ homebrew_casks | difference(brew_casks_raw.stdout_lines) | sort }}"
+            effective_platform: >-
+                {{ 'windows'
+                   if (ansible_env.WSL_DISTRO_NAME is defined or 'microsoft' in ansible_kernel | lower)
+                   else ansible_os_family | lower }}
 
-      - name: Report formulae installed but not declared (candidates to add)
-        ansible.builtin.debug:
-            msg: "{{ undeclared_formulae }}"
-        when: undeclared_formulae | length > 0
+      - name: Load platform tool vars
+        ansible.builtin.include_vars:
+            file: "{{ repo_root }}/ansible/roles/tools/vars/{{ effective_platform }}.yml"
 
-      - name: Report formulae declared but not installed (would be installed by just install)
-        ansible.builtin.debug:
-            msg: "{{ uninstalled_formulae }}"
-        when: uninstalled_formulae | length > 0
+      - name: Load platform app vars
+        ansible.builtin.include_vars:
+            file: "{{ repo_root }}/ansible/roles/apps/vars/{{ effective_platform }}.yml"
 
-      - name: Report casks installed but not declared (candidates to add)
-        ansible.builtin.debug:
-            msg: "{{ undeclared_casks }}"
-        when: undeclared_casks | length > 0
+      # ── Gather what is installed ────────────────────────────────────────
+      # Every probe is failed_when: false so a manager this machine happens not
+      # to have — flatpak on a server, code on a headless box — leaves its
+      # section empty instead of ending the run.
 
-      - name: Report casks declared but not installed (would be installed by just install)
-        ansible.builtin.debug:
-            msg: "{{ uninstalled_casks }}"
-        when: uninstalled_casks | length > 0
+      # Two Homebrew probes, because the two directions of the diff need
+      # different questions answered. `brew leaves --installed-on-request` gives
+      # what someone asked for, which is the only sensible basis for "you have
+      # this and never wrote it down" — `brew list --formula` counts every
+      # transitive dependency and buries the answer. But leaves is wrong for the
+      # other direction: a declared formula that something else depends on drops
+      # out of leaves and would be reported as missing while sitting installed.
+      # So the full list answers "is it present at all".
+      - name: List Homebrew formulae installed on request
+        ansible.builtin.command: brew leaves --installed-on-request
+        register: probe_brew_formulae
+        changed_when: false
+        failed_when: false
+        when: effective_platform == "darwin"
 
-      - name: Summary
+      - name: List every installed Homebrew formula
+        ansible.builtin.command: brew list --formula
+        register: probe_brew_all
+        changed_when: false
+        failed_when: false
+        when: effective_platform == "darwin"
+
+      - name: List Homebrew casks
+        ansible.builtin.command: brew list --cask
+        register: probe_brew_casks
+        changed_when: false
+        failed_when: false
+        when: effective_platform == "darwin"
+
+      # apt has no `leaves`. `apt-mark showmanual` alone returns the whole base
+      # system, so subtract the package set the installer recorded at first
+      # boot; what remains is what someone added afterwards. Machines without
+      # that log (WSL images, containers) fall back to the unfiltered list, and
+      # the report says which of the two it used.
+      - name: List apt packages added since installation
+        ansible.builtin.shell: |
+            set -o pipefail
+            if [ -r /var/log/installer/initial-status.gz ]; then
+                comm -23 <(apt-mark showmanual | sort) \
+                         <(gzip -dc /var/log/installer/initial-status.gz | sed -n 's/^Package: //p' | sort)
+            else
+                apt-mark showmanual | sort
+            fi
+        args:
+            executable: /bin/bash
+        register: probe_apt
+        changed_when: false
+        failed_when: false
+        when: effective_platform == "debian"
+
+      - name: List snap packages
+        ansible.builtin.shell: |
+            set -o pipefail
+            snap list | awk 'NR > 1 {print $1}'
+        args:
+            executable: /bin/bash
+        register: probe_snap
+        changed_when: false
+        failed_when: false
+        when: effective_platform == "debian"
+
+      - name: List flatpak applications
+        ansible.builtin.command: flatpak list --app --columns=application
+        register: probe_flatpak
+        changed_when: false
+        failed_when: false
+        when: effective_platform == "debian"
+
+      # winget list prints a table that reflows with the terminal width, so
+      # export the machine-readable form instead and read PackageIdentifier.
+      - name: Ensure the scratch directory exists for the WinGet export
+        ansible.builtin.file:
+            path: "{{ repo_root }}/tmp"
+            state: directory
+            mode: "0755"
+        when: effective_platform == "windows"
+
+      - name: Export the WinGet package list
+        ansible.builtin.command: winget export --output {{ repo_root }}/tmp/winget-export.json --source winget --accept-source-agreements
+        register: probe_winget_export
+        changed_when: false
+        failed_when: false
+        when: effective_platform == "windows"
+
+      - name: Read the exported WinGet package list
+        ansible.builtin.slurp:
+            src: "{{ repo_root }}/tmp/winget-export.json"
+        register: probe_winget
+        failed_when: false
+        when: effective_platform == "windows"
+
+      - name: List cargo crates
+        ansible.builtin.command: cargo install --list
+        register: probe_cargo
+        changed_when: false
+        failed_when: false
+        environment:
+            PATH: "{{ cargo_bin }}:{{ ansible_env.PATH }}"
+        when: effective_platform != "windows"
+
+      - name: List uv tools
+        ansible.builtin.command: uv tool list
+        register: probe_uv
+        changed_when: false
+        failed_when: false
+        environment:
+            PATH: "{{ homebrew_bin }}:{{ local_bin }}:{{ ansible_env.PATH }}"
+        when: effective_platform != "windows"
+
+      - name: List global pnpm packages
+        ansible.builtin.command: pnpm list -g --depth 0
+        register: probe_pnpm
+        changed_when: false
+        failed_when: false
+        environment:
+            PATH: "{{ homebrew_bin }}:{{ pnpm_bin }}:{{ ansible_env.PATH }}"
+            PNPM_HOME: "{{ pnpm_home }}"
+        when: effective_platform != "windows"
+
+      - name: List VS Code extensions
+        ansible.builtin.command: code --list-extensions
+        register: probe_vscode
+        changed_when: false
+        failed_when: false
+
+      # ── Normalise each manager's output to a bare list of names ─────────
+      # cargo prints "name v1.2.3:" with an indented binary list beneath, uv
+      # prints "name v1.2.3" the same way, and pnpm prints tree glyphs then
+      # "name@1.2.3". One regex each, rather than a chain of splits.
+      - name: Normalise installed package names
+        ansible.builtin.set_fact:
+            installed_cargo: >-
+                {{ probe_cargo.stdout | default('') | regex_findall('(?m)^(\S+) v[0-9]') }}
+            installed_uv: >-
+                {{ probe_uv.stdout | default('') | regex_findall('(?m)^(\S+) v[0-9]') }}
+            installed_pnpm: >-
+                {{ probe_pnpm.stdout | default('') | regex_findall('(?m)^(?:\W+\s)?(\S+)@[0-9]') }}
+            installed_vscode: "{{ probe_vscode.stdout_lines | default([]) }}"
+            installed_winget: >-
+                {{ (probe_winget.content | default('') | b64decode | from_json).Sources
+                   | default([]) | map(attribute='Packages') | flatten
+                   | map(attribute='PackageIdentifier') | list
+                   if effective_platform == 'windows' and probe_winget.content is defined
+                   else [] }}
+
+      # ── Build one section per manager ───────────────────────────────────
+      # Each entry pairs a declared list with the matching installed list, so
+      # the reporting task below stays a single loop rather than one block per
+      # manager. `hint` is the file to edit when a name shows up undeclared.
+      # A formula from a tap comes back fully qualified — `bats-core/bats-core/
+      # bats-assert` — while the vars files name it bare, because Homebrew
+      # resolves the short name once the tap is added. Strip everything before
+      # the last slash so the two sides compare.
+      - name: Assemble macOS sections
+        ansible.builtin.set_fact:
+            diff_sources: >-
+                {{ [
+                     {'title': 'Homebrew formulae',
+                      'hint': 'roles/tools/vars/darwin.yml → homebrew_tools',
+                      'declared': homebrew_tools,
+                      'installed': probe_brew_formulae.stdout_lines | default([]) | map('regex_replace', '^.*/', '') | list,
+                      'present': probe_brew_all.stdout_lines | default([]) | map('regex_replace', '^.*/', '') | list,
+                      'ignored': diff_ignored.darwin.homebrew_formulae},
+                     {'title': 'Homebrew casks',
+                      'hint': 'roles/apps/vars/darwin.yml → homebrew_casks',
+                      'declared': homebrew_casks,
+                      'installed': probe_brew_casks.stdout_lines | default([]) | map('regex_replace', '^.*/', '') | list,
+                      'ignored': diff_ignored.darwin.homebrew_casks},
+                   ] }}
+        when: effective_platform == "darwin"
+
+      - name: Assemble Ubuntu sections
+        ansible.builtin.set_fact:
+            diff_sources: >-
+                {{ [
+                     {'title': 'apt packages',
+                      'hint': 'roles/tools/vars/debian.yml → apt_tools',
+                      'declared': apt_tools,
+                      'installed': probe_apt.stdout_lines | default([]),
+                      'ignored': diff_ignored.debian.apt},
+                     {'title': 'snap packages',
+                      'hint': 'roles/tools/vars/debian.yml → snap_tools, roles/apps/vars/debian.yml → snap_apps',
+                      'declared': (snap_tools | map(attribute='name') | list)
+                                  + (snap_apps | map(attribute='name') | list),
+                      'installed': probe_snap.stdout_lines | default([]),
+                      'ignored': diff_ignored.debian.snap},
+                     {'title': 'flatpak applications',
+                      'hint': 'roles/apps/vars/debian.yml → flatpak_apps',
+                      'declared': flatpak_apps | map(attribute='name') | list,
+                      'installed': probe_flatpak.stdout_lines | default([]) | reject('equalto', 'Application ID') | list,
+                      'ignored': diff_ignored.debian.flatpak},
+                   ] }}
+        when: effective_platform == "debian"
+
+      - name: Assemble Windows sections
+        ansible.builtin.set_fact:
+            diff_sources: >-
+                {{ [
+                     {'title': 'WinGet packages',
+                      'hint': 'roles/tools/vars/windows.yml → winget_tools, roles/apps/vars/windows.yml → winget_apps',
+                      'declared': winget_tools + winget_apps,
+                      'installed': installed_winget,
+                      'ignored': diff_ignored.windows.winget},
+                   ] }}
+        when: effective_platform == "windows"
+
+      # The runtime managers are the same everywhere the repo uses them, so
+      # they append to whatever the platform block above produced. Each
+      # declared list mirrors what roles/runtimes/tasks/main.yml actually
+      # installs for this platform, including the _non_darwin split.
+      - name: Append runtime-manager sections
+        ansible.builtin.set_fact:
+            diff_sources: >-
+                {{ diff_sources | default([]) + [
+                     {'title': 'cargo crates',
+                      'hint': 'group_vars/all.yml → cargo_packages*',
+                      'declared': cargo_packages
+                                  + (cargo_packages_non_darwin if effective_platform != 'darwin' else [])
+                                  + (cargo_packages_debian if effective_platform == 'debian' else []),
+                      'installed': installed_cargo,
+                      'ignored': diff_ignored.cargo},
+                     {'title': 'uv tools',
+                      'hint': 'group_vars/all.yml → pip_packages*',
+                      'declared': pip_packages
+                                  + (pip_packages_non_darwin if effective_platform != 'darwin' else []),
+                      'installed': installed_uv,
+                      'ignored': diff_ignored.uv},
+                     {'title': 'pnpm globals',
+                      'hint': 'group_vars/all.yml → pnpm_packages*',
+                      'declared': pnpm_packages
+                                  + (pnpm_packages_non_darwin if effective_platform != 'darwin' else []),
+                      'installed': installed_pnpm,
+                      'ignored': diff_ignored.pnpm},
+                   ] }}
+        when: effective_platform != "windows"
+
+      - name: Append the VS Code extension section
+        ansible.builtin.set_fact:
+            diff_sources: >-
+                {{ diff_sources | default([]) + [
+                     {'title': 'VS Code extensions',
+                      'hint': 'group_vars/all.yml → vscode_extensions',
+                      'declared': vscode_extensions,
+                      'installed': installed_vscode,
+                      'ignored': diff_ignored.vscode},
+                   ] }}
+
+      # ── Report ──────────────────────────────────────────────────────────
+      - name: Render the report
         ansible.builtin.debug:
             msg: |
-                === Homebrew diff summary ===
+              {% set undeclared_total = [] %}
+              ══════════════════════════════════════════════════════════════════
+               Package diff — {{ effective_platform }}
+              ══════════════════════════════════════════════════════════════════
+              {% for source in diff_sources %}
+              {# `present` is the full installed set where a manager reports a
+                 narrower "asked for" list separately; everywhere else the two
+                 are the same, so it falls back to `installed`. #}
+              {% set present = source.present | default(source.installed) %}
+              {% set undeclared = source.installed | difference(source.declared) | difference(source.ignored) | sort %}
+              {% set missing = source.declared | difference(present) | sort %}
+              {% set _ = undeclared_total.extend(undeclared) %}
 
-                Formulae installed but NOT declared (consider adding to tools/vars/darwin.yml):
-                {% if undeclared_formulae %}
-                {% for f in undeclared_formulae %}
-                  - {{ f }}
-                {% endfor %}
-                {% else %}
-                  (none)
-                {% endif %}
+              ▸ {{ source.title }} — {{ source.declared | length }} declared, {{ source.installed | length }} installed
+              {% if undeclared %}
+                  Installed but NOT declared ({{ undeclared | length }}) — add to {{ source.hint }}
+              {% for name in undeclared %}
+                      {{ name }}
+              {% endfor %}
+              {% else %}
+                  Installed but NOT declared: none
+              {% endif %}
+              {% if missing %}
+                  Declared but NOT installed ({{ missing | length }}) — `just install` would add these
+              {% for name in missing %}
+                      {{ name }}
+              {% endfor %}
+              {% else %}
+                  Declared but NOT installed: none
+              {% endif %}
+              {% endfor %}
 
-                Formulae declared but NOT installed (will be added by just install):
-                {% if uninstalled_formulae %}
-                {% for f in uninstalled_formulae %}
-                  - {{ f }}
-                {% endfor %}
-                {% else %}
-                  (none)
-                {% endif %}
-
-                Casks installed but NOT declared (consider adding to apps/vars/darwin.yml):
-                {% if undeclared_casks %}
-                {% for c in undeclared_casks %}
-                  - {{ c }}
-                {% endfor %}
-                {% else %}
-                  (none)
-                {% endif %}
-
-                Casks declared but NOT installed (will be added by just install):
-                {% if uninstalled_casks %}
-                {% for c in uninstalled_casks %}
-                  - {{ c }}
-                {% endfor %}
-                {% else %}
-                  (none)
-                {% endif %}
+              ──────────────────────────────────────────────────────────────────
+               {{ undeclared_total | length }} undeclared package(s) across {{ diff_sources | length }} managers.
+              {% if effective_platform == 'debian' and probe_apt.stdout is defined %}
+               apt figures exclude the base system where /var/log/installer is
+               readable; otherwise they include it and will look inflated.
+              {% endif %}
+              ──────────────────────────────────────────────────────────────────
