@@ -76,26 +76,11 @@
       force: false
   when: effective_platform != "windows"
 
-# ~/.zshrc sources whatever matches the glob, so a fragment renamed or dropped
-# in the repo would go on being loaded from a previous run until removed here.
-- name: Find deployed zsh fragments
-  ansible.builtin.find:
-      paths: "{{ ansible_env.HOME }}/.config/zsh"
-      patterns: "*.zsh"
-  register: deployed_zsh_fragments
-  when: effective_platform != "windows"
-
-- name: Remove orphaned zsh fragments
-  ansible.builtin.file:
-      path: "{{ item.path }}"
-      state: absent
-  loop: "{{ deployed_zsh_fragments.files | default([]) }}"
-  loop_control:
-      label: "{{ item.path | basename }}"
-  when:
-      - effective_platform != "windows"
-      - item.path != zsh_local_fragment
-      - item.path | basename not in (zsh_fragments | map('basename') | list)
+# ~/.zshrc sources every *.zsh in ~/.config/zsh, so a fragment renamed or
+# dropped from config/zsh/ keeps loading from whichever run deployed it. This
+# role does not delete it — nothing here removes anything from a machine. After
+# renaming or dropping a fragment, delete the old file by hand; `ls
+# ~/.config/zsh` against config/zsh/ in the repo shows what is left over.
 
 # Login shells need PATH set before ~/.zshrc runs, and on macOS ~/.zprofile is
 # also the first file zsh sources after /etc/zprofile's path_helper — the only

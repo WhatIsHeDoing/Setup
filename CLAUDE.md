@@ -77,10 +77,13 @@ per platform: `bottom` comes from Homebrew, WinGet and cargo depending on the
 machine. See [ADR-0010](docs/adr/0010-os-package-managers-before-runtime-ones.md)
 for the measured versions behind each call.
 
-When a package moves from cargo to an OS manager, add it to
-`cargo_packages_superseded` in `group_vars/all.yml` as well. `~/.cargo/bin`
-precedes the Homebrew prefix on PATH, so a leftover crate would shadow the new
-copy and never be upgraded again.
+When a package moves from cargo to an OS manager, uninstall the old copy by
+hand. `~/.cargo/bin` precedes the Homebrew prefix on PATH, so a leftover crate
+keeps answering the command while the new copy sits unused behind it, and
+nothing upgrades the leftover because no list names it any more. This repo
+installs and upgrades, but never uninstalls — removing a package is a decision
+for whoever owns the machine. `just diff` reports the leftover under the
+manager it came from, which is the prompt to deal with it.
 
 ## Adding a New Tool
 
@@ -145,7 +148,7 @@ The separator line must match: `| ---...--- |` with the same number of dashes as
 ## Keeping README Tables Accurate
 
 After any change that affects which platforms a tool or app is installed on, review the Tools,
-Apps, Runtimes, and Cross-Platform Packages tables in `README.md` and update the Platforms column
+Apps, Runtimes, and Runtime-Manager Packages tables in `README.md` and update the Platforms column
 to match the actual vars files:
 
 - `roles/tools/vars/{darwin,debian,windows}.yml` — per-platform CLI tools

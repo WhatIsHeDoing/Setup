@@ -75,22 +75,6 @@ cargo_packages_debian:
     - atuin
     - bottom
 
-# Crates that moved to Homebrew or WinGet under ADR-0010. ~/.cargo/bin precedes
-# the Homebrew prefix in config/zsh/00-path.zsh, so a cargo copy left behind on
-# an already-provisioned machine would shadow the new one and never be upgraded
-# again. The runtimes role uninstalls these, guarded on what cargo reports as
-# installed. Safe to delete once no machine predates that change.
-cargo_packages_superseded:
-    darwin:
-        - bottom
-        - cargo-outdated
-        - cargo-update
-        - diskonaut
-        - wasm-pack
-    windows:
-        - bottom
-
-# Python tools installed on all platforms via uv tool install. Homebrew is at
 # parity for ansible-lint, commitizen and yamllint, but every one of those
 # formulae depends on python@3.14 — a second Python on a machine where ADR-0006
 # made uv authoritative. checkov shipped 43 releases in 180 days and Homebrew
