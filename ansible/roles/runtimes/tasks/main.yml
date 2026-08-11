@@ -96,25 +96,29 @@
   failed_when: false
   when: effective_platform != "windows"
 
-- name: Install global pnpm packages (macOS)
-  ansible.builtin.command: "pnpm add -g {{ pnpm_packages | join(' ') }}"
+# One task for both platforms. The macOS and Ubuntu versions differed only in
+# whether homebrew_bin led the PATH, and adding it on Ubuntu costs one failed
+# stat on a directory that is not there. The length guard matters on macOS,
+# where the combined list is empty and a bare `pnpm add -g` would error.
+- name: Install global pnpm packages
+  ansible.builtin.command: "pnpm add -g {{ pnpm_install_list | join(' ') }}"
+  vars:
+      pnpm_install_list: >-
+          {{ pnpm_packages
+             + (pnpm_packages_non_darwin if effective_platform != 'darwin' else []) }}
   environment:
       PATH: "{{ homebrew_bin }}:{{ pnpm_bin }}:{{ ansible_env.PATH }}"
       PNPM_HOME: "{{ pnpm_home }}"
   changed_when: false
-  when: effective_platform == "darwin"
-
-- name: Install global pnpm packages (Ubuntu)
-  ansible.builtin.command: "pnpm add -g {{ pnpm_packages | join(' ') }}"
-  environment:
-      PATH: "{{ pnpm_bin }}:{{ ansible_env.PATH }}"
-      PNPM_HOME: "{{ pnpm_home }}"
-  changed_when: false
-  when: effective_platform == "debian"
+  when:
+      - effective_platform != "windows"
+      - pnpm_install_list | length > 0
 
 - name: Install Python tools via uv
   ansible.builtin.command: "uv tool install {{ item }}"
-  loop: "{{ pip_packages }}"
+  loop: >-
+      {{ pip_packages
+         + (pip_packages_non_darwin if effective_platform != 'darwin' else []) }}
   environment:
       PATH: "{{ homebrew_bin }}:{{ local_bin }}:{{ ansible_env.PATH }}"
   changed_when: false

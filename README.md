@@ -151,12 +151,19 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 
 | Tool                      | Platforms      | Description                                       |
 | ------------------------- | -------------- | ------------------------------------------------- |
+| [actionlint]              | macOS, Windows | Static checker for GitHub Actions workflows       |
 | [asciinema]               | macOS, Ubuntu  | Record and share terminal sessions                |
 | [atuin]                   | macOS, Ubuntu  | Shell history with sync and interactive search    |
 | [bash]                    | macOS          | GNU Bash 5.x, replacing the bundled Bash 3.2      |
 | [bat]                     | all            | `cat` clone with syntax highlighting              |
+| [bats-assert]             | macOS          | Common assertions for Bats                        |
+| [bats-core]               | macOS, Ubuntu  | Bash Automated Testing System                     |
+| [bats-support]            | macOS          | Supporting library for Bats test helpers          |
 | [bottom]                  | all            | Terminal system monitor                           |
+| [clang-format]            | macOS, Ubuntu  | Formatter for C, C++, Obj-C and Java              |
 | [coreutils]               | macOS          | GNU file and text utilities, `g`-prefixed         |
+| [cppcheck]                | all            | Static analysis for C and C++                     |
+| [cspell]                  | macOS, Ubuntu  | Spell checker for code and prose                  |
 | [delta]                   | all            | Syntax-highlighted diffs; configured as git pager |
 | [diffutils]               | macOS          | GNU `diff`, `cmp`, `diff3` — take the plain names |
 | [dust]                    | macOS          | Intuitive disk usage viewer                       |
@@ -168,13 +175,18 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 | [fzf]                     | all            | Command-line fuzzy finder                         |
 | [gawk]                    | macOS          | GNU Awk, installed as `gawk`                      |
 | [gh]                      | all            | GitHub CLI                                        |
+| [ghostscript]             | all            | Interpreter for PostScript and PDF                |
 | [git]                     | macOS          | Version control, newer than the Apple build       |
 | [Git LFS]                 | all            | Git Large File Storage                            |
+| [git-filter-repo]         | macOS, Ubuntu  | Quickly rewrite git repository history            |
 | [gitleaks]                | all            | Secret scanner for git repositories               |
 | [gnu-sed]                 | macOS          | GNU sed, installed as `gsed`                      |
 | [graphviz]                | all            | Graph visualization via the DOT language          |
 | [grep]                    | macOS          | GNU grep, installed as `ggrep`                    |
+| [hyperfine]               | all            | Command-line benchmarking tool                    |
+| [ImageMagick]             | all            | Create, edit and convert bitmap images            |
 | [jq]                      | all            | `sed` for JSON                                    |
+| [JupyterLab]              | macOS, Ubuntu  | Notebook IDE; brings the IPython kernel with it   |
 | [just]                    | all            | Task runner                                       |
 | [lazygit]                 | all            | TUI for git                                       |
 | [lefthook]                | all            | Fast, polyglot git hooks manager                  |
@@ -183,21 +195,32 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 | [make]                    | macOS          | GNU Make 4.x, installed as `gmake`                |
 | [markdownlint-cli2]       | macOS          | Markdown linter and formatter                     |
 | [miller]                  | all            | Swiss Army knife for tabular data (CSV/JSON/TSV)  |
+| [ollama]                  | macOS, Windows | Run large language models locally                 |
 | [pandoc]                  | all            | Universal markup converter                        |
+| [pinact]                  | macOS          | Pin GitHub Actions to full-length hashes          |
 | [pnpm]                    | all            | Fast JavaScript package manager                   |
 | [poppler]                 | macOS, Ubuntu  | PDF rendering library and CLI utilities           |
+| [promptfoo]               | macOS, Ubuntu  | Test and evaluate LLM apps locally                |
 | [ripgrep]                 | all            | Fast regex search                                 |
 | [ripgrep-all]             | all            | ripgrep across PDFs, Office docs, etc.            |
 | [rsync]                   | macOS          | GNU rsync, replacing the bundled openrsync        |
+| [rtk]                     | macOS          | CLI proxy that cuts LLM token use                 |
 | [shellcheck]              | all            | Shell script linter                               |
 | [shfmt]                   | all            | Shell script formatter                            |
+| [sqlfluff]                | macOS, Ubuntu  | SQL linter and auto-formatter                     |
 | [Starship]                | all            | Cross-shell prompt                                |
+| [stylelint]               | macOS, Ubuntu  | Modern CSS linter                                 |
 | [svgo]                    | macOS          | SVG optimizer                                     |
 | [taplo]                   | macOS, Ubuntu  | TOML toolkit (format and lint)                    |
 | [tlrc]                    | macOS          | Community tldr pages client                       |
+| [tokei]                   | all            | Count code quickly, by language                   |
 | [UPX]                     | all            | Executable packer                                 |
 | [vale]                    | macOS, Windows | Prose linter for docs and Markdown                |
+| [wabt]                    | macOS, Ubuntu  | WebAssembly binary toolkit                        |
+| [websocat]                | macOS, Ubuntu  | Command-line client for WebSockets                |
+| [yamllint]                | macOS, Ubuntu  | Linter for YAML files                             |
 | [yq]                      | all            | YAML/JSON/XML processor (jq for YAML)             |
+| [zizmor]                  | macOS, Ubuntu  | Find security issues in GitHub Actions            |
 | [zoxide]                  | all            | Smarter `cd` that learns your habits              |
 | [Zsh]                     | Ubuntu         | Shell — macOS already ships it, apt installs it   |
 | [zsh-autocomplete]        | macOS, Ubuntu  | Real-time tab completion for Zsh                  |
@@ -214,40 +237,54 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 
 | App                        | Platforms       | Description                                           |
 | -------------------------- | --------------- | ----------------------------------------------------- |
-| [Claude Code]              | all             | AI coding assistant CLI and desktop app               |
-| [VS Code]                  | all             | Code editor                                           |
+| [7-Zip]                    | Windows         | File archiver                                         |
+| [AlDente]                  | macOS           | Battery charge limiter                                |
+| [Amberol]                  | Ubuntu          | Music player                                          |
+| [Bambu Studio]             | macOS           | Slicer for Bambu Lab 3D printers                      |
+| [Caesium]                  | Ubuntu, Windows | Image compressor                                      |
+| [Claude]                   | macOS, Windows  | Claude desktop app                                    |
+| [Claude Code]              | macOS           | AI coding assistant CLI                               |
+| [DBeaver]                  | all             | Universal database tool                               |
 | [draw.io]                  | all             | Diagramming                                           |
-| [Obsidian]                 | all             | Note-taking                                           |
-| [Spotify]                  | all             | Music                                                 |
-| [Telegram]                 | all             | Messaging                                             |
+| [Firefox]                  | all             | Web browser                                           |
 | [ghostty]                  | macOS, Ubuntu   | Fast, native terminal emulator                        |
+| [Google Chrome]            | macOS           | Web browser                                           |
+| [Ice]                      | macOS           | Menu bar manager                                      |
 | [JetBrains Mono Nerd Font] | macOS           | Nerd Font for terminal icons (Starship, eza, etc.)    |
+| [Linear]                   | macOS           | Issue tracking and project planning                   |
+| [Microsoft Edge]           | macOS           | Web browser                                           |
+| [Microsoft Teams]          | macOS           | Video calls and team chat                             |
+| [Miro]                     | macOS           | Collaborative whiteboard                              |
+| [Notion]                   | macOS           | Notes, documents and databases                        |
+| [Obsidian]                 | all             | Note-taking                                           |
 | [OrbStack]                 | macOS           | Container and VM runtime (Docker Desktop replacement) |
 | [Raindrop.io]              | macOS, Windows  | Bookmark manager                                      |
-| [7-Zip]                    | Windows         | File archiver                                         |
-| [Caesium]                  | Ubuntu, Windows | Image compressor                                      |
-| [DBeaver]                  | all             | Universal database tool                               |
-| [Amberol]                  | Ubuntu          | Music player                                          |
-| [Firefox]                  | all             | Web browser                                           |
 | [Raycast]                  | macOS           | Launcher, window manager, clipboard history           |
-| [AlDente]                  | macOS           | Battery charge limiter                                |
-| [Ice]                      | macOS           | Menu bar manager                                      |
+| [Spotify]                  | all             | Music                                                 |
+| [Surfshark]                | macOS           | VPN client                                            |
+| [Telegram]                 | all             | Messaging                                             |
+| [VS Code]                  | all             | Code editor                                           |
+| [WhatsApp]                 | macOS           | Messaging                                             |
 
-### Cross-Platform Packages
+### Runtime-Manager Packages
 
-Installed on all platforms, though not always from the same manager. An OS
-package manager wins wherever it carries the package at upstream parity, so
-`bottom` and the four crates below come from Homebrew on macOS, and `bottom`
-from WinGet on Windows — see
+What cargo, uv and pnpm install, for the platforms where no OS package
+manager carries the package at upstream parity. An OS manager wins whenever
+it does — which is why several rows read Ubuntu rather than all, macOS taking
+those from Homebrew and Windows from WinGet or going without. See
 [ADR-0010](docs/adr/0010-os-package-managers-before-runtime-ones.md).
 
-| Type                    | Packages                                                                         |
-| ----------------------- | -------------------------------------------------------------------------------- |
-| Cargo (all)             | `cargo-modules`                                                                  |
-| Cargo (Ubuntu, Windows) | `cargo-outdated`, `cargo-update`, `diskonaut`, `wasm-pack`                       |
-| pip                     | `ansible-core`, `ansible-lint`, `checkov`, `commitizen`, `ipykernel`, `yamllint` |
-| pnpm                    | `cspell`                                                                         |
-| VS Code                 | GitLens, EditorConfig, Markdownlint, Night Owl theme, VS Code Icons              |
+The cargo, uv and pnpm tasks all skip Windows, so an Ubuntu row means Ubuntu
+alone even where the variable name says `non_darwin`.
+
+| Manager | Platforms | Packages                                                                                                 |
+| ------- | --------- | -------------------------------------------------------------------------------------------------------- |
+| Cargo   | all       | `cargo-modules`                                                                                          |
+| Cargo   | Ubuntu    | `cargo-outdated`, `cargo-update`, `diskonaut`, `ripgrep_all`, `tokei`, `wasm-pack`, `websocat`, `zizmor` |
+| uv      | all       | `ansible-core`, `ansible-lint`, `checkov`, `commitizen`                                                  |
+| uv      | Ubuntu    | `jupyterlab`, `sqlfluff`, `yamllint`                                                                     |
+| pnpm    | Ubuntu    | `cspell`, `promptfoo`, `stylelint`                                                                       |
+| VS Code | all       | GitLens, EditorConfig, Markdownlint, Night Owl theme, VS Code Icons                                      |
 
 ### Scripts
 
@@ -389,17 +426,26 @@ just check
 
 [.NET]: https://dotnet.microsoft.com/
 [7-Zip]: https://7-zip.org/
+[actionlint]: https://rhysd.github.io/actionlint/
 [AlDente]: https://apphousekitchen.com/
 [Amberol]: https://gitlab.gnome.org/World/amberol
 [Ansible]: https://www.ansible.com/
 [asciinema]: https://asciinema.org/
 [atuin]: https://atuin.sh/
+[Bambu Studio]: https://bambulab.com/en/download/studio
 [bash]: https://www.gnu.org/software/bash/
 [bat]: https://github.com/sharkdp/bat
+[bats-assert]: https://github.com/bats-core/bats-assert
+[bats-core]: https://github.com/bats-core/bats-core
+[bats-support]: https://github.com/bats-core/bats-support
 [bottom]: https://clementtsang.github.io/bottom/
 [Caesium]: https://saerasoft.com/caesium
+[clang-format]: https://clang.llvm.org/docs/ClangFormat.html
+[Claude]: https://claude.com/download
 [Claude Code]: https://claude.ai/code
 [coreutils]: https://www.gnu.org/software/coreutils/
+[cppcheck]: https://cppcheck.sourceforge.io/
+[cspell]: https://cspell.org/
 [DBeaver]: https://dbeaver.io/
 [delta]: https://dandavison.github.io/delta/
 [diffutils]: https://www.gnu.org/software/diffutils/
@@ -416,57 +462,81 @@ just check
 [Flatpak]: https://flatpak.org/
 [fzf]: https://github.com/junegunn/fzf
 [gawk]: https://www.gnu.org/software/gawk/
-[ghostty]: https://ghostty.org/
 [gh]: https://cli.github.com/
-[Git LFS]: https://git-lfs.com/
+[ghostscript]: https://www.ghostscript.com/
+[ghostty]: https://ghostty.org/
 [git]: https://git-scm.com/
+[Git LFS]: https://git-lfs.com/
+[git-filter-repo]: https://github.com/newren/git-filter-repo
 [gitleaks]: https://github.com/gitleaks/gitleaks
 [gnu-sed]: https://www.gnu.org/software/sed/
+[Google Chrome]: https://www.google.com/chrome/
 [graphviz]: https://graphviz.org/
 [grep]: https://www.gnu.org/software/grep/
+[hyperfine]: https://github.com/sharkdp/hyperfine
 [Ice]: https://github.com/jordanbaird/Ice
+[ImageMagick]: https://imagemagick.org/
 [JetBrains Mono Nerd Font]: https://www.nerdfonts.com/
 [jq]: https://jqlang.github.io/jq/
+[JupyterLab]: https://jupyter.org/
 [just]: https://just.systems/
 [lazygit]: https://github.com/jesseduffield/lazygit
 [lefthook]: https://lefthook.dev/
 [less]: https://www.greenwoodsoftware.com/less/
+[Linear]: https://linear.app/
 [lychee]: https://lychee.cli.rs/
 [make]: https://www.gnu.org/software/make/
 [markdownlint-cli2]: https://github.com/DavidAnson/markdownlint-cli2
+[Microsoft Edge]: https://www.microsoft.com/edge
+[Microsoft Teams]: https://www.microsoft.com/microsoft-teams/group-chat-software/
 [miller]: https://miller.readthedocs.io/
+[Miro]: https://miro.com/
 [Node.js]: https://nodejs.org/
+[Notion]: https://www.notion.com/
 [NuGet]: https://www.nuget.org/
 [nvm]: https://github.com/nvm-sh/nvm
 [Obsidian]: https://obsidian.md/
+[ollama]: https://ollama.com/
 [OrbStack]: https://orbstack.dev/
 [pandoc]: https://pandoc.org/
+[pinact]: https://github.com/suzuki-shunsuke/pinact
 [pnpm]: https://pnpm.io/
 [poppler]: https://poppler.freedesktop.org/
 [PowerShell]: https://github.com/PowerShell/PowerShell
+[promptfoo]: https://promptfoo.dev/
 [PuTTY]: https://putty.org/
 [Python]: https://www.python.org/
 [Raindrop.io]: https://raindrop.io/
 [Raycast]: https://www.raycast.com/
-[ripgrep-all]: https://github.com/phiresky/ripgrep-all
 [ripgrep]: https://github.com/BurntSushi/ripgrep
+[ripgrep-all]: https://github.com/phiresky/ripgrep-all
 [rsync]: https://rsync.samba.org/
-[rustup]: https://rustup.rs/
+[rtk]: https://www.rtk-ai.app/
 [Rust]: https://www.rust-lang.org/
+[rustup]: https://rustup.rs/
 [shellcheck]: https://www.shellcheck.net/
 [shfmt]: https://github.com/mvdan/sh
 [Spotify]: https://open.spotify.com/
+[sqlfluff]: https://docs.sqlfluff.com/
 [Starship]: https://starship.rs/
+[stylelint]: https://stylelint.io/
+[Surfshark]: https://surfshark.com/
 [svgo]: https://github.com/svg/svgo
 [taplo]: https://taplo.tamasfe.dev/
 [Telegram]: https://telegram.org/
 [tlrc]: https://github.com/tldr-pages/tlrc
+[tokei]: https://github.com/XAMPPRocky/tokei
 [UPX]: https://upx.github.io/
 [uv]: https://docs.astral.sh/uv/
 [vale]: https://vale.sh/
 [VS Build Tools]: https://visualstudio.microsoft.com/visual-cpp-build-tools/
 [VS Code]: https://code.visualstudio.com/
+[wabt]: https://github.com/WebAssembly/wabt
+[websocat]: https://github.com/vi/websocat
+[WhatsApp]: https://www.whatsapp.com/
+[yamllint]: https://yamllint.readthedocs.io/
 [yq]: https://github.com/mikefarah/yq
+[zizmor]: https://docs.zizmor.sh/
 [zoxide]: https://github.com/ajeetdsouza/zoxide
 [Zsh]: https://www.zsh.org/
 [zsh-autocomplete]: https://github.com/marlonrichert/zsh-autocomplete

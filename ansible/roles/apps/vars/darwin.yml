@@ -1,18 +1,37 @@
 ---
 # OrbStack is used in place of Docker Desktop on macOS (drop-in replacement per principle 2)
+#
+# `claude` and `claude-code` are two different casks, not a typo: the first is
+# the Claude desktop app, the second the Claude Code CLI. Both are wanted.
+#
+# Two casks stay deliberately undeclared, and diff.yml lists them in
+# homebrew_casks_ignored so they stop reappearing as drift:
+# `microsoft-auto-update` arrives as a dependency of Edge and Teams rather than
+# on its own, and `linear-linear` is an old token that Homebrew now resolves to
+# `linear` — declaring either would install a duplicate under a stale name.
 homebrew_casks:
     - aldente
+    - bambu-studio
+    - claude
     - claude-code
     - dbeaver-community
     - drawio
     - firefox
     - font-jetbrains-mono-nerd-font
     - ghostty
+    - google-chrome
     - jordanbaird-ice
+    - linear
+    - microsoft-edge
+    - microsoft-teams
+    - miro
+    - notion
     - obsidian
     - orbstack
     - raindropio
     - raycast
     - spotify
+    - surfshark
     - telegram
     - visual-studio-code
+    - whatsapp

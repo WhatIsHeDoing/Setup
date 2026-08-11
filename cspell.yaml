@@ -12,17 +12,19 @@ ignorePaths:
     - cspell.yaml
     - node_modules/
     - resolve.sh
+    - tmp/
     - "*.lock"
     - "*.retry"
 # Real words and recognizable product names — offered as suggestions.
 words:
+    - AlDente
     - Amaury
     - Amberol
-    - AlDente
     - ansible
     - anthropic
     - asciinema
     - atuin
+    - bambu
     - binstall
     - Bitwarden
     - bootstrapper
@@ -32,6 +34,7 @@ words:
     - cloudflare
     - commitizen
     - coreutils
+    - cppcheck
     - cspell
     - dbeaver
     - dedupe
@@ -61,6 +64,7 @@ words:
     - idempotently
     - jinja
     - jq
+    - jupyterlab
     - justfile
     - keymap
     - keyring
@@ -69,13 +73,16 @@ words:
     - kubernetes
     - lefthook
     - linted
+    - magick
     - markdownlint
     - minikube
     - mise
     - nord
+    - ollama
     - orbstack
     - pandoc
     - PCRE
+    - pinact
     - pipx
     - playbook
     - playbooks
@@ -84,6 +91,7 @@ words:
     - poppler
     - powerline
     - powershell
+    - promptfoo
     - pyenv
     - pytest
     - raindrop
@@ -99,29 +107,36 @@ words:
     - shellcheck
     - shfmt
     - snap
+    - sqlfluff
     - starship
     - subshells
+    - surfshark
     - svgo
     - taplo
     - terminfo
     - timezone
     - tlrc
+    - tokei
     - toml
     - upstash
     - upx
     - uv
     - virtualenv
     - vscode
+    - wabt
     - wasm
+    - websocat
     - winget
     - yamllint
     - yq
     - Zed
+    - zizmor
 # Code identifiers, config keys, handles — skipped, not added to the dictionary.
 ignoreWords:
     - advfirewall
     - ajeetdsouza
     - aquasecurity
+    - artifex
     - autoclean
     - autocrlf
     - autohide
@@ -161,21 +176,23 @@ ignoreWords:
     - Farlane
     - fdfind
     - fileglob
+    - findall
     - flatpakrepo
     - foxundermoon
     - funcfiletrace
-    - gierens
     - gawk
     - gcp
     - gdate
     - gfind
     - ggrep
+    - gierens
     - gls
     - gmake
     - gnubin
     - gpg
     - gpgsign
     - gsed
+    - gswin
     - gxargs
     - HISTFILE
     - HISTSIZE
@@ -186,6 +203,7 @@ ignoreWords:
     - jordanbaird
     - jqlang
     - junegunn
+    - kernelspec
     - killall
     - koalaman
     - lfs
@@ -227,6 +245,7 @@ ignoreWords:
     - rerere
     - reshim
     - resolv
+    - rhysd
     - Rustlang
     - samba
     - SAVEHIST
@@ -238,14 +257,15 @@ ignoreWords:
     - setstealthmode
     - sharkdp
     - shellenv
+    - showmanual
     - signingkey
     - socketfilterfw
     - tamasfe
     - timonwong
     - tlsv
     - typeset
-    - usernamehw
     - usermod
+    - usernamehw
     - USERPROFILE
     - userprofile
     - vars
@@ -254,6 +274,7 @@ ignoreWords:
     - wincred
     - winrm
     - wslpath
+    - xampp
     - yzhang
     - zdiff
     - zprofile

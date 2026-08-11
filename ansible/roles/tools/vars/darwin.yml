@@ -11,15 +11,37 @@
 # rather than from cargo: Homebrew ships all five at upstream parity, and a
 # bottle needs no compiler. See ADR-0010 for the three conditions that send a
 # package back to cargo, uv or pnpm instead.
+#
+# cspell and yamllint joined them for the same reason. Both were held back on
+# the grounds that their formulae pull in a second Node and a second Python
+# beside the nvm and uv ones — but markdownlint-cli2, svgo and nuget in this
+# very list already depend on those kegs, so the interpreters arrive whether or
+# not cspell and yamllint do. Debian and Windows have no parity package for
+# either, so they stay on pnpm and uv; see pnpm_packages_non_darwin and
+# pip_packages_non_darwin in group_vars/all.yml.
+# bats-assert and bats-support live in the bats-core tap rather than
+# homebrew/core, which carries only bats-core itself. Homebrew resolves an
+# unqualified name against tapped repositories once the tap is added, so the
+# entries below stay bare and the tap task in tasks/darwin.yml runs first.
+homebrew_taps:
+    - bats-core/bats-core
+
 homebrew_tools:
+    - actionlint
     - asciinema
     - atuin
     - bash
     - bat
+    - bats-assert
+    - bats-core
+    - bats-support
     - bottom
     - cargo-outdated
     - cargo-update
+    - clang-format
     - coreutils
+    - cppcheck
+    - cspell
     - diffutils
     - diskonaut
     - dotnet
@@ -33,14 +55,19 @@ homebrew_tools:
     - fzf
     - gawk
     - gh
+    - ghostscript
     - git
     - git-delta
+    - git-filter-repo
     - git-lfs
     - gitleaks
     - gnu-sed
     - graphviz
     - grep
+    - hyperfine
+    - imagemagick
     - jq
+    - jupyterlab
     - just
     - lazygit
     - lefthook
@@ -50,23 +77,34 @@ homebrew_tools:
     - markdownlint-cli2
     - miller
     - nuget
+    - ollama
     - osv-scanner
     - pandoc
+    - pinact
     - pnpm
     - poppler
+    - promptfoo
     - ripgrep
     - ripgrep-all
     - rsync
+    - rtk
     - shellcheck
     - shfmt
+    - sqlfluff
     - starship
+    - stylelint
     - svgo
     - taplo
     - tlrc
+    - tokei
     - upx
     - vale
+    - wabt
     - wasm-pack
+    - websocat
+    - yamllint
     - yq
+    - zizmor
     - zoxide
     - zsh-autocomplete
     - zsh-autosuggestions

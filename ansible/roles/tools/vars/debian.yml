@@ -1,9 +1,17 @@
 ---
+# Five of the macOS tools have no apt package and no cargo, PyPI or npm
+# equivalent either — actionlint and pinact are Go binaries released only as
+# archives, rtk ships via Homebrew alone, and ollama wants its own installer
+# script. They stay macOS-only until someone adds a download-and-extract task;
+# `just diff` on an Ubuntu box reports them rather than letting them go quiet.
 apt_tools:
     - asciinema
     - bat
+    - bats
     - build-essential
+    - clang-format
     - containerd.io
+    - cppcheck
     - docker-buildx-plugin
     - docker-ce
     - docker-ce-cli
@@ -16,12 +24,16 @@ apt_tools:
     - flatpak
     - fzf
     - gh
+    - ghostscript
     - git
     - git-delta
+    - git-filter-repo
     - git-lfs
     - gnome-software-plugin-flatpak
     - gnupg
     - graphviz
+    - hyperfine
+    - imagemagick
     - jq
     - just
     - less
@@ -40,6 +52,7 @@ apt_tools:
     - shellcheck
     - shfmt
     - upx-ucl
+    - wabt
     - yq
     - zoxide
     - zsh

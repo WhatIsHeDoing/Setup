@@ -67,8 +67,8 @@
           - cmd: "atuin --version"
             name: "atuin"
           # Homebrew on macOS, cargo on Ubuntu (ADR-0010). Verified because the
-          # macOS move uninstalls the cargo copy: a Homebrew install that failed
-          # quietly would otherwise leave the machine with neither.
+          # source differs by platform, so a quiet failure on either side leaves
+          # the command missing and nothing else here would notice.
           - cmd: "cargo outdated --version"
             name: "cargo-outdated"
           - cmd: "cargo install-update --version"
@@ -105,6 +105,52 @@
             name: "lychee"
           - cmd: "zsh --version"
             name: "zsh"
+          # Tools below come from Homebrew on macOS and from apt, cargo, uv or
+          # pnpm on Ubuntu, so one entry covers both. Several answer to a name
+          # that is not the package's: ghostscript ships `gs`, imagemagick
+          # ships `magick`, wabt ships a suite of which `wasm2wat` stands in,
+          # and bats-core ships `bats`. bats-assert and bats-support have no
+          # executable at all — they are sourced libraries, so nothing here can
+          # check them beyond the install succeeding.
+          - cmd: "bats --version"
+            name: "bats-core"
+          - cmd: "clang-format --version"
+            name: "clang-format"
+          - cmd: "cppcheck --version"
+            name: "cppcheck"
+          - cmd: "cspell --version"
+            name: "cspell"
+          - cmd: "git-filter-repo --version"
+            name: "git-filter-repo"
+          - cmd: "gs --version"
+            name: "ghostscript"
+          - cmd: "hyperfine --version"
+            name: "hyperfine"
+          - cmd: "magick --version"
+            name: "imagemagick"
+          - cmd: "jupyter-lab --version"
+            name: "jupyterlab"
+          # A JupyterLab with no kernel starts and then cannot run a cell, and
+          # nothing else here would catch that. `kernelspec list` prints to
+          # stderr, which the verify task already reads alongside stdout.
+          - cmd: "jupyter kernelspec list"
+            name: "jupyter-kernel"
+          - cmd: "promptfoo --version"
+            name: "promptfoo"
+          - cmd: "sqlfluff --version"
+            name: "sqlfluff"
+          - cmd: "stylelint --version"
+            name: "stylelint"
+          - cmd: "tokei --version"
+            name: "tokei"
+          - cmd: "wasm2wat --version"
+            name: "wabt"
+          - cmd: "websocat --version"
+            name: "websocat"
+          - cmd: "yamllint --version"
+            name: "yamllint"
+          - cmd: "zizmor --version"
+            name: "zizmor"
 
       # Formulae that override a copy macOS ships (ADR-0007). The GNU set
       # installs under `g`-prefixed names because `libexec/gnubin` stays off
@@ -130,6 +176,20 @@
             name: "make"
           - cmd: "rsync --version"
             name: "rsync"
+
+      # Tools Ubuntu has no package for, and no cargo, PyPI or npm equivalent
+      # either, so they are declared on macOS alone. actionlint and ollama also
+      # install on Windows via WinGet and appear in that list too; pinact and
+      # rtk are macOS-only outright.
+      darwin_only_tools_to_verify:
+          - cmd: "actionlint --version"
+            name: "actionlint"
+          - cmd: "ollama --version"
+            name: "ollama"
+          - cmd: "pinact --version"
+            name: "pinact"
+          - cmd: "rtk --version"
+            name: "rtk"
 
       # Overrides that take the plain name, so a PATH-ordering regression
       # would silently hand these back to Apple's copy. Checked in a login
@@ -211,6 +271,22 @@
             name: "gitleaks"
           - cmd: "lychee --version"
             name: "lychee"
+          # Ghostscript's Windows build names its console binary gswin64c,
+          # not the `gs` the Unix list checks for.
+          - cmd: "actionlint --version"
+            name: "actionlint"
+          - cmd: "cppcheck --version"
+            name: "cppcheck"
+          - cmd: "gswin64c --version"
+            name: "ghostscript"
+          - cmd: "hyperfine --version"
+            name: "hyperfine"
+          - cmd: "magick --version"
+            name: "imagemagick"
+          - cmd: "ollama --version"
+            name: "ollama"
+          - cmd: "tokei --version"
+            name: "tokei"
 
       dotfiles_to_verify:
           - path: "{{ ansible_env.HOME }}/.config/atuin/config.toml"
@@ -267,6 +343,25 @@
         ansible.builtin.debug:
             msg: "OK {{ item.item.name }}: {{ (item.stdout_lines + item.stderr_lines) | first | default('?') }}"
         loop: "{{ darwin_verify_results.results }}"
+        loop_control:
+            label: "{{ item.item.name }}"
+        when: effective_platform == "darwin"
+
+      - name: Verify macOS-only tool is installed and functional
+        ansible.builtin.command: "{{ item.cmd }}"
+        loop: "{{ darwin_only_tools_to_verify }}"
+        loop_control:
+            label: "{{ item.name }}"
+        register: darwin_only_verify_results
+        changed_when: false
+        environment:
+            PATH: "{{ homebrew_bin }}:{{ ansible_env.PATH }}"
+        when: effective_platform == "darwin"
+
+      - name: Print verified macOS-only versions
+        ansible.builtin.debug:
+            msg: "OK {{ item.item.name }}: {{ (item.stdout_lines + item.stderr_lines) | first | default('?') }}"
+        loop: "{{ darwin_only_verify_results.results }}"
         loop_control:
             label: "{{ item.item.name }}"
         when: effective_platform == "darwin"

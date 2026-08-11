@@ -60,13 +60,18 @@ cargo_packages:
     - cargo-modules
 
 # Homebrew carries these at upstream parity, so macOS takes them from
-# roles/tools/vars/darwin.yml. Neither apt nor WinGet has them at all.
+# roles/tools/vars/darwin.yml, and apt has none of them. In practice this list
+# is Debian-only: the cargo tasks in the runtimes role skip Windows, which
+# takes tokei from WinGet and simply goes without the rest.
 cargo_packages_non_darwin:
     - cargo-outdated
     - cargo-update
     - diskonaut
     - ripgrep_all
+    - tokei
     - wasm-pack
+    - websocat
+    - zizmor
 
 # Debian is the only gap for these: macOS takes them from Homebrew and Windows
 # from WinGet, both at parity. atuin also has no reason to exist on Windows —
@@ -75,17 +80,35 @@ cargo_packages_debian:
     - atuin
     - bottom
 
-# parity for ansible-lint, commitizen and yamllint, but every one of those
-# formulae depends on python@3.14 — a second Python on a machine where ADR-0006
-# made uv authoritative. checkov shipped 43 releases in 180 days and Homebrew
-# trails by nine; ansible-core and ipykernel have no formula at all. So all six
-# stay here on all three platforms. See ADR-0010.
+# Python tools installed on all platforms via uv tool install. Homebrew is at
+# parity for ansible-lint and commitizen, but uv owns Python tooling under
+# ADR-0006 and neither is worth a second install path. checkov shipped 43
+# releases in 180 days and Homebrew trails by nine; ansible-core and ipykernel
+# have no formula at all. See ADR-0010.
 pip_packages:
     - ansible-core
     - ansible-lint
     - checkov
     - commitizen
-    - ipykernel
+
+# macOS takes these from Homebrew instead — see tools/vars/darwin.yml. The
+# yamllint formula depends on python@3.14, which the old comment here treated
+# as disqualifying; that interpreter is already on every macOS machine this
+# repo builds, because nuget, ollama and sqlfluff in homebrew_tools each depend
+# on it too. Neither apt nor WinGet ships any of the three, and the uv tasks
+# skip Windows, so this list is Debian-only in practice.
+#
+# jupyterlab replaced a bare `ipykernel` entry that could never have worked:
+# ipykernel ships no executable, so `uv tool install ipykernel` exits with
+# "No executables are provided" and the task's failed_when: false swallowed it
+# on every run since. A kernel is a library a front end imports, not a tool —
+# so install the front end and let it bring the kernel. jupyterlab depends on
+# ipykernel>=6.5.0, and its kernelspec resolves out of the same environment,
+# which is why no separate `ipykernel install` step is needed on either
+# platform.
+pip_packages_non_darwin:
+    - jupyterlab
+    - sqlfluff
     - yamllint
 
 # Claude Code MCP servers configured at user scope
@@ -99,11 +122,23 @@ mcp_servers:
     - name: playwright
       command: npx @playwright/mcp@latest
 
-# pnpm packages installed globally on all platforms. Homebrew has cspell at
-# parity, but the formula depends on `node`, which would sit alongside the nvm
-# Node that ADR-0006 made authoritative. Neither apt nor WinGet packages it.
-pnpm_packages:
+# pnpm packages installed globally on every platform. Empty today — cspell was
+# the only entry and macOS now takes it from Homebrew — but kept so a genuinely
+# cross-platform package has an obvious home, and so the install task keeps the
+# same shape as the cargo one above.
+pnpm_packages: []
+
+# macOS takes all three from Homebrew instead — see tools/vars/darwin.yml. Each
+# formula depends on `node`, which the old comment here read as a conflict with
+# the nvm Node that ADR-0006 made authoritative. It is not one: markdownlint-cli2
+# and svgo in homebrew_tools already pull that keg in, and config/zsh/00-path.zsh
+# puts the nvm shims ahead of the Homebrew prefix, so nvm still wins the `node`
+# lookup. Neither apt nor WinGet packages any of them, and the pnpm task skips
+# Windows, so this list is Debian-only in practice.
+pnpm_packages_non_darwin:
     - cspell
+    - promptfoo
+    - stylelint
 
 # VS Code extensions installed on all platforms
 vscode_extensions:
