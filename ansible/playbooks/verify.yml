@@ -69,6 +69,8 @@
           # Homebrew on macOS, cargo on Ubuntu (ADR-0010). Verified because the
           # source differs by platform, so a quiet failure on either side leaves
           # the command missing and nothing else here would notice.
+          - cmd: "cargo cache --version"
+            name: "cargo-cache"
           - cmd: "cargo outdated --version"
             name: "cargo-outdated"
           - cmd: "cargo install-update --version"

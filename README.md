@@ -104,7 +104,7 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 │   │   └── windows.yml         # Windows target (WinRM via WSL2 gateway)
 │   ├── playbooks/
 │   │   ├── install.yml          # Main install playbook (runs verify at end)
-│   │   ├── upgrade.yml          # Upgrade all packages
+│   │   ├── upgrade.yml          # Upgrade all packages, then prune caches
 │   │   └── verify.yml           # Verify tools are installed
 │   ├── requirements.yml         # Ansible Galaxy collections
 │   └── roles/
@@ -277,14 +277,14 @@ those from Homebrew and Windows from WinGet or going without. See
 The cargo, uv and pnpm tasks all skip Windows, so an Ubuntu row means Ubuntu
 alone even where the variable name says `non_darwin`.
 
-| Manager | Platforms | Packages                                                                                                 |
-| ------- | --------- | -------------------------------------------------------------------------------------------------------- |
-| Cargo   | all       | `cargo-modules`                                                                                          |
-| Cargo   | Ubuntu    | `cargo-outdated`, `cargo-update`, `diskonaut`, `ripgrep_all`, `tokei`, `wasm-pack`, `websocat`, `zizmor` |
-| uv      | all       | `ansible-core`, `ansible-lint`, `checkov`, `commitizen`                                                  |
-| uv      | Ubuntu    | `jupyterlab`, `sqlfluff`, `yamllint`                                                                     |
-| pnpm    | Ubuntu    | `cspell`, `promptfoo`, `stylelint`                                                                       |
-| VS Code | all       | GitLens, EditorConfig, Markdownlint, Night Owl theme, VS Code Icons                                      |
+| Manager | Platforms | Packages                                                                                                                |
+| ------- | --------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Cargo   | all       | `cargo-modules`                                                                                                         |
+| Cargo   | Ubuntu    | `cargo-cache`, `cargo-outdated`, `cargo-update`, `diskonaut`, `ripgrep_all`, `tokei`, `wasm-pack`, `websocat`, `zizmor` |
+| uv      | all       | `ansible-core`, `ansible-lint`, `checkov`, `commitizen`                                                                 |
+| uv      | Ubuntu    | `jupyterlab`, `sqlfluff`, `yamllint`                                                                                    |
+| pnpm    | Ubuntu    | `cspell`, `promptfoo`, `stylelint`                                                                                      |
+| VS Code | all       | GitLens, EditorConfig, Markdownlint, Night Owl theme, VS Code Icons                                                     |
 
 ### Omitted Tools
 

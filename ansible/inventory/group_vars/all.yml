@@ -64,6 +64,7 @@ cargo_packages:
 # is Debian-only: the cargo tasks in the runtimes role skip Windows, which
 # takes tokei from WinGet and simply goes without the rest.
 cargo_packages_non_darwin:
+    - cargo-cache
     - cargo-outdated
     - cargo-update
     - diskonaut

@@ -244,3 +244,24 @@ package installation, runtime setup, OS configuration, verification — are
 invoked automatically within those scripts, not separately by the user. Avoid
 adding tool dependencies (e.g. a task runner) that must be satisfied before
 setup can begin.
+
+## 16. Reclaim caches automatically; report anything else as a suggestion
+
+`upgrade` deletes cached and superseded state on its own, and never removes an
+installed package or runtime. Where an upgrade leaves something behind that
+only the machine's owner can judge, it names the candidate and stops.
+
+**Why:** The two look alike and are not. A cache entry is derived — deleting it
+costs a re-download or a re-extraction and nothing else, so no one needs to be
+asked. An unused Node version or pinned Rust toolchain is not derived: it is
+the last copy of something a project may still need, and this repository cannot
+see the projects. Deleting one to reclaim disk trades a reversible cost for an
+irreversible one.
+
+**In practice:** `upgrade` runs `brew cleanup`, `apt clean`, `uv cache prune`,
+`pnpm store prune` and `cargo cache --autoclean` without asking. It reports
+non-default nvm Node versions and rustup toolchains with their sizes, alongside
+the command that would remove each, and deletes neither. This is the same
+stance `diff` takes toward undeclared packages: a prompt to review, not a
+fault. The install playbook does none of it — a fresh machine has nothing
+superseded to collect.

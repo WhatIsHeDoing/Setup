@@ -57,12 +57,18 @@
             - cask_upgrade.stdout is defined
             - "'SKIPPED' in cask_upgrade.stdout"
 
+      # `clean` empties /var/cache/apt/archives outright, where `autoclean`
+      # only drops the .debs apt can no longer download. The module runs clean
+      # before the upgrade, so the freshly fetched packages survive the run and
+      # get collected by the next one — which is what the cleanup block at the
+      # end of this play does for every other manager.
       - name: Upgrade apt packages
         ansible.builtin.apt:
             upgrade: full
             update_cache: true
             autoclean: true
             autoremove: true
+            clean: true
         become: true
         when: ansible_os_family == "Debian"
 
@@ -109,3 +115,130 @@
         environment:
             PATH: "{{ homebrew_bin }}:{{ pnpm_home }}:{{ ansible_env.PATH }}"
             PNPM_HOME: "{{ pnpm_home }}"
+
+      # ── Reclaim disk left behind by the upgrades above ───────────────────
+      # Each task here deletes only unreferenced state: versions nothing points
+      # at any more, and downloads already unpacked. None of them uninstall a
+      # package this repo declares, so they do not cross the "install and
+      # upgrade, never uninstall" line in CLAUDE.md. They also stay out of
+      # install.yml — a fresh machine has nothing superseded to collect, and
+      # the play that builds a machine should not also tidy one.
+      #
+      # Every task tolerates failure: a cleanup that errors must not fail a run
+      # whose upgrades all succeeded.
+
+      - name: Remove superseded Homebrew versions and stale downloads
+        ansible.builtin.command: brew cleanup
+        register: brew_cleanup
+        changed_when: "'Removing' in brew_cleanup.stdout"
+        failed_when: false
+        environment:
+            PATH: "{{ homebrew_bin }}:{{ ansible_env.PATH }}"
+        when: ansible_os_family == "Darwin"
+
+      - name: Report disk reclaimed by Homebrew
+        ansible.builtin.debug:
+            msg: "{{ brew_cleanup.stdout_lines | select('search', 'freed') | list }}"
+        when:
+            - ansible_os_family == "Darwin"
+            - brew_cleanup.stdout is defined
+            - "'freed' in brew_cleanup.stdout"
+
+      # Prunes dangling wheels and cached environments no installed tool
+      # resolves to. `uv cache clean` would empty the cache instead, costing a
+      # re-download on the next install for no extra space that matters.
+      - name: Prune the uv cache
+        ansible.builtin.command: uv cache prune
+        changed_when: false
+        failed_when: false
+        environment:
+            PATH: "{{ homebrew_bin }}:{{ local_bin }}:{{ ansible_env.PATH }}"
+        when: uv_available.rc == 0
+
+      # pnpm's store is content-addressable and shared by every project on the
+      # machine, so an upgrade leaves the old versions behind as orphans.
+      - name: Prune unreferenced packages from the pnpm store
+        ansible.builtin.command: pnpm store prune
+        changed_when: false
+        failed_when: false
+        environment:
+            PATH: "{{ homebrew_bin }}:{{ pnpm_home }}:{{ ansible_env.PATH }}"
+            PNPM_HOME: "{{ pnpm_home }}"
+
+      # --autoclean removes the unpacked sources under registry/src and leaves
+      # the .crate archives they were extracted from, so the next build
+      # re-extracts rather than re-downloads. On this machine that is the 1.3GB
+      # half of a 1.6GB registry. Stable cargo still ships no cache collector of
+      # its own — `cargo clean gc` remains nightly-only as of 1.97 — which is
+      # the whole reason cargo-cache is a declared tool.
+      - name: Prune unpacked sources from the cargo registry
+        ansible.builtin.command: cargo cache --autoclean
+        changed_when: false
+        failed_when: false
+        environment:
+            PATH: "{{ cargo_bin }}:{{ homebrew_bin }}:{{ ansible_env.PATH }}"
+
+      # ── Report what only the machine's owner can decide to remove ─────────
+      # Both tasks below name candidates and delete nothing. nvm and rustup
+      # accumulate whole toolchains rather than caches, and removing one is an
+      # uninstall — a judgement about projects this repo cannot see, and the
+      # line CLAUDE.md draws. Reporting takes the same stance as `just diff`:
+      # an unused version is a prompt to review, not a fault.
+
+      - name: Find Node versions nvm no longer points at
+        ansible.builtin.shell: |
+            set -uo pipefail
+            . {{ nvm_sh }}
+            default_version=$(nvm version default)
+            for version in $(ls -1 "$NVM_DIR/versions/node" 2>/dev/null); do
+                [ "$version" = "$default_version" ] && continue
+                printf '%s (%s)\n' "$version" \
+                    "$(du -sh "$NVM_DIR/versions/node/$version" | cut -f1)"
+            done
+            exit 0
+        args:
+            executable: /bin/bash
+        environment:
+            NVM_DIR: "{{ ansible_env.HOME }}/.nvm"
+        register: unused_node_versions
+        changed_when: false
+        failed_when: false
+        when: ansible_os_family in ["Darwin", "Debian"]
+
+      - name: Report Node versions safe to remove
+        ansible.builtin.debug:
+            msg: >-
+                nvm keeps every Node it installs. Unused, remove with
+                `nvm uninstall <version>`:
+                {{ unused_node_versions.stdout_lines | join(', ') }}
+        when:
+            - unused_node_versions.stdout is defined
+            - unused_node_versions.stdout | trim | length > 0
+
+      - name: Find rustup toolchains other than the default
+        ansible.builtin.shell: |
+            set -uo pipefail
+            default_toolchain=$(rustup default | cut -d' ' -f1)
+            for toolchain in $(rustup toolchain list | cut -d' ' -f1); do
+                [ "$toolchain" = "$default_toolchain" ] && continue
+                printf '%s (%s)\n' "$toolchain" \
+                    "$(du -sh "$HOME/.rustup/toolchains/$toolchain" | cut -f1)"
+            done
+            exit 0
+        args:
+            executable: /bin/bash
+        environment:
+            PATH: "{{ cargo_bin }}:{{ ansible_env.PATH }}"
+        register: extra_rust_toolchains
+        changed_when: false
+        failed_when: false
+
+      - name: Report rustup toolchains safe to remove
+        ansible.builtin.debug:
+            msg: >-
+                Pinned and nightly toolchains outlive the projects that wanted
+                them. Remove with `rustup toolchain uninstall <name>`:
+                {{ extra_rust_toolchains.stdout_lines | join(', ') }}
+        when:
+            - extra_rust_toolchains.stdout is defined
+            - extra_rust_toolchains.stdout | trim | length > 0

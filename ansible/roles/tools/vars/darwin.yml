@@ -7,10 +7,10 @@
 # off PATH deliberately, so BSD semantics remain the default for any script
 # that does not ask for GNU. See ADR-0007.
 #
-# bottom, cargo-outdated, cargo-update, diskonaut and wasm-pack come from here
-# rather than from cargo: Homebrew ships all five at upstream parity, and a
-# bottle needs no compiler. See ADR-0010 for the three conditions that send a
-# package back to cargo, uv or pnpm instead.
+# bottom, cargo-cache, cargo-outdated, cargo-update, diskonaut and wasm-pack
+# come from here rather than from cargo: Homebrew ships all six at upstream
+# parity, and a bottle needs no compiler. See ADR-0010 for the three conditions
+# that send a package back to cargo, uv or pnpm instead.
 #
 # cspell and yamllint joined them for the same reason. Both were held back on
 # the grounds that their formulae pull in a second Node and a second Python
@@ -36,6 +36,7 @@ homebrew_tools:
     - bats-core
     - bats-support
     - bottom
+    - cargo-cache
     - cargo-outdated
     - cargo-update
     - clang-format
