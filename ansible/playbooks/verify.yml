@@ -389,6 +389,36 @@
             label: "{{ item.item }}"
         when: effective_platform == "darwin"
 
+      # EMFSkinToneBaseKeyPreferences, where the emoji picker stores its
+      # per-emoji tone choices, is undocumented. Reading it back is the only way
+      # to notice a macOS release moving or renaming it: the install task would
+      # keep reporting success while writing somewhere the picker no longer
+      # reads. --check writes nothing.
+      #
+      # playbook_dir rather than repo_root, because `just verify` runs this
+      # playbook on its own and passes no extra vars.
+      - name: Probe the emoji picker skin-tone defaults
+        ansible.builtin.command: >-
+            python3 {{ playbook_dir }}/../roles/os_config/files/set_emoji_skin_tone.py
+            --tone {{ macos_emoji_skin_tone }} --check
+        register: emoji_skin_tone_probe
+        changed_when: false
+        when:
+            - effective_platform == "darwin"
+            - macos_emoji_skin_tone | length > 0
+
+      - name: Assert every emoji carries the configured skin tone
+        ansible.builtin.assert:
+            that: emoji_skin_tone_probe.stdout.startswith("OK")
+            fail_msg: >-
+                {{ emoji_skin_tone_probe.stdout }}. Re-run the install playbook; if the
+                drift survives that, macOS has probably changed where the picker keeps
+                skin tones and set_emoji_skin_tone.py needs revisiting.
+            success_msg: "{{ emoji_skin_tone_probe.stdout }}"
+        when:
+            - effective_platform == "darwin"
+            - macos_emoji_skin_tone | length > 0
+
       # ADR-0008 argued that the assembled shell is the thing worth testing,
       # not the tasks that write it. This is that test, and it reads the same
       # on macOS and Ubuntu because the fragments do (ADR-0009).

@@ -112,6 +112,14 @@ pip_packages_non_darwin:
     - sqlfluff
     - yamllint
 
+# Skin tone the macOS emoji picker offers by default: light, medium-light,
+# medium, medium-dark or dark. Set it to "" to leave the picker alone.
+#
+# macOS has no global setting for this — the picker learns a tone per emoji as
+# you use it — so roles/os_config seeds the same choice for all 323 emoji that
+# accept a modifier. Ignored on Debian and Windows, which have no such picker.
+macos_emoji_skin_tone: light
+
 # Claude Code MCP servers configured at user scope
 mcp_servers:
     - name: cloudflare

@@ -30,9 +30,11 @@ words:
     - bootstrapper
     - caesiumclt
     - cask
+    - cfprefsd
     - checkov
     - chezmoi
     - cloudflare
+    - codepoint
     - commitizen
     - coreutils
     - cpanminus
@@ -267,6 +269,7 @@ ignoreWords:
     - showmanual
     - signingkey
     - socketfilterfw
+    - startswith
     - tamasfe
     - timonwong
     - tlsv

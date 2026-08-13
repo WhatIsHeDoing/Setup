@@ -267,3 +267,15 @@
       key: NSAutomaticWindowAnimationsEnabled
       type: bool
       value: false
+
+# Emoji
+# osx_defaults cannot reach this setting: it lives two levels down, inside a
+# dictionary inside EMFDefaultsKey, and the module writes only top-level keys.
+# The script explains the rest, including why it avoids PlistBuddy.
+- name: Set the default emoji picker skin tone
+  ansible.builtin.command: >-
+      python3 {{ repo_root }}/ansible/roles/os_config/files/set_emoji_skin_tone.py
+      --tone {{ macos_emoji_skin_tone }}
+  register: emoji_skin_tone
+  changed_when: emoji_skin_tone.stdout.startswith('CHANGED')
+  when: macos_emoji_skin_tone | length > 0

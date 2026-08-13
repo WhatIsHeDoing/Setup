@@ -446,6 +446,21 @@ git_user_email: "you@example.com"
 Ansible picks this file up automatically. If it is absent the identity tasks are skipped — nothing breaks.
 The `.example` file documents the available options.
 
+### Emoji skin tone (macOS)
+
+macOS ships no global skin-tone setting — its emoji picker learns a tone one
+emoji at a time, as you pick them. The `os_config` role seeds that choice for all
+323 emoji that accept a modifier, so a fresh machine offers the tone you want
+straight away. Change it in `ansible/inventory/group_vars/all.yml`:
+
+```yaml
+macos_emoji_skin_tone: light # light, medium-light, medium, medium-dark or dark
+```
+
+Set it to `""` to leave the picker alone. Log out and back in after a change —
+the picker reads these defaults when it starts. Emoji taking two tones at once,
+such as 🤝 and couples, still need picking by hand.
+
 ## Documentation
 
 - [docs/principles.md](docs/principles.md) — Architecture principles guiding tool and approach choices
