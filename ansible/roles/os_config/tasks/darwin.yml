@@ -54,20 +54,32 @@
       value: Nlsv
   notify: Restart Finder
 
+# Both keys sit two levels down, past the reach of osx_defaults. These tasks
+# used PlistBuddy, which edits com.apple.finder.plist directly: cfprefsd owns
+# that domain and caches it, so the file on disk trails what Finder actually
+# reads and a flush could drop the change. The script routes through cfprefsd
+# instead, and reports whether it wrote anything, so these no longer have to
+# claim changed_when: false on a task that does change things.
 - name: Set Finder list view sort column to name
-  ansible.builtin.shell: |
-      plist="{{ ansible_env.HOME }}/Library/Preferences/com.apple.finder.plist"
-      /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:ListViewSettings:sortColumn name" "$plist" 2>/dev/null \
-          || /usr/libexec/PlistBuddy -c "Add :StandardViewSettings:ListViewSettings:sortColumn string name" "$plist"
-  changed_when: false
+  ansible.builtin.command: >-
+      python3 {{ repo_root }}/ansible/roles/os_config/files/set_nested_default.py
+      --domain com.apple.finder
+      --key-path StandardViewSettings:ListViewSettings:sortColumn
+      --type string --value name
+  register: finder_sort_column
+  changed_when: finder_sort_column.stdout.startswith('CHANGED')
   notify: Restart Finder
 
+# Written as a real rather than the integer the PlistBuddy version declared,
+# because Finder stores this key as one regardless and would rewrite an integer.
 - name: Set Finder list view icon size to large
-  ansible.builtin.shell: |
-      plist="{{ ansible_env.HOME }}/Library/Preferences/com.apple.finder.plist"
-      /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:ListViewSettings:iconSize 32" "$plist" 2>/dev/null \
-          || /usr/libexec/PlistBuddy -c "Add :StandardViewSettings:ListViewSettings:iconSize integer 32" "$plist"
-  changed_when: false
+  ansible.builtin.command: >-
+      python3 {{ repo_root }}/ansible/roles/os_config/files/set_nested_default.py
+      --domain com.apple.finder
+      --key-path StandardViewSettings:ListViewSettings:iconSize
+      --type float --value 32
+  register: finder_icon_size
+  changed_when: finder_icon_size.stdout.startswith('CHANGED')
   notify: Restart Finder
 
 - name: Set VS Code as default app for Markdown files
