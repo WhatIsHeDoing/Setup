@@ -89,6 +89,7 @@ homebrew_tools:
     - ripgrep-all
     - rsync
     - rtk
+    - sd
     - shellcheck
     - shfmt
     - sqlfluff

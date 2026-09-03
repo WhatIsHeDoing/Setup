@@ -157,6 +157,7 @@ ignoreWords:
     - blockinfile
     - buildx
     - chdir
+    - chmln
     - clmv
     - committerdate
     - compdef

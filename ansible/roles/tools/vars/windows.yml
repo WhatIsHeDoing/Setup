@@ -11,6 +11,7 @@ winget_tools:
     - ArtifexSoftware.GhostScript
     - BurntSushi.ripgrep.MSVC
     - Casey.Just
+    - chmln.sd
     - Clement.bottom
     - Cppcheck.Cppcheck
     - dandavison.delta

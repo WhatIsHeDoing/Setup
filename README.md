@@ -205,6 +205,7 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 | [ripgrep-all]             | all            | ripgrep across PDFs, Office docs, etc.            |
 | [rsync]                   | macOS          | GNU rsync, replacing the bundled openrsync        |
 | [rtk]                     | macOS          | CLI proxy that cuts LLM token use                 |
+| [sd]                      | all            | Find and replace, same syntax on every platform   |
 | [shellcheck]              | all            | Shell script linter                               |
 | [shfmt]                   | all            | Shell script formatter                            |
 | [sqlfluff]                | macOS, Ubuntu  | SQL linter and auto-formatter                     |
@@ -277,14 +278,14 @@ those from Homebrew and Windows from WinGet or going without. See
 The cargo, uv and pnpm tasks all skip Windows, so an Ubuntu row means Ubuntu
 alone even where the variable name says `non_darwin`.
 
-| Manager | Platforms | Packages                                                                                                                |
-| ------- | --------- | ----------------------------------------------------------------------------------------------------------------------- |
-| Cargo   | all       | `cargo-modules`                                                                                                         |
-| Cargo   | Ubuntu    | `cargo-cache`, `cargo-outdated`, `cargo-update`, `diskonaut`, `ripgrep_all`, `tokei`, `wasm-pack`, `websocat`, `zizmor` |
-| uv      | all       | `ansible-core`, `ansible-lint`, `checkov`, `commitizen`                                                                 |
-| uv      | Ubuntu    | `jupyterlab`, `sqlfluff`, `yamllint`                                                                                    |
-| pnpm    | Ubuntu    | `cspell`, `promptfoo`, `stylelint`                                                                                      |
-| VS Code | all       | GitLens, EditorConfig, Markdownlint, Night Owl theme, VS Code Icons                                                     |
+| Manager | Platforms | Packages                                                                                                                      |
+| ------- | --------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Cargo   | all       | `cargo-modules`                                                                                                               |
+| Cargo   | Ubuntu    | `cargo-cache`, `cargo-outdated`, `cargo-update`, `diskonaut`, `ripgrep_all`, `sd`, `tokei`, `wasm-pack`, `websocat`, `zizmor` |
+| uv      | all       | `ansible-core`, `ansible-lint`, `checkov`, `commitizen`                                                                       |
+| uv      | Ubuntu    | `jupyterlab`, `sqlfluff`, `yamllint`                                                                                          |
+| pnpm    | Ubuntu    | `cspell`, `promptfoo`, `stylelint`                                                                                            |
+| VS Code | all       | GitLens, EditorConfig, Markdownlint, Night Owl theme, VS Code Icons                                                           |
 
 ### Omitted Tools
 
@@ -575,6 +576,7 @@ just check
 [rtk]: https://www.rtk-ai.app/
 [Rust]: https://www.rust-lang.org/
 [rustup]: https://rustup.rs/
+[sd]: https://github.com/chmln/sd
 [shellcheck]: https://www.shellcheck.net/
 [shfmt]: https://github.com/mvdan/sh
 [Spotify]: https://open.spotify.com/
