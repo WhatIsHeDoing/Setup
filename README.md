@@ -275,8 +275,8 @@ it does — which is why several rows read Ubuntu rather than all, macOS taking
 those from Homebrew and Windows from WinGet or going without. See
 [ADR-0010](docs/adr/0010-os-package-managers-before-runtime-ones.md).
 
-The cargo, uv and pnpm tasks all skip Windows, so an Ubuntu row means Ubuntu
-alone even where the variable name says `non_darwin`.
+Windows runs its own runtime tasks over the cross-platform lists alone, so an
+Ubuntu row means Ubuntu alone even where the variable name says `non_darwin`.
 
 | Manager | Platforms | Packages                                                                                                                      |
 | ------- | --------- | ----------------------------------------------------------------------------------------------------------------------------- |
