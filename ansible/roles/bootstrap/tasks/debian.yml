@@ -20,7 +20,6 @@
       name: Europe/London
   become: true
 
-# Docker repository
 - name: Add Docker GPG key
   ansible.builtin.shell: |
       sudo install -m 0755 -d /etc/apt/keyrings
@@ -36,7 +35,6 @@
       filename: docker
   become: true
 
-# kubectl repository
 - name: Add kubectl GPG key
   ansible.builtin.shell: |
       curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key | \
@@ -51,7 +49,6 @@
       filename: kubernetes
   become: true
 
-# eza repository
 - name: Add eza GPG key
   ansible.builtin.shell: |
       wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | \
@@ -67,15 +64,13 @@
       filename: gierens
   become: true
 
-# PowerShell repository
 - name: Add Microsoft repository package
   ansible.builtin.apt:
       deb: "https://packages.microsoft.com/config/ubuntu/{{ ansible_distribution_version }}/packages-microsoft-prod.deb"
       state: present
   become: true
-  ignore_errors: true # Falls back gracefully if version not supported
+  ignore_errors: true # Not every Ubuntu release has a package
 
-# Lens repository
 - name: Add Lens GPG key
   ansible.builtin.shell: |
       curl -fsSL https://downloads.k8slens.dev/keys/gpg | \

@@ -1,15 +1,6 @@
-# Emoji that accept a single skin-tone modifier, one fully-qualified sequence
-# per line, in codepoint order.
-#
-# Derived from the Unicode emoji-test.txt data for Emoji 17.0 (dated
-# 2025-08-04), published at https://unicode.org/Public/emoji/latest/emoji-test.txt
-# by taking every fully-qualified sequence carrying exactly one modifier and
-# removing that modifier. Storing only the 323 bases rather than all 1,615
-# toned forms keeps this file at 3K instead of 654K; set_emoji_skin_tone.py
-# rebuilds any toned form by inserting the modifier after the first codepoint
-# and dropping that codepoint's variation selector. That rule reproduces all
-# 1,615 toned sequences in emoji-test.txt exactly, so the shorter file loses
-# nothing.
+# Emoji that accept one skin-tone modifier, one fully-qualified sequence per
+# line, in codepoint order. Derived from Unicode emoji-test.txt for Emoji 17.0
+# by dropping the modifier from every sequence that carries exactly one.
 #
 # Emoji taking two modifiers at once (couples, handshakes) are absent by
 # design: they need a tone per person, which is not a single default.

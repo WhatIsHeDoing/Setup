@@ -1,12 +1,5 @@
-# Machine-specific zsh configuration. Not tracked by git.
-#
-# The dotfiles role copies this template to ~/.config/zsh/99-local.zsh once and
-# then never touches it again, so anything here survives every playbook run.
-# It sorts last, so it can override any repo-managed fragment.
-#
-# Use it for settings that are personal to one machine and have no business in
-# a shared repo: credentials, agent sockets, per-host paths, work-only tooling.
-# Anything you would want on every machine belongs in config/zsh/ instead.
+# Machine-specific zsh config, seeded once by the dotfiles role and never
+# overwritten. It sorts last, so it can override any other fragment.
 
 # Examples:
 #

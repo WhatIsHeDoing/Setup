@@ -1,9 +1,7 @@
 ---
-# Spell-check config. See the cspell skill: words vs ignoreWords vs flagWords.
 $schema: https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json
 version: "0.2"
-# en keeps American spellings valid for code tokens (color, gray); flagWords
-# below enforce British spelling in prose.
+# en keeps American spellings valid in code; flagWords reject them in prose.
 language: en,en-GB
 ignorePaths:
     - .claude/
@@ -15,7 +13,6 @@ ignorePaths:
     - tmp/
     - "*.lock"
     - "*.retry"
-# Real words and recognizable product names — offered as suggestions.
 words:
     - AlDente
     - Amaury
@@ -45,6 +42,7 @@ words:
     - diffable
     - diffutils
     - diskonaut
+    - docstrings
     - dotfile
     - dotfiles
     - duti
@@ -132,12 +130,12 @@ words:
     - wasm
     - websocat
     - winget
+    - worklist
     - xcbeautify
     - yamllint
     - yq
     - Zed
     - zizmor
-# Code identifiers, config keys, handles — skipped, not added to the dictionary.
 ignoreWords:
     - advfirewall
     - ajeetdsouza
@@ -291,7 +289,6 @@ ignoreWords:
     - zprofile
     - zshenv
     - zshrc
-# American spellings to reject in prose, with the British suggestion.
 flagWords:
     - behavior->behaviour
     - behaviors->behaviours

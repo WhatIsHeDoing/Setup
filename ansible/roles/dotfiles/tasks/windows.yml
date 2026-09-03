@@ -1,7 +1,4 @@
 ---
-# All file operations use wslpath to resolve Windows environment variable paths
-# into WSL2-accessible mount paths (e.g. /mnt/c/Users/<user>/AppData/Roaming)
-
 - name: Resolve Windows APPDATA path
   ansible.builtin.shell: wslpath "$(cmd.exe /c 'echo %APPDATA%' 2>/dev/null | tr -d '\r\n')" # noqa: risky-shell-pipe
   register: appdata_path

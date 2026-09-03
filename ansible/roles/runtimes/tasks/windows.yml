@@ -24,7 +24,7 @@
   changed_when: false
   failed_when: false
 
-# Refresh PATH from registry after WinGet installs before calling newly installed binaries
+# A fresh WinGet install is absent from the PATH of this session.
 - name: Install Node.js LTS via nvm-windows
   ansible.windows.win_powershell:
       script: |

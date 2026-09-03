@@ -1,21 +1,10 @@
 #!/usr/bin/env python3
 """Set the default skin tone the macOS emoji picker offers for every emoji.
 
-macOS exposes no global skin-tone setting. The picker instead learns one emoji
-at a time, recording each choice in com.apple.EmojiPreferences under
-EMFDefaultsKey → EMFSkinToneBaseKeyPreferences, a dictionary mapping a base
-emoji to the toned variant last picked. This script fills that dictionary in
-one go, which is the closest thing to a default the system has.
-
-The mapping goes in through `defaults export` / `defaults import` rather than
-PlistBuddy or a direct plist edit. cfprefsd owns the domain and caches it in
-memory, so the file on disk routinely trails what `defaults read` reports;
-editing it behind cfprefsd's back invites a later flush to discard the change.
-Export-merge-import stays on the supported path, needs one round trip instead
-of 323, and leaves every other key in the domain untouched.
-
-EMFSkinToneBaseKeyPreferences is undocumented, so treat a macOS upgrade as
-reason to re-check that the picker still honours it.
+cfprefsd caches the domain, so an edit behind it, such as PlistBuddy, can be
+discarded; `defaults export` and `defaults import` stay on the supported path.
+EMFSkinToneBaseKeyPreferences is undocumented, so re-check it after a macOS
+upgrade.
 """
 
 from __future__ import annotations
@@ -30,8 +19,6 @@ DOMAIN = "com.apple.EmojiPreferences"
 DEFAULTS_KEY = "EMFDefaultsKey"
 SKIN_TONE_KEY = "EMFSkinToneBaseKeyPreferences"
 
-# The Fitzpatrick modifiers, U+1F3FB to U+1F3FF, under the names Apple and the
-# Unicode charts give them.
 SKIN_TONES = {
     "light": "\U0001f3fb",
     "medium-light": "\U0001f3fc",
@@ -39,11 +26,10 @@ SKIN_TONES = {
     "medium-dark": "\U0001f3fe",
     "dark": "\U0001f3ff",
 }
+"""The Fitzpatrick modifiers U+1F3FB to U+1F3FF, under the names Apple uses."""
 
-# U+FE0F, the emoji presentation selector. A modifier already forces emoji
-# presentation, so a base carrying this selector drops it when toned: ⛹️ is
-# U+26F9 U+FE0F, but ⛹🏻 is U+26F9 U+1F3FB with no selector between them.
 VARIATION_SELECTOR = "️"
+"""U+FE0F; a modifier already forces emoji presentation, so a toned base drops it."""
 
 DEFAULT_BASES_FILE = Path(__file__).with_name("emoji-modifier-bases.txt")
 
@@ -57,9 +43,8 @@ def read_base_emoji(bases_file: Path) -> list[str]:
 def apply_tone(base: str, tone: str) -> str:
     """Build the toned sequence for one base emoji.
 
-    The modifier follows the base codepoint and replaces its presentation
-    selector, which reproduces every single-tone sequence in Unicode's
-    emoji-test.txt exactly — see the header of emoji-modifier-bases.txt.
+    The modifier replaces the presentation selector, matching every single-tone
+    sequence in Unicode emoji-test.txt.
     """
     remainder = base[1:]
     if remainder.startswith(VARIATION_SELECTOR):

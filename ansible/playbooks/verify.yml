@@ -68,9 +68,6 @@
             name: "ripgrep-all"
           - cmd: "atuin --version"
             name: "atuin"
-          # Homebrew on macOS, cargo on Ubuntu (ADR-0010). Verified because the
-          # source differs by platform, so a quiet failure on either side leaves
-          # the command missing and nothing else here would notice.
           - cmd: "cargo cache --version"
             name: "cargo-cache"
           - cmd: "cargo outdated --version"
@@ -109,13 +106,8 @@
             name: "lychee"
           - cmd: "zsh --version"
             name: "zsh"
-          # Tools below come from Homebrew on macOS and from apt, cargo, uv or
-          # pnpm on Ubuntu, so one entry covers both. Several answer to a name
-          # that is not the package's: ghostscript ships `gs`, imagemagick
-          # ships `magick`, wabt ships a suite of which `wasm2wat` stands in,
-          # and bats-core ships `bats`. bats-assert and bats-support have no
-          # executable at all — they are sourced libraries, so nothing here can
-          # check them beyond the install succeeding.
+          # bats-assert and bats-support ship no executable, so nothing here can
+          # check them.
           - cmd: "bats --version"
             name: "bats-core"
           - cmd: "clang-format --version"
@@ -134,9 +126,6 @@
             name: "imagemagick"
           - cmd: "jupyter-lab --version"
             name: "jupyterlab"
-          # A JupyterLab with no kernel starts and then cannot run a cell, and
-          # nothing else here would catch that. `kernelspec list` prints to
-          # stderr, which the verify task already reads alongside stdout.
           - cmd: "jupyter kernelspec list"
             name: "jupyter-kernel"
           - cmd: "promptfoo --version"
@@ -156,9 +145,6 @@
           - cmd: "zizmor --version"
             name: "zizmor"
 
-      # Formulae that override a copy macOS ships (ADR-0007). The GNU set
-      # installs under `g`-prefixed names because `libexec/gnubin` stays off
-      # PATH; diffutils is the exception and takes the plain `diff`/`cmp`.
       darwin_tools_to_verify:
           - cmd: "bash --version"
             name: "bash"
@@ -181,10 +167,6 @@
           - cmd: "rsync --version"
             name: "rsync"
 
-      # Tools Ubuntu has no package for, and no cargo, PyPI or npm equivalent
-      # either, so they are declared on macOS alone. actionlint and ollama also
-      # install on Windows via WinGet and appear in that list too; pinact and
-      # rtk are macOS-only outright.
       darwin_only_tools_to_verify:
           - cmd: "actionlint --version"
             name: "actionlint"
@@ -195,9 +177,6 @@
           - cmd: "rtk --version"
             name: "rtk"
 
-      # Overrides that take the plain name, so a PATH-ordering regression
-      # would silently hand these back to Apple's copy. Checked in a login
-      # shell, which is what ~/.zprofile configures.
       darwin_path_precedence:
           - bash
           - diff
@@ -277,12 +256,11 @@
             name: "gitleaks"
           - cmd: "lychee --version"
             name: "lychee"
-          # Ghostscript's Windows build names its console binary gswin64c,
-          # not the `gs` the Unix list checks for.
           - cmd: "actionlint --version"
             name: "actionlint"
           - cmd: "cppcheck --version"
             name: "cppcheck"
+          # Ghostscript names its Windows console binary gswin64c.
           - cmd: "gswin64c --version"
             name: "ghostscript"
           - cmd: "hyperfine --version"
@@ -393,14 +371,8 @@
             label: "{{ item.item }}"
         when: effective_platform == "darwin"
 
-      # EMFSkinToneBaseKeyPreferences, where the emoji picker stores its
-      # per-emoji tone choices, is undocumented. Reading it back is the only way
-      # to notice a macOS release moving or renaming it: the install task would
-      # keep reporting success while writing somewhere the picker no longer
-      # reads. --check writes nothing.
-      #
-      # playbook_dir rather than repo_root, because `just verify` runs this
-      # playbook on its own and passes no extra vars.
+      # playbook_dir rather than repo_root: `just verify` runs this playbook
+      # alone, with no extra vars.
       - name: Probe the emoji picker skin-tone defaults
         ansible.builtin.command: >-
             python3 {{ playbook_dir }}/../roles/os_config/files/set_emoji_skin_tone.py
@@ -423,25 +395,10 @@
             - effective_platform == "darwin"
             - macos_emoji_skin_tone | length > 0
 
-      # ADR-0008 argued that the assembled shell is the thing worth testing,
-      # not the tasks that write it. This is that test, and it reads the same
-      # on macOS and Ubuntu because the fragments do (ADR-0009).
-      #
-      # The keymap probes are the load-bearing ones, because the ordering rules
-      # in ADR-0008 exist to make exactly these three bindings survive: atuin
-      # takes Ctrl-R from fzf, and neither survives zsh-autocomplete unless it
-      # loads first (45-autocomplete.zsh). A wrong answer here means the shell
-      # silently lost a keybinding, which is precisely the failure a human does
-      # not notice until they reach for it.
-      #
-      # TERM is pinned rather than inherited. zsh-autocomplete only installs
-      # its key bindings when terminfo describes a usable terminal, so under a
-      # bare Ansible run — no TTY, TERM often unset — it would skip the reset
-      # this probe is here to catch, and the check would pass by not running.
-      #
-      # `-i` without a terminal still makes zsh complain that it cannot set the
-      # zle option. The plugins load and the bindings register regardless, so
-      # that noise goes to stderr and only stdout is asserted on.
+      # TERM is pinned: zsh-autocomplete binds keys only when terminfo
+      # describes a usable terminal, and a bare Ansible run has none. `-i`
+      # without a terminal makes zsh complain about zle on stderr; the
+      # bindings still register.
       - name: Probe the assembled zsh configuration
         ansible.builtin.shell: |
             TERM=xterm-256color zsh -i -l -c '

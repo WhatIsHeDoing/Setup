@@ -1,20 +1,10 @@
 #!/usr/bin/env python3
 """Set one nested key in a macOS preference domain.
 
-community.general.osx_defaults writes top-level keys only, and `defaults write
--dict-add` reaches exactly one level down, so settings buried deeper — Finder
-keeps its list-view options under StandardViewSettings → ListViewSettings — have
-no module to write them.
-
-PlistBuddy can reach them, but only by editing the plist file directly. cfprefsd
-owns these domains and caches them in memory, so the file on disk routinely
-trails what `defaults read` reports, and a write behind cfprefsd's back can
-vanish when it next flushes. `defaults export` and `defaults import` move the
-whole domain through cfprefsd instead, which is the supported path and leaves
-every key this script does not name untouched.
-
-Prints CHANGED or UNCHANGED so an Ansible task can set changed_when honestly
-rather than falling back to changed_when: false.
+osx_defaults writes top-level keys only, and `defaults write -dict-add` reaches
+one level down. cfprefsd caches the domain, so a PlistBuddy edit behind it can
+vanish; `defaults export` and `defaults import` stay on the supported path.
+Prints CHANGED or UNCHANGED for changed_when.
 """
 
 from __future__ import annotations
@@ -73,8 +63,7 @@ def main() -> int:
     value = VALUE_PARSERS[arguments.value_type](arguments.value)
 
     preferences = export_domain(arguments.domain)
-    # Intermediate dictionaries are absent on a machine that has never opened
-    # the pane owning them, so create them on the way down.
+    # Intermediate dictionaries are absent until the owning pane has been opened.
     container = preferences
     for key in parent_keys:
         container = container.setdefault(key, {})

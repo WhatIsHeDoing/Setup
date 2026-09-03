@@ -1,8 +1,5 @@
 ---
-# macOS already defaults to zsh, so this is the step that makes Ubuntu's shell
-# match it (principle 9 — configure the OS, not just the applications). The
-# apt package always lands at /usr/bin/zsh and registers itself in /etc/shells,
-# which `usermod` requires. Takes effect on the next login, not this run.
+# Takes effect at the next login.
 - name: Set zsh as the login shell
   ansible.builtin.user:
       name: "{{ ansible_user_id }}"
@@ -22,7 +19,7 @@
       enabled: true
       state: started
   become: true
-  failed_when: false # Gracefully skipped in containers
+  failed_when: false # Containers have no systemd
 
 - name: Install VS Code extensions
   ansible.builtin.command: "code --install-extension {{ item }}"

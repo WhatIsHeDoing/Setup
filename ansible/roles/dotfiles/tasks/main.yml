@@ -33,19 +33,6 @@
       backup: true
   when: effective_platform != "windows"
 
-# ── Zsh configuration ────────────────────────────────────────────────────
-# Shell config lives in config/zsh/*.zsh as real, readable, syntax-checkable
-# files rather than as shell code embedded in YAML strings. The role deploys
-# them and adds one source hook to each startup file. See ADR-0008.
-#
-# The numeric filename prefixes set load order: PATH first, because everything
-# else depends on it, and plugins last, because zsh-syntax-highlighting has to
-# wrap the finished set of line-editor widgets.
-#
-# macOS and Ubuntu deploy the same fragments. Each one detects what the machine
-# actually has rather than assuming Homebrew, so the platform difference stays
-# inside the shell code and never reaches these tasks (ADR-0009). Windows is
-# excluded because it runs no zsh.
 - name: Ensure ~/.config/zsh directory exists
   ansible.builtin.file:
       path: "{{ ansible_env.HOME }}/.config/zsh"
@@ -53,8 +40,9 @@
       mode: "0755"
   when: effective_platform != "windows"
 
-# No `backup:` — the repo is the source of truth for these files, and a
-# backup written alongside them would land in the directory ~/.zshrc globs.
+# No `backup:`; a backup file here would match the glob ~/.zshrc sources.
+# A fragment renamed or dropped in config/zsh/ keeps loading until deleted
+# by hand.
 - name: Deploy zsh configuration fragments
   ansible.builtin.copy:
       src: "{{ item }}"
@@ -65,9 +53,7 @@
       label: "{{ item | basename }}"
   when: effective_platform != "windows"
 
-# Escape hatch for settings that are personal to one machine — agent sockets,
-# credentials, per-host paths. Seeded once and never overwritten, so it is the
-# one file here the repo does not own. It sorts last and can override anything.
+# `force: false`: the machine owns this file after the first run.
 - name: Seed the local zsh override file
   ansible.builtin.copy:
       src: "{{ repo_root }}/config/zsh/99-local.zsh.example"
@@ -76,17 +62,8 @@
       force: false
   when: effective_platform != "windows"
 
-# ~/.zshrc sources every *.zsh in ~/.config/zsh, so a fragment renamed or
-# dropped from config/zsh/ keeps loading from whichever run deployed it. This
-# role does not delete it — nothing here removes anything from a machine. After
-# renaming or dropping a fragment, delete the old file by hand; `ls
-# ~/.config/zsh` against config/zsh/ in the repo shows what is left over.
-
-# Login shells need PATH set before ~/.zshrc runs, and on macOS ~/.zprofile is
-# also the first file zsh sources after /etc/zprofile's path_helper — the only
-# point at which that reordering can be undone. Ubuntu has no path_helper, but
-# a login shell there still wants PATH before ~/.zshrc, so the hook is the same
-# on both. 00-path.zsh guards against the double-source ~/.zshrc's glob causes.
+# 00-path.zsh explains the .zprofile hook and guards the second source from
+# the ~/.zshrc glob.
 - name: Source the PATH fragment from .zprofile
   ansible.builtin.blockinfile:
       path: "{{ ansible_env.HOME }}/.zprofile"
@@ -98,8 +75,8 @@
       backup: true
   when: effective_platform != "windows"
 
-# The (N) glob qualifier makes an empty directory expand to nothing rather
-# than erroring, so a half-applied run still leaves a usable shell.
+# The (N) qualifier makes an empty directory expand to nothing rather than
+# an error.
 - name: Source the zsh fragments from .zshrc
   ansible.builtin.blockinfile:
       path: "{{ ansible_env.HOME }}/.zshrc"
@@ -199,7 +176,6 @@
       - ll
   when: effective_platform != "windows"
 
-# ── Claude Code MCP servers ──────────────────────────────────────────────
 - name: Configure Claude Code MCP servers
   ansible.builtin.shell: |
     claude mcp list 2>/dev/null | grep -q "{{ item.name }}" || \

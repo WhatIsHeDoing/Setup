@@ -14,6 +14,5 @@ jobs:
 
             - uses: renovatebot/github-action@v46.1.16
               with:
-                  # Use a PAT (RENOVATE_TOKEN) for full PR creation capability.
-                  # Falls back to GITHUB_TOKEN for public repos.
+                  # A PAT gives full PR creation; github.token is the fallback.
                   token: ${{ secrets.RENOVATE_TOKEN || github.token }}

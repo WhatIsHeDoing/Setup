@@ -1,6 +1,4 @@
 ---
-# Git hooks managed by lefthook. Install them with `just hooks`.
-# Workflow linting (actionlint) and secret scanning (trivy) run in CI, not here.
 pre-commit:
     parallel: true
     commands:
@@ -27,6 +25,8 @@ pre-commit:
             run: taplo lint {staged_files}
         whitespace:
             run: git diff --check --cached
+        prose-ceiling:
+            run: python3 scripts/prose_ceiling.py --exclude collections
 commit-msg:
     commands:
         commitizen:

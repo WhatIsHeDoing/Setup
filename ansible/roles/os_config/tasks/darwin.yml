@@ -5,7 +5,6 @@
   changed_when: false
   failed_when: false
 
-# Finder
 - name: Show all file extensions in Finder
   community.general.osx_defaults:
       domain: com.apple.finder
@@ -54,12 +53,7 @@
       value: Nlsv
   notify: Restart Finder
 
-# Both keys sit two levels down, past the reach of osx_defaults. These tasks
-# used PlistBuddy, which edits com.apple.finder.plist directly: cfprefsd owns
-# that domain and caches it, so the file on disk trails what Finder actually
-# reads and a flush could drop the change. The script routes through cfprefsd
-# instead, and reports whether it wrote anything, so these no longer have to
-# claim changed_when: false on a task that does change things.
+# osx_defaults writes only top-level keys; these sit two levels down.
 - name: Set Finder list view sort column to name
   ansible.builtin.command: >-
       python3 {{ repo_root }}/ansible/roles/os_config/files/set_nested_default.py
@@ -70,8 +64,7 @@
   changed_when: finder_sort_column.stdout.startswith('CHANGED')
   notify: Restart Finder
 
-# Written as a real rather than the integer the PlistBuddy version declared,
-# because Finder stores this key as one regardless and would rewrite an integer.
+# Finder stores iconSize as a real and rewrites an integer.
 - name: Set Finder list view icon size to large
   ansible.builtin.command: >-
       python3 {{ repo_root }}/ansible/roles/os_config/files/set_nested_default.py
@@ -86,7 +79,6 @@
   ansible.builtin.command: duti -s com.microsoft.VSCode net.daringfireball.markdown all
   changed_when: false
 
-# Dock
 - name: Auto-hide the Dock
   community.general.osx_defaults:
       domain: com.apple.dock
@@ -111,7 +103,6 @@
       value: true
   notify: Restart Dock
 
-# Screenshots
 - name: Set screenshot format to PNG
   community.general.osx_defaults:
       domain: com.apple.screencapture
@@ -126,7 +117,6 @@
       type: bool
       value: true
 
-# Keyboard
 - name: Set fast key repeat rate
   community.general.osx_defaults:
       domain: NSGlobalDomain
@@ -141,7 +131,6 @@
       type: int
       value: 15
 
-# Misc
 - name: Suppress .DS_Store creation on network volumes
   community.general.osx_defaults:
       domain: com.apple.desktopservices
@@ -156,15 +145,13 @@
       type: bool
       value: true
 
-# Security
 - name: Enable Touch ID for sudo (via sudo_local so it survives macOS updates)
   become: true
   ansible.builtin.copy:
       dest: /etc/pam.d/sudo_local
       mode: "0444"
       content: |
-          # Managed by Setup — enables Touch ID for sudo in the terminal.
-          # /etc/pam.d/sudo includes sudo_local, which survives system updates.
+          # Managed by the Setup repository; enables Touch ID for sudo.
           auth       sufficient     pam_tid.so
 
 - name: Enable the application firewall
@@ -179,8 +166,7 @@
   register: firewall_stealth
   changed_when: "'already' not in firewall_stealth.stdout"
 
-# macOS 14+ may manage the lock-screen delay via System Settings → Lock Screen;
-# verify there if the value below does not take effect.
+# System Settings → Lock Screen can override these on macOS 14 and later.
 - name: Require a password after sleep or screen saver begins
   community.general.osx_defaults:
       domain: com.apple.screensaver
@@ -195,7 +181,6 @@
       type: int
       value: 0
 
-# Privacy
 - name: Check Homebrew analytics state
   ansible.builtin.command: brew analytics state
   changed_when: false
@@ -206,7 +191,6 @@
   changed_when: true
   when: "'disabled' not in brew_analytics_state.stdout | lower"
 
-# Screenshots
 - name: Create a dedicated Screenshots folder
   ansible.builtin.file:
       path: "{{ ansible_env.HOME }}/Pictures/Screenshots"
@@ -221,7 +205,6 @@
       value: "{{ ansible_env.HOME }}/Pictures/Screenshots"
   notify: Restart SystemUIServer
 
-# Finder
 - name: Search the current folder by default instead of the whole Mac
   community.general.osx_defaults:
       domain: com.apple.finder
@@ -230,7 +213,6 @@
       value: SCcf
   notify: Restart Finder
 
-# Dock
 - name: Remove the Dock auto-hide show delay
   community.general.osx_defaults:
       domain: com.apple.dock
@@ -247,7 +229,6 @@
       value: 0.4
   notify: Restart Dock
 
-# Keyboard
 - name: Disable press-and-hold so holding a key repeats it
   community.general.osx_defaults:
       domain: NSGlobalDomain
@@ -255,7 +236,6 @@
       type: bool
       value: false
 
-# Trackpad
 - name: Enable tap-to-click on the trackpad driver
   community.general.osx_defaults:
       domain: com.apple.driver.AppleBluetoothMultitouch.trackpad
@@ -272,7 +252,6 @@
       value: 1
   notify: Restart SystemUIServer
 
-# Interface
 - name: Disable automatic window open and close animations
   community.general.osx_defaults:
       domain: NSGlobalDomain
@@ -280,10 +259,6 @@
       type: bool
       value: false
 
-# Emoji
-# osx_defaults cannot reach this setting: it lives two levels down, inside a
-# dictionary inside EMFDefaultsKey, and the module writes only top-level keys.
-# The script explains the rest, including why it avoids PlistBuddy.
 - name: Set the default emoji picker skin tone
   ansible.builtin.command: >-
       python3 {{ repo_root }}/ansible/roles/os_config/files/set_emoji_skin_tone.py

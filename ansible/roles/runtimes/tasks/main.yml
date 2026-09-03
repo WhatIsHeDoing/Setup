@@ -3,7 +3,6 @@
   ansible.builtin.include_tasks: windows.yml
   when: effective_platform == "windows"
 
-# ── Rust (rustup) ────────────────────────────────────────────────────────
 - name: Install rustup
   ansible.builtin.shell: |
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y # noqa: risky-shell-pipe
@@ -18,7 +17,6 @@
   changed_when: true
   when: effective_platform != "windows"
 
-# ── Node.js (nvm) ────────────────────────────────────────────────────────
 - name: Install nvm (macOS via Homebrew)
   community.general.homebrew:
       name: nvm
@@ -42,7 +40,6 @@
   changed_when: false
   when: effective_platform != "windows"
 
-# ── Python (uv) ──────────────────────────────────────────────────────────
 - name: Install uv (macOS via Homebrew)
   community.general.homebrew:
       name: uv
@@ -63,7 +60,6 @@
   changed_when: false
   when: effective_platform != "windows"
 
-# ── pnpm (Ubuntu only — macOS uses Homebrew, Windows uses WinGet) ─────────
 - name: Install pnpm (Ubuntu via standalone installer)
   ansible.builtin.shell: |
     curl -fsSL https://get.pnpm.io/install.sh | sh - # noqa: risky-shell-pipe
@@ -71,12 +67,6 @@
       creates: "{{ ansible_env.HOME }}/.local/share/pnpm/pnpm"
   when: effective_platform == "debian"
 
-# ── Global packages ──────────────────────────────────────────────────────
-# cargo-binstall fetches prebuilt release binaries instead of compiling each
-# crate from source — seconds rather than minutes — and falls back to a source
-# build only when no prebuilt artefact exists. Re-running is idempotent: it
-# skips a crate already at the latest version, which also folds the old
-# `cargo install-update -a` pass into this one loop.
 - name: Install cargo-binstall
   ansible.builtin.shell: |
     curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash # noqa: risky-shell-pipe
@@ -96,10 +86,8 @@
   failed_when: false
   when: effective_platform != "windows"
 
-# One task for both platforms. The macOS and Ubuntu versions differed only in
-# whether homebrew_bin led the PATH, and adding it on Ubuntu costs one failed
-# stat on a directory that is not there. The length guard matters on macOS,
-# where the combined list is empty and a bare `pnpm add -g` would error.
+# A bare `pnpm add -g` errors, so the length guard matters where the list
+# is empty.
 - name: Install global pnpm packages
   ansible.builtin.command: "pnpm add -g {{ pnpm_install_list | join(' ') }}"
   vars:

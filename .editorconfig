@@ -1,9 +1,5 @@
-# EditorConfig is awesome: http://EditorConfig.org
-
-# This is the top-most EditorConfig file.
 root = true
 
-# All files.
 [*]
 charset = utf-8
 end_of_line = lf
@@ -12,6 +8,6 @@ indent_style = space
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-# Follows .gitattributes.
+# Must agree with .gitattributes.
 [*.{bat,cmd,ps1}]
 end_of_line = crlf

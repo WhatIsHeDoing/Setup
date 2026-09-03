@@ -1,9 +1,4 @@
 ---
-# Zsh config fragments, discovered rather than listed so adding one to
-# config/zsh/ is the only step. Sorted because the numeric filename prefixes
-# are what set load order, and ~/.zshrc sources them in glob (sorted) order.
 zsh_fragments: "{{ query('fileglob', repo_root ~ '/config/zsh/*.zsh') | sort }}"
 
-# Seeded from 99-local.zsh.example and then left alone. Named here because the
-# orphan sweep must exempt it — it is deliberately absent from config/zsh/.
 zsh_local_fragment: "{{ ansible_env.HOME }}/.config/zsh/99-local.zsh"

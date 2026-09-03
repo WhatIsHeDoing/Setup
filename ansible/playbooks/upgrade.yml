@@ -19,12 +19,9 @@
             upgrade_options: formula
         when: ansible_os_family == "Darwin"
 
-      # The homebrew module's bare `brew upgrade` also touches casks, and
-      # .pkg/installer casks (e.g. microsoft-teams) shell out to sudo with no
-      # TTY — hanging the run. Restrict the module to formulae above, then
-      # upgrade only the sudo-free casks here. pkg/installer casks are detected
-      # structurally from `brew info --json` (never a hardcoded list) and left
-      # for a manual `brew upgrade --cask <name>`.
+      # A bare `brew upgrade` includes casks, and pkg or installer casks
+      # sudo-prompt without a TTY and hang the run. `brew info --json` marks
+      # them.
       - name: Upgrade sudo-free Homebrew casks, skipping pkg/installer casks
         ansible.builtin.shell: |
             set -euo pipefail
@@ -57,11 +54,8 @@
             - cask_upgrade.stdout is defined
             - "'SKIPPED' in cask_upgrade.stdout"
 
-      # `clean` empties /var/cache/apt/archives outright, where `autoclean`
-      # only drops the .debs apt can no longer download. The module runs clean
-      # before the upgrade, so the freshly fetched packages survive the run and
-      # get collected by the next one — which is what the cleanup block at the
-      # end of this play does for every other manager.
+      # The module runs `clean` before the upgrade, so the packages it fetches
+      # survive until the next run.
       - name: Upgrade apt packages
         ansible.builtin.apt:
             upgrade: full
@@ -98,9 +92,8 @@
         environment:
             PATH: "{{ cargo_bin }}:{{ local_bin }}:{{ ansible_env.PATH }}"
 
-      # cargo-update itself comes from Homebrew on macOS under ADR-0010, so the
-      # Homebrew prefix has to be on PATH for `cargo install-update` to resolve
-      # at all. It stays behind cargo_bin, matching config/zsh/00-path.zsh.
+      # cargo-update comes from Homebrew on macOS, so its prefix must be on
+      # PATH, behind cargo_bin as in the zsh config.
       - name: Update all installed Cargo packages
         ansible.builtin.command: cargo install-update -a
         changed_when: false
@@ -116,16 +109,8 @@
             PATH: "{{ homebrew_bin }}:{{ pnpm_home }}:{{ ansible_env.PATH }}"
             PNPM_HOME: "{{ pnpm_home }}"
 
-      # ── Reclaim disk left behind by the upgrades above ───────────────────
-      # Each task here deletes only unreferenced state: versions nothing points
-      # at any more, and downloads already unpacked. None of them uninstall a
-      # package this repo declares, so they do not cross the "install and
-      # upgrade, never uninstall" line in CLAUDE.md. They also stay out of
-      # install.yml — a fresh machine has nothing superseded to collect, and
-      # the play that builds a machine should not also tidy one.
-      #
-      # Every task tolerates failure: a cleanup that errors must not fail a run
-      # whose upgrades all succeeded.
+      # These tasks delete only state nothing references, and each tolerates
+      # failure so a cleanup error cannot fail a run whose upgrades succeeded.
 
       - name: Remove superseded Homebrew versions and stale downloads
         ansible.builtin.command: brew cleanup
@@ -144,9 +129,6 @@
             - brew_cleanup.stdout is defined
             - "'freed' in brew_cleanup.stdout"
 
-      # Prunes dangling wheels and cached environments no installed tool
-      # resolves to. `uv cache clean` would empty the cache instead, costing a
-      # re-download on the next install for no extra space that matters.
       - name: Prune the uv cache
         ansible.builtin.command: uv cache prune
         changed_when: false
@@ -155,8 +137,6 @@
             PATH: "{{ homebrew_bin }}:{{ local_bin }}:{{ ansible_env.PATH }}"
         when: uv_available.rc == 0
 
-      # pnpm's store is content-addressable and shared by every project on the
-      # machine, so an upgrade leaves the old versions behind as orphans.
       - name: Prune unreferenced packages from the pnpm store
         ansible.builtin.command: pnpm store prune
         changed_when: false
@@ -165,25 +145,14 @@
             PATH: "{{ homebrew_bin }}:{{ pnpm_home }}:{{ ansible_env.PATH }}"
             PNPM_HOME: "{{ pnpm_home }}"
 
-      # --autoclean removes the unpacked sources under registry/src and leaves
-      # the .crate archives they were extracted from, so the next build
-      # re-extracts rather than re-downloads. On this machine that is the 1.3GB
-      # half of a 1.6GB registry. Stable cargo still ships no cache collector of
-      # its own — `cargo clean gc` remains nightly-only as of 1.97 — which is
-      # the whole reason cargo-cache is a declared tool.
+      # --autoclean leaves the .crate archives, so the next build re-extracts
+      # rather than re-downloads. `cargo clean gc` is still nightly-only.
       - name: Prune unpacked sources from the cargo registry
         ansible.builtin.command: cargo cache --autoclean
         changed_when: false
         failed_when: false
         environment:
             PATH: "{{ cargo_bin }}:{{ homebrew_bin }}:{{ ansible_env.PATH }}"
-
-      # ── Report what only the machine's owner can decide to remove ─────────
-      # Both tasks below name candidates and delete nothing. nvm and rustup
-      # accumulate whole toolchains rather than caches, and removing one is an
-      # uninstall — a judgement about projects this repo cannot see, and the
-      # line CLAUDE.md draws. Reporting takes the same stance as `just diff`:
-      # an unused version is a prompt to review, not a fault.
 
       - name: Find Node versions nvm no longer points at
         ansible.builtin.shell: |

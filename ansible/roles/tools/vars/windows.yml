@@ -1,11 +1,4 @@
 ---
-# Windows installs from WinGet alone — the cargo, uv and pnpm tasks in the
-# runtimes role all skip this platform — so anything WinGet does not carry is
-# simply absent here. That accounts for the gaps against darwin.yml: the bats
-# suite is bash-only, clang-format arrives inside the Visual Studio build
-# tools below, and pinact, rtk, sqlfluff, stylelint, promptfoo, wabt, websocat
-# and zizmor have no WinGet manifest. `just diff` on the Windows box lists what
-# is genuinely missing rather than leaving the difference undocumented.
 winget_tools:
     - ajeetdsouza.zoxide
     - ArtifexSoftware.GhostScript

@@ -1,4 +1,4 @@
-# Explicitly set config path — WSL2 mounts appear world-writable, causing Ansible to ignore ansible.cfg
+# WSL2 mounts look world-writable, so Ansible ignores a cwd ansible.cfg.
 
 export ANSIBLE_CONFIG := justfile_directory() + "/ansible.cfg"
 
@@ -22,10 +22,8 @@ bootstrap:
 [group('ansible')]
 [macos]
 install:
-    # The os_config role has privileged tasks (Touch ID for sudo, firewall).
-    # --ask-become-pass prompts once and feeds the password to sudo over
-    # stdin; a cached `sudo -v` credential does not reach Ansible's tty-less
-    # become, so the prompt is required.
+    # A cached `sudo -v` credential does not reach the tty-less become, so
+    # --ask-become-pass is required.
     ansible-playbook ansible/playbooks/install.yml \
         -i ansible/inventory/localhost.yml \
         -e "repo_root=$(pwd)" \
@@ -57,8 +55,8 @@ upgrade:
 # Run install for specific roles only: just install-tags dotfiles git
 [group('ansible')]
 install-tags +tags:
-    # `+tags` arrives space-separated but --tags wants commas, so "dotfiles git"
-    # would reach Ansible as one tag of that name and silently match nothing.
+    # --tags wants commas; a space-separated list reaches Ansible as one tag
+    # that matches nothing.
     ansible-playbook ansible/playbooks/install.yml \
         -i ansible/inventory/localhost.yml \
         -e "repo_root=$(pwd)" \
@@ -88,9 +86,7 @@ dry-run-tags +tags:
 # Diff what this repo declares against what is installed, for every manager
 [group('ansible')]
 diff:
-    # ansible.posix.debug prints a multi-line `msg` as text. The default
-    # callback renders it as one JSON string with the newlines escaped, which
-    # turns the report into an unreadable single line.
+    # The default callback renders a multi-line msg as one escaped JSON string.
     ANSIBLE_STDOUT_CALLBACK=ansible.posix.debug \
     ansible-playbook ansible/playbooks/diff.yml \
         -i ansible/inventory/localhost.yml \

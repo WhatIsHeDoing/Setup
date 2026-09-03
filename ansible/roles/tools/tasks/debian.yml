@@ -56,9 +56,6 @@
   become: true
   when: cst_check.rc != 0
 
-# ripgrep-all (rga) installs via the shared cargo-binstall loop in the runtimes
-# role (cargo_packages_non_darwin), so no bespoke task is needed here.
-
 - name: Check if pnpm is installed
   ansible.builtin.command: which pnpm
   register: pnpm_check
@@ -71,7 +68,6 @@
   changed_when: pnpm_check.rc != 0
   when: pnpm_check.rc != 0
 
-# gitleaks has no apt package; install the pinned release binary to ~/.local/bin.
 - name: Check if gitleaks is installed
   ansible.builtin.command: which gitleaks
   register: gitleaks_check
@@ -88,7 +84,7 @@
       mode: "0755"
   when: gitleaks_check.rc != 0
 
-# taplo ships as a gzipped binary (not a tarball) and has no apt package.
+# taplo ships as a bare gzipped binary, not a tarball.
 - name: Check if taplo is installed
   ansible.builtin.command: which taplo
   register: taplo_check
@@ -102,11 +98,8 @@
   changed_when: taplo_check.rc != 0
   when: taplo_check.rc != 0
 
-# The other two zsh plugins come from apt. zsh-autocomplete is packaged by
-# neither apt nor snap, so clone it — pinned to the tag Homebrew ships on
-# macOS, so both platforms run the same plugin (principle 2). ~/.local/share
-# is one of the three prefixes config/zsh/90-plugins.zsh searches, so the
-# clone needs no matching change there. See ADR-0009.
+# Pinned to the tag the Homebrew formula ships. The dest is one of the
+# prefixes `_setup_plugin` in config/zsh/45-autocomplete.zsh searches.
 - name: Install zsh-autocomplete
   ansible.builtin.git:
       repo: https://github.com/marlonrichert/zsh-autocomplete.git

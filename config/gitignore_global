@@ -1,6 +1,3 @@
-# Global gitignore — patterns that should never appear in any repository.
-# Deployed to ~/.gitignore_global and registered via core.excludesFile.
-
 # macOS
 .DS_Store
 .AppleDouble
