@@ -40,7 +40,7 @@ ansible/
     os_config/           # VS Code extensions, Docker group, OS preferences
 bootstrap/
   bootstrap_macos.sh     # Installs Homebrew + Ansible (run once)
-  bootstrap_ubuntu.sh    # Installs pipx + Ansible (run once)
+  bootstrap_ubuntu.sh    # Installs Ansible + just (run once)
   bootstrap_windows.ps1  # Installs Git, WinRM, WSL2 (run once in PowerShell)
 config/                  # starship.toml, bottom.toml
 scripts/                 # ff, ll (deployed to ~/.local/bin) and prose_ceiling.py (a check)

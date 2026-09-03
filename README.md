@@ -117,7 +117,7 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 │       └── os_config/           # OS-level config (VS Code extensions, Docker group, etc.)
 ├── bootstrap/
 │   ├── bootstrap_macos.sh       # Installs Homebrew, Ansible
-│   ├── bootstrap_ubuntu.sh      # Installs pipx, Ansible
+│   ├── bootstrap_ubuntu.sh      # Installs Ansible, just
 │   └── bootstrap_windows.ps1   # Installs Git, configures WinRM, sets up WSL2
 ├── config/
 │   ├── zsh/                     # Zsh fragments, sourced from ~/.config/zsh
