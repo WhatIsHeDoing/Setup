@@ -152,6 +152,7 @@ The Ansible playbook connects back to the Windows host over WinRM and installs e
 | Tool                      | Platforms      | Description                                       |
 | ------------------------- | -------------- | ------------------------------------------------- |
 | [actionlint]              | macOS, Windows | Static checker for GitHub Actions workflows       |
+| [anydoc]                  | all            | Convert Office and PDF documents to Markdown      |
 | [asciinema]               | macOS, Ubuntu  | Record and share terminal sessions                |
 | [atuin]                   | macOS, Ubuntu  | Shell history with sync and interactive search    |
 | [bash]                    | macOS          | GNU Bash 5.x, replacing the bundled Bash 3.2      |
@@ -284,6 +285,7 @@ Ubuntu row means Ubuntu alone even where the variable name says `non_darwin`.
 | Cargo   | Ubuntu    | `cargo-cache`, `cargo-outdated`, `cargo-update`, `diskonaut`, `ripgrep_all`, `sd`, `tokei`, `wasm-pack`, `websocat`, `zizmor` |
 | uv      | all       | `ansible-core`, `ansible-lint`, `checkov`, `commitizen`                                                                       |
 | uv      | Ubuntu    | `jupyterlab`, `sqlfluff`, `yamllint`                                                                                          |
+| pnpm    | all       | `@firecrawl/anydoc`                                                                                                           |
 | pnpm    | Ubuntu    | `cspell`, `promptfoo`, `stylelint`                                                                                            |
 | VS Code | all       | GitLens, EditorConfig, Markdownlint, Night Owl theme, VS Code Icons                                                           |
 
@@ -484,6 +486,7 @@ just check
 [AlDente]: https://apphousekitchen.com/
 [Amberol]: https://gitlab.gnome.org/World/amberol
 [Ansible]: https://www.ansible.com/
+[anydoc]: https://github.com/firecrawl/anydoc
 [asciinema]: https://asciinema.org/
 [atuin]: https://atuin.sh/
 [Bambu Studio]: https://bambulab.com/en/download/studio

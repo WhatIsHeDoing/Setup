@@ -19,6 +19,7 @@ words:
     - Amberol
     - ansible
     - anthropic
+    - anydoc
     - asciinema
     - atuin
     - bambu
@@ -184,6 +185,7 @@ ignoreWords:
     - fdfind
     - fileglob
     - findall
+    - firecrawl
     - flatpakrepo
     - foxundermoon
     - fpath

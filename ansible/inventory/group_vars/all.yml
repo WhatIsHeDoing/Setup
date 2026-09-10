@@ -87,8 +87,10 @@ mcp_servers:
     - name: playwright
       command: npx @playwright/mcp@latest
 
-# Empty, but the install task and the diff playbook read it.
-pnpm_packages: []
+# npm is the only channel shipping an anydoc CLI: the crates.io crate is a
+# library with no binary target, and no OS manager carries it at all.
+pnpm_packages:
+    - "@firecrawl/anydoc"
 
 pnpm_packages_non_darwin:
     - cspell
