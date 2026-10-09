@@ -1,6 +1,7 @@
 ---
 git_config:
     alias.cleanup-gone: "!git branch -vv | awk '/: gone]/{print $1}' | xargs -r git branch -D"
+    branch.autoSetupMerge: "simple"
     branch.sort: "-committerdate"
     column.ui: "auto"
     commit.verbose: "true"
