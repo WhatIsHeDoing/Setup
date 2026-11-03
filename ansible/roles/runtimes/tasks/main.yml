@@ -67,12 +67,18 @@
       creates: "{{ ansible_env.HOME }}/.local/share/pnpm/pnpm"
   when: effective_platform == "debian"
 
-- name: Install cargo-binstall # noqa: command-instead-of-module risky-shell-pipe
+- name: Install cargo-binstall (macOS via Homebrew)
+  community.general.homebrew:
+      name: cargo-binstall
+      state: present
+  when: effective_platform == "darwin"
+
+- name: Install cargo-binstall (Ubuntu via official installer) # noqa: command-instead-of-module risky-shell-pipe
   ansible.builtin.shell: |
     curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
   args:
       creates: "{{ ansible_env.HOME }}/.cargo/bin/cargo-binstall"
-  when: effective_platform != "windows"
+  when: effective_platform == "debian"
 
 - name: Install global Cargo packages via cargo-binstall
   ansible.builtin.command: "cargo binstall --no-confirm {{ item }}"
@@ -81,9 +87,8 @@
          + (cargo_packages_non_darwin if effective_platform != 'darwin' else [])
          + (cargo_packages_debian if effective_platform == 'debian' else []) }}
   environment:
-      PATH: "{{ cargo_bin }}:{{ ansible_env.PATH }}"
+      PATH: "{{ cargo_bin }}:{{ homebrew_bin }}:{{ ansible_env.PATH }}"
   changed_when: false
-  failed_when: false
   when: effective_platform != "windows"
 
 # A bare `pnpm add -g` errors, so the length guard matters where the list

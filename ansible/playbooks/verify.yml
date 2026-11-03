@@ -32,6 +32,8 @@
             name: "starship"
           - cmd: "cargo --version"
             name: "cargo"
+          - cmd: "cargo binstall -V"
+            name: "cargo-binstall"
           - cmd: "dotnet --version"
             name: "dotnet"
           - cmd: "pnpm --version"
