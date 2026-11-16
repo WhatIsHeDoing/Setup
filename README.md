@@ -464,6 +464,19 @@ Set it to `""` to leave the picker alone. Log out and back in after a change —
 the picker reads these defaults when it starts. Emoji taking two tones at once,
 such as 🤝 and couples, still need picking by hand.
 
+### Firewall and screen lock (macOS)
+
+The `os_config` role turns the firewall and its stealth mode on for every Mac,
+and sleeps the display after `macos_display_sleep_minutes`, 5 by default, which
+locks the Mac. To refuse every incoming connection as well, set this in
+`local.yml`:
+
+```yaml
+macos_firewall_block_all: true
+```
+
+It stays off by default because it also stops AirDrop and AirPlay receiving.
+
 ## Documentation
 
 - [docs/principles.md](docs/principles.md) — Architecture principles guiding tool and approach choices

@@ -166,6 +166,22 @@
   register: firewall_stealth
   changed_when: "'already' not in firewall_stealth.stdout"
 
+# Blocking everything also stops AirDrop and AirPlay receiving, so only a machine whose
+# local.yml asks for it gets it.
+- name: Read whether the firewall blocks all incoming connections
+  ansible.builtin.command: /usr/libexec/ApplicationFirewall/socketfilterfw --getblockall
+  register: firewall_block_all_state
+  changed_when: false
+  when: macos_firewall_block_all | bool
+
+- name: Block all incoming connections
+  become: true
+  ansible.builtin.command: /usr/libexec/ApplicationFirewall/socketfilterfw --setblockall on
+  changed_when: true
+  when:
+      - macos_firewall_block_all | bool
+      - "'enabled' not in firewall_block_all_state.stdout"
+
 # System Settings → Lock Screen can override these on macOS 14 and later.
 - name: Require a password after sleep or screen saver begins
   community.general.osx_defaults:
@@ -180,6 +196,30 @@
       key: askForPasswordDelay
       type: int
       value: 0
+
+# pmset holds one timer per power source, and -a sets them all; a sleeping display then
+# asks for the password at once.
+- name: Read the display sleep timers
+  ansible.builtin.command: pmset -g custom
+  register: display_sleep_state
+  changed_when: false
+
+- name: Sleep the display, and so lock the Mac, once idle for the configured minutes
+  become: true
+  ansible.builtin.command: pmset -a displaysleep {{ macos_display_sleep_minutes }}
+  changed_when: true
+  when: >-
+      display_sleep_state.stdout_lines | select('search', 'displaysleep') | map('split') | map('last') | unique | list
+      != [macos_display_sleep_minutes | string]
+
+# Safari is sandboxed, so its settings live in its container, which appears only once
+# Safari has opened.
+- name: Stop Safari opening downloaded files by itself
+  community.general.osx_defaults:
+      domain: "{{ ansible_env.HOME }}/Library/Containers/com.apple.Safari/Data/Library/Preferences/com.apple.Safari"
+      key: AutoOpenSafeDownloads
+      type: bool
+      value: false
 
 - name: Check Homebrew analytics state
   ansible.builtin.command: brew analytics state
