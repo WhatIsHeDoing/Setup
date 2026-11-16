@@ -416,6 +416,28 @@
             success_msg: "OK firewall: on, stealth{{ ', blocking all' if macos_firewall_block_all | bool else '' }}"
         when: effective_platform == "darwin"
 
+      # netstat lists every listening socket whoever owns it, so it sees a port launchd holds as root for a sharing service.
+      - name: Probe the sockets listening for connections
+        ansible.builtin.shell:
+            cmd: set -o pipefail && netstat -an -p tcp | awk '$NF == "LISTEN" { print $4 }'
+            executable: /bin/bash
+        register: listening_sockets
+        changed_when: false
+        when: effective_platform == "darwin"
+
+      - name: Assert Remote Login, File Sharing, Screen Sharing and Remote Management are off
+        ansible.builtin.assert:
+            that: sharing_sockets | length == 0
+            fail_msg: >-
+                Listening for remote access on {{ sharing_sockets | join(', ') }}. Turn the service off under System
+                Settings, General, Sharing.
+            success_msg: "OK sharing services: none listening"
+        vars:
+            sharing_sockets: >-
+                {{ listening_sockets.stdout_lines | select('match', '^[^ ]*[.](22|445|548|3283|5900)$')
+                | reject('match', '(127[.]0[.]0[.]1|::1)[.]') | list }}
+        when: effective_platform == "darwin"
+
       # TERM is pinned: zsh-autocomplete binds keys only when terminfo
       # describes a usable terminal, and a bare Ansible run has none. `-i`
       # without a terminal makes zsh complain about zle on stderr; the
