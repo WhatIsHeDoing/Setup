@@ -9,3 +9,7 @@ git_user_email: "you@example.com"
 # from Bitwarden, or run: cat ~/.ssh/id_ed25519.pub
 # Leave this commented out to skip commit signing entirely.
 # git_signing_key: "ssh-ed25519 AAAA... you@example.com"
+
+# macOS: refuse every incoming connection, AirDrop and AirPlay included, as a
+# machine certified for Cyber Essentials needs.
+# macos_firewall_block_all: true

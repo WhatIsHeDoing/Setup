@@ -78,6 +78,12 @@ pip_packages_non_darwin:
 # light, medium-light, medium, medium-dark or dark; "" leaves the picker alone.
 macos_emoji_skin_tone: light
 
+# Minutes before the display sleeps and the Mac locks, on every power source.
+macos_display_sleep_minutes: 5
+
+# true also stops AirDrop and AirPlay receiving; set it in a machine's local.yml.
+macos_firewall_block_all: false
+
 mcp_servers:
     - name: cloudflare
       command: npx @cloudflare/mcp-server-cloudflare

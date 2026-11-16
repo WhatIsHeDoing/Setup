@@ -399,6 +399,23 @@
             - effective_platform == "darwin"
             - macos_emoji_skin_tone | length > 0
 
+      - name: Probe the macOS firewall
+        ansible.builtin.command: >-
+            /usr/libexec/ApplicationFirewall/socketfilterfw --getglobalstate --getstealthmode --getblockall
+        register: firewall_probe
+        changed_when: false
+        when: effective_platform == "darwin"
+
+      - name: Assert the firewall is on, in stealth mode, and blocking all where asked
+        ansible.builtin.assert:
+            that:
+                - "'Firewall is enabled' in firewall_probe.stdout"
+                - "'stealth mode is on' in firewall_probe.stdout"
+                - "not (macos_firewall_block_all | bool) or 'block all state set to enabled' in firewall_probe.stdout"
+            fail_msg: "{{ firewall_probe.stdout }} Re-run the install playbook."
+            success_msg: "OK firewall: on, stealth{{ ', blocking all' if macos_firewall_block_all | bool else '' }}"
+        when: effective_platform == "darwin"
+
       # TERM is pinned: zsh-autocomplete binds keys only when terminfo
       # describes a usable terminal, and a bare Ansible run has none. `-i`
       # without a terminal makes zsh complain about zle on stderr; the

@@ -90,6 +90,7 @@ words:
     - playbook
     - playbooks
     - playwright
+    - pmset
     - pnpm
     - poppler
     - powerline
@@ -169,6 +170,7 @@ ignoreWords:
     - dearmor
     - desktopservices
     - devenv
+    - displaysleep
     - Dont
     - DUPS
     - eamodio
@@ -193,6 +195,9 @@ ignoreWords:
     - gawk
     - gcp
     - gdate
+    - getblockall
+    - getglobalstate
+    - getstealthmode
     - gfind
     - ggrep
     - gierens
@@ -262,6 +267,7 @@ ignoreWords:
     - screencapture
     - sdras
     - selectattr
+    - setblockall
     - setglobalstate
     - setopt
     - setstealthmode
