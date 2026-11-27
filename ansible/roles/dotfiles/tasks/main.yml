@@ -62,6 +62,19 @@
       force: false
   when: effective_platform != "windows"
 
+# 05-telemetry.zsh explains the .zshenv hook. Every zsh reads .zshenv, so keep
+# this hook to what non-interactive shells must see.
+- name: Source the telemetry fragment from .zshenv
+  ansible.builtin.blockinfile:
+      path: "{{ ansible_env.HOME }}/.zshenv"
+      marker: "# {mark} ANSIBLE MANAGED BLOCK: zsh config"
+      block: |
+          [ -r "$HOME/.config/zsh/05-telemetry.zsh" ] && source "$HOME/.config/zsh/05-telemetry.zsh"
+      create: true
+      mode: "0644"
+      backup: true
+  when: effective_platform != "windows"
+
 # 00-path.zsh explains the .zprofile hook and guards the second source from
 # the ~/.zshrc glob.
 - name: Source the PATH fragment from .zprofile
