@@ -176,7 +176,10 @@
       - ll
   when: effective_platform != "windows"
 
-- name: Configure Claude Code MCP servers
+# No pipefail: `grep -q` exits on its first match, which can end `claude mcp
+# list` with SIGPIPE. Under pipefail a configured server would then read as
+# missing, and `claude mcp add` fails on a duplicate.
+- name: Configure Claude Code MCP servers # noqa: risky-shell-pipe
   ansible.builtin.shell: |
     claude mcp list 2>/dev/null | grep -q "{{ item.name }}" || \
     claude mcp add {{ item.name }} -s user -- {{ item.command }}

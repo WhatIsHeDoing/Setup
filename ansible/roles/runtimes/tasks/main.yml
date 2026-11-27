@@ -3,9 +3,9 @@
   ansible.builtin.include_tasks: windows.yml
   when: effective_platform == "windows"
 
-- name: Install rustup
+- name: Install rustup # noqa: command-instead-of-module risky-shell-pipe
   ansible.builtin.shell: |
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y # noqa: risky-shell-pipe
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
   args:
       creates: "{{ ansible_env.HOME }}/.cargo/bin/rustup"
   when: effective_platform != "windows"
@@ -23,9 +23,9 @@
       state: present
   when: effective_platform == "darwin"
 
-- name: Install nvm (Ubuntu via official installer)
+- name: Install nvm (Ubuntu via official installer) # noqa: command-instead-of-module risky-shell-pipe
   ansible.builtin.shell: |
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash # noqa: risky-shell-pipe
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
   args:
       creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
   when: effective_platform == "debian"
@@ -46,9 +46,9 @@
       state: present
   when: effective_platform == "darwin"
 
-- name: Install uv (Ubuntu via official installer)
+- name: Install uv (Ubuntu via official installer) # noqa: command-instead-of-module risky-shell-pipe
   ansible.builtin.shell: |
-    curl -LsSf https://astral.sh/uv/install.sh | sh # noqa: risky-shell-pipe
+    curl -LsSf https://astral.sh/uv/install.sh | sh
   args:
       creates: "{{ ansible_env.HOME }}/.local/bin/uv"
   when: effective_platform == "debian"
@@ -60,16 +60,16 @@
   changed_when: false
   when: effective_platform != "windows"
 
-- name: Install pnpm (Ubuntu via standalone installer)
+- name: Install pnpm (Ubuntu via standalone installer) # noqa: command-instead-of-module risky-shell-pipe
   ansible.builtin.shell: |
-    curl -fsSL https://get.pnpm.io/install.sh | sh - # noqa: risky-shell-pipe
+    curl -fsSL https://get.pnpm.io/install.sh | sh -
   args:
       creates: "{{ ansible_env.HOME }}/.local/share/pnpm/pnpm"
   when: effective_platform == "debian"
 
-- name: Install cargo-binstall
+- name: Install cargo-binstall # noqa: command-instead-of-module risky-shell-pipe
   ansible.builtin.shell: |
-    curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash # noqa: risky-shell-pipe
+    curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
   args:
       creates: "{{ ansible_env.HOME }}/.cargo/bin/cargo-binstall"
   when: effective_platform != "windows"
