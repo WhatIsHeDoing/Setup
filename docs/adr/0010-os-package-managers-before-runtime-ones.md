@@ -28,6 +28,7 @@ version at all.** Measured against crates.io, npm and PyPI on 2026-08-05:
 | Package          | Upstream | Homebrew                    | Source chosen |
 | ---------------- | -------- | --------------------------- | ------------- |
 | `bottom`         | 0.14.7   | 0.14.7                      | Homebrew      |
+| `cargo-binstall` | 1.26.2   | 1.26.2, measured 2026-11-03 | Homebrew      |
 | `cargo-outdated` | 0.19.0   | 0.19.0                      | Homebrew      |
 | `cargo-update`   | 22.1.1   | 22.1.1                      | Homebrew      |
 | `diskonaut`      | 0.11.0   | 0.11.0                      | Homebrew      |

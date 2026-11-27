@@ -7,8 +7,9 @@
   vars:
       diff_ignored:
           darwin:
-              # The runtimes role installs both.
+              # The runtimes role installs these.
               homebrew_formulae:
+                  - cargo-binstall
                   - nvm
                   - uv
               # microsoft-auto-update arrives as a dependency of Edge and
@@ -23,7 +24,7 @@
               flatpak: []
           windows:
               winget: []
-          # The runtimes role installs cargo-binstall from the upstream script.
+          # On Ubuntu, the runtimes role installs cargo-binstall from the upstream script.
           cargo:
               - cargo-binstall
           uv: []
