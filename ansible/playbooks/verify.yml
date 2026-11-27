@@ -293,6 +293,8 @@
             name: "starship config"
           - path: "{{ ansible_env.HOME }}/.config/zsh/00-path.zsh"
             name: "zsh PATH fragment"
+          - path: "{{ ansible_env.HOME }}/.config/zsh/05-telemetry.zsh"
+            name: "zsh telemetry fragment"
           - path: "{{ ansible_env.HOME }}/.config/zsh/99-local.zsh"
             name: "zsh local override"
 
@@ -476,6 +478,27 @@
                 plugin reset the keymap after the tool bound it, so check the
                 fragment load order.
             success_msg: "OK zsh config: plugins loaded, fzf and atuin keybindings intact"
+        when: effective_platform != "windows"
+
+      # `zsh -c` reads ~/.zshenv and no other startup file, as scripts and
+      # coding agents do. `env -u` drops any DO_NOT_TRACK this run inherited,
+      # so only ~/.zshenv can set it.
+      - name: Probe a non-interactive zsh for the telemetry opt-out
+        ansible.builtin.command: env -u DO_NOT_TRACK zsh -c 'print -r -- "${DO_NOT_TRACK-unset}"'
+        register: telemetry_probe
+        changed_when: false
+        when: effective_platform != "windows"
+
+      - name: Assert a non-interactive zsh opts out of telemetry
+        ansible.builtin.assert:
+            that:
+                - telemetry_probe.stdout == "1"
+            fail_msg: >-
+                A non-interactive zsh sets DO_NOT_TRACK to
+                {{ telemetry_probe.stdout | default('nothing', true) }} rather
+                than 1. Check that ~/.zshenv sources
+                ~/.config/zsh/05-telemetry.zsh.
+            success_msg: "OK telemetry: a non-interactive zsh sets DO_NOT_TRACK=1"
         when: effective_platform != "windows"
 
       - name: Verify Node.js is installed via nvm

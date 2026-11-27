@@ -2,7 +2,8 @@
 
 **Status:** Accepted
 **Date:** 2026-08-05
-**Amended:** 2026-08-05 — see the note on rule 1 below
+**Amended:** 2026-08-05 — see the note on rule 1 below; 2026-11-27 — rule 7
+adds `05-telemetry.zsh` and a `~/.zshenv` hook
 
 > **Amendment.** Rule 1's ordering was right about zsh-syntax-highlighting and
 > about atuin following fzf, and incomplete about zsh-autocomplete. That plugin
@@ -66,16 +67,17 @@ removed them again on every run: whack-a-mole encoded as configuration.
 **Shell configuration lives in `config/zsh/*.zsh` as ordinary files. The role
 deploys them and adds exactly one source hook to each startup file.**
 
-| Fragment         | Holds                                                           |
-| ---------------- | --------------------------------------------------------------- |
-| `00-path.zsh`    | Homebrew prefix detection, PATH ordering (ADR-0007)             |
-| `10-history.zsh` | `HISTSIZE`, `HISTFILE`, `HIST_*` options                        |
-| `20-options.zsh` | `AUTO_CD`, `CORRECT`, `NO_BEEP`                                 |
-| `30-env.zsh`     | `NVM_DIR`, `FZF_*`, `RIPGREP_CONFIG_PATH`, autosuggest strategy |
-| `40-aliases.zsh` | Aliases                                                         |
-| `50-tools.zsh`   | nvm, starship, zoxide, fzf, atuin initialisation                |
-| `90-plugins.zsh` | zsh-autocomplete, autosuggestions, syntax-highlighting          |
-| `99-local.zsh`   | Machine-specific overrides; seeded once, never overwritten      |
+| Fragment           | Holds                                                           |
+| ------------------ | --------------------------------------------------------------- |
+| `00-path.zsh`      | Homebrew prefix detection, PATH ordering (ADR-0007)             |
+| `05-telemetry.zsh` | `DO_NOT_TRACK`, which every shell reads through `~/.zshenv`     |
+| `10-history.zsh`   | `HISTSIZE`, `HISTFILE`, `HIST_*` options                        |
+| `20-options.zsh`   | `AUTO_CD`, `CORRECT`, `NO_BEEP`                                 |
+| `30-env.zsh`       | `NVM_DIR`, `FZF_*`, `RIPGREP_CONFIG_PATH`, autosuggest strategy |
+| `40-aliases.zsh`   | Aliases                                                         |
+| `50-tools.zsh`     | nvm, starship, zoxide, fzf, atuin initialisation                |
+| `90-plugins.zsh`   | zsh-autocomplete, autosuggestions, syntax-highlighting          |
+| `99-local.zsh`     | Machine-specific overrides; seeded once, never overwritten      |
 
 Supporting rules:
 
@@ -97,6 +99,15 @@ Supporting rules:
 6. **The role does not delete lines written by third-party installers.**
    `00-path.zsh` prepends and `typeset -U` dedupes, so their PATH exports are
    already inert. Deleting them is a fight the repo cannot win.
+7. **`~/.zshenv` sources `05-telemetry.zsh` only.** zsh reads `~/.zshenv` in
+   every shell, so it is the one hook that reaches `zsh -c` and `zsh -lc`, the
+   forms scripts and coding agents run their commands in, where `~/.zshrc`
+   reaches interactive shells alone. Keep the hook to what those shells must
+   see. The fragment only exports, so its second source from the `~/.zshrc`
+   glob needs no guard. It names the readers that do more with
+   `DO_NOT_TRACK` than stop telemetry, each with a link to its documentation. `verify.yml` proves the
+   hook by probing a `zsh -c` with the variable stripped from its
+   environment.
 
 ## Rationale
 

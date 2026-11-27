@@ -338,11 +338,11 @@ Deployed to `~/.local/bin` on macOS and Ubuntu:
 
 Zsh config lives in [config/zsh/](config/zsh/) as ordinary `.zsh` files. The
 `dotfiles` role deploys them to `~/.config/zsh/` and adds a single source hook
-to `~/.zprofile` and `~/.zshrc` — see
+to each of `~/.zshenv`, `~/.zprofile` and `~/.zshrc` — see
 [ADR-0008](docs/adr/0008-shell-config-as-repo-owned-fragments.md). Edit the
 files in the repo; the deployed copies are overwritten on every run.
 
-Both platforms get the same eight files. Nothing is templated or split per
+Both platforms get the same ten files. Nothing is templated or split per
 platform: each fragment detects what the machine actually has — a Homebrew
 prefix or not, plugins under `/usr/share` or `~/.local/share` — so the
 difference between macOS and Ubuntu stays inside the shell code, where `zsh -n`
@@ -354,6 +354,7 @@ which takes effect at the next login.
 | Fragment              | Holds                                                     |
 | --------------------- | --------------------------------------------------------- |
 | `00-path.zsh`         | Homebrew prefix detection and PATH ordering               |
+| `05-telemetry.zsh`    | `DO_NOT_TRACK`, read by every shell through `~/.zshenv`   |
 | `10-history.zsh`      | History size, file, and `HIST_*` options                  |
 | `20-options.zsh`      | `AUTO_CD`, `CORRECT`, `NO_BEEP`                           |
 | `30-env.zsh`          | `NVM_DIR`, `FZF_*`, `RIPGREP_CONFIG_PATH`                 |
@@ -372,6 +373,13 @@ sorts last, because it has to wrap every widget bound before it.
 
 `verify.yml` asserts all three bindings after assembling the shell, so losing
 one fails the run instead of going unnoticed until you next reach for it.
+
+`05-telemetry.zsh` is the one fragment `~/.zshenv` sources as well, so
+`DO_NOT_TRACK=1` reaches the non-interactive shells that scripts and coding
+agents run, not only the interactive ones. Its comment links the documentation
+of the readers known to do more with the variable than stop telemetry: Claude
+Code, for one, also stops fetching feature flags, which can make Remote Control
+unavailable. Run `env -u DO_NOT_TRACK <command>` to opt one command back in.
 
 Put anything personal to one machine — agent sockets, credentials, per-host
 paths — in `~/.config/zsh/99-local.zsh`. The role seeds it from
