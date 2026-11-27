@@ -1,8 +1,11 @@
 ---
 name: Lint
 
+# A push to a pull request's branch runs through pull_request, so push covers
+# main alone. A branch runs no checks until its pull request opens.
 on:
     push:
+        branches: [main]
     pull_request:
 
 jobs:
